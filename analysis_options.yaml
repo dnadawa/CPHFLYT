@@ -4,17 +4,17 @@ linter:
   rules:
     use_key_in_widget_constructors: false
     prefer_const_constructors: false
-    prefer_relative_imports: true
     avoid_slow_async_io: true
     avoid_type_to_string: true
     cancel_subscriptions: true
     unnecessary_statements: true
+    prefer_const_literals_to_create_immutables: false
+    always_use_package_imports: true
 #    always_declare_return_types: true
 #    always_put_control_body_on_new_line: true
 #    always_put_required_named_parameters_first: true
 #    always_require_non_null_named_parameters: true
 #    always_specify_types: true
-#    always_use_package_imports: true
 #    annotate_overrides: true
 #    avoid_annotating_with_dynamic: true
 #    avoid_bool_literals_in_conditional_expressions: true
@@ -119,7 +119,6 @@ linter:
 #    prefer_conditional_assignment: true
 #    prefer_const_constructors_in_immutables: true
 #    prefer_const_declarations: true
-#    prefer_const_literals_to_create_immutables: true
 #    prefer_constructors_over_static_methods: true
 #    prefer_contains: true
 #    prefer_double_quotes: true
