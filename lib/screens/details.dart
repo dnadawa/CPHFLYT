@@ -1,4 +1,5 @@
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/screens/assign_driver.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
@@ -232,7 +233,14 @@ class Details extends StatelessWidget {
                       ),
                       SizedBox(width: 30.w),
                       Expanded(
-                        child: Button(color: kDeclined, text: "Decline", onPressed: (){}),
+                        child: Button(color: kDeclined, text: "Decline", onPressed: (){
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context){
+                              return AssignDriver();
+                            }
+                          );
+                        }),
                       ),
                     ],
                   ),
