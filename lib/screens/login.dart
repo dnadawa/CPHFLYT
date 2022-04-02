@@ -33,13 +33,13 @@ class Login extends StatelessWidget {
               ///email
               Padding(
                 padding: EdgeInsets.fromLTRB(35.w, 90.h, 35.w, 20.h),
-                child: InputField(text: 'Email', icon: Icons.email,keyboard: TextInputType.emailAddress,),
+                child: InputField(text: 'Email', icon: Icons.email,keyboard: TextInputType.emailAddress,isBorder: false,),
               ),
 
               ///password
               Padding(
                 padding: EdgeInsets.fromLTRB(35.w, 0, 35.w, 20.h),
-                child: InputField(text: 'Password', icon: Icons.lock, isPassword: true,),
+                child: InputField(text: 'Password', icon: Icons.lock, isPassword: true,isBorder: false,),
               ),
 
               ///login button

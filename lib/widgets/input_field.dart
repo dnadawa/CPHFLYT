@@ -7,8 +7,9 @@ class InputField extends StatefulWidget {
   final String text;
   final IconData icon;
   final TextInputType keyboard;
+  final isBorder;
 
-  const InputField({this.isPassword=false,required this.text, required this.icon, this.keyboard=TextInputType.text});
+  const InputField({this.isPassword=false,required this.text, required this.icon, this.keyboard=TextInputType.text, this.isBorder=true});
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -42,9 +43,13 @@ class _InputFieldState extends State<InputField> {
           icon: Icon(_hideText?Icons.visibility_off:Icons.visibility),
         ):null,
         fillColor: Colors.white,
-        border: OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide.none,
+          borderSide: widget.isBorder?BorderSide(width: 2,color: Color(0xffE4DFDF)):BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: widget.isBorder?BorderSide(width: 2,color: Theme.of(context).primaryColor):BorderSide.none,
         ),
       ),
     );

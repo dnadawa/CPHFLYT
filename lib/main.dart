@@ -1,4 +1,5 @@
 import 'package:cphflyt/screens/details.dart';
+import 'package:cphflyt/screens/user_management.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,13 +16,14 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color(0xff1470AF),
           fontFamily: "SF-Pro",
+          scaffoldBackgroundColor: Colors.white,
           appBarTheme: AppBarTheme(
             centerTitle: true,
             elevation: 0,
             color: Color(0xff105A8C)
           )
         ),
-        home: Details(),
+        home: UserManagement(),
       ),
     );
   }
