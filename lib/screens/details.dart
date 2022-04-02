@@ -168,7 +168,7 @@ class Details extends StatelessWidget {
                     absorbing: true,
                     child: MultiSelectChipField(
                       searchable: false,
-                      title: Text('Skal der flyttes særligt tungt inventar?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 15.sp),),
+                      title: Text('Skal der flyttes særligt tungt inventar?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 16.sp),),
                       chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
                       decoration: BoxDecoration(
                           border: Border.all(color: Theme.of(context).primaryColor,width: 3),
@@ -196,7 +196,7 @@ class Details extends StatelessWidget {
                     absorbing: true,
                     child: MultiSelectChipField(
                       searchable: false,
-                      title: Text('Skal der flyttes inventar som nemt kan gå i stykker?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 11.5.sp),),
+                      title: Text('Skal der flyttes inventar som nemt kan gå i stykker?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 12.sp),),
                       chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
                       decoration: BoxDecoration(
                           border: Border.all(color: Theme.of(context).primaryColor,width: 3),

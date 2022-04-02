@@ -7,8 +7,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -16,6 +14,7 @@ class MyApp extends StatelessWidget {
       builder: ()=>MaterialApp(
         theme: ThemeData(
           primaryColor: Color(0xff1470AF),
+          fontFamily: "SF-Pro",
           appBarTheme: AppBarTheme(
             centerTitle: true,
             elevation: 0,
