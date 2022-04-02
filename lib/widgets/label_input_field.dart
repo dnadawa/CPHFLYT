@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LabelInputField extends StatefulWidget {
+class LabelInputField extends StatelessWidget {
   
   final String text;
-  final TextInputType keyboard;
+  final int? maxLines;
 
-  const LabelInputField({required this.text, this.keyboard=TextInputType.text});
+  const LabelInputField({required this.text, this.maxLines=1});
 
-  @override
-  State<LabelInputField> createState() => _LabelInputFieldState();
-}
-
-class _LabelInputFieldState extends State<LabelInputField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      keyboardType: widget.keyboard,
       enabled: false,
-      textAlign: TextAlign.center,
+      maxLines: maxLines,
+      textAlign: maxLines==1?TextAlign.center:TextAlign.left,
       decoration: InputDecoration(
         filled: true,
-        labelText: widget.text,
+        labelText: text,
+        labelStyle: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: Colors.black
+        ),
         fillColor: Colors.white,
-        contentPadding: EdgeInsets.all(8.w),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(

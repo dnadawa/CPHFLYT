@@ -1,4 +1,4 @@
-import 'package:cphflyt/screens/home.dart';
+import 'package:cphflyt/screens/details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             color: Color(0xff105A8C)
           )
         ),
-        home: Home(),
+        home: Details(),
       ),
     );
   }

@@ -28,7 +28,7 @@ class Home extends StatelessWidget {
                 labels: ['Pending', 'Approved', 'Trash'],
                 fontSize: 14.sp,
                 icons: [Icons.pending_actions, Icons.check_box, Icons.delete],
-                activeBgColors: [[Color(0xffE68C36)],[Color(0xff039487)],[Color(0xffEC1C24)]],
+                activeBgColors: [[Color(0xffE68C36)],[kApproved],[kDeclined]],
                 cornerRadius: 40.r,
                 animate: true,
                 animationDuration: 200,
