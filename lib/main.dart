@@ -1,4 +1,4 @@
-import 'package:cphflyt/screens/login.dart';
+import 'package:cphflyt/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,8 +16,13 @@ class MyApp extends StatelessWidget {
       builder: ()=>MaterialApp(
         theme: ThemeData(
           primaryColor: Color(0xff1470AF),
+          appBarTheme: AppBarTheme(
+            centerTitle: true,
+            elevation: 0,
+            color: Color(0xff105A8C)
+          )
         ),
-        home: Login(),
+        home: Home(),
       ),
     );
   }

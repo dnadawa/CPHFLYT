@@ -1,3 +1,4 @@
+import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/input_field.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,7 @@ class Login extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.horizontal(right: Radius.circular(40.r)),
-                          color: Color(0xff2FA4FF),
+                          color: kLightBlue,
                         ),
                         child: Padding(
                           padding: EdgeInsets.all(15.w),
