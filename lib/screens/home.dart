@@ -69,15 +69,9 @@ class Home extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      child: LabelInputField(text: "Fornavn"),
-                      )
-                    ),
-                    Expanded(
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 15.w),
-                          child: LabelInputField(text: "Efternavn"),
+                          child: LabelInputField(text: "ID"),
                         )
                     ),
                     Container(
