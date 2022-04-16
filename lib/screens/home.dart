@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cphflyt/models/request_model.dart';
+import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/bottom_nav_bar.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
 
@@ -10,6 +14,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var databaseService = Provider.of<DatabaseService>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -19,7 +24,7 @@ class Home extends StatelessWidget {
         padding: EdgeInsets.all(20.w),
         child: Column(
           children: [
-              ToggleSwitch(
+            ToggleSwitch(
                 initialLabelIndex: 0,
                 activeFgColor: Colors.white,
                 inactiveBgColor: Color(0xffE6E6E6),
@@ -35,9 +40,9 @@ class Home extends StatelessWidget {
                 curve: Curves.easeIn,
                 minWidth: 110.w,
               ),
-              SizedBox(height: 30.h,),
+            SizedBox(height: 30.h,),
 
-              ElevatedButton(
+            ElevatedButton(
                   onPressed: (){},
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -60,99 +65,60 @@ class Home extends StatelessWidget {
             ),
             SizedBox(height: 30.h,),
 
-              Card(
-                margin: EdgeInsets.only(bottom: 20.h),
-                elevation: 7,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.r)
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15.w),
-                          child: LabelInputField(text: "ID"),
-                        )
-                    ),
-                    Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.horizontal(right: Radius.circular(15.r)),
-                          color: kLightBlue,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(5.w,35.w,5.w,35.w),
-                          child: Icon(Icons.arrow_forward, color: Colors.white,),
-                        )
-                    )
-                  ],
-                ),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: databaseService.getRequests(),
+                builder: (BuildContext context, snapshot){
+                  if(!snapshot.hasData){
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  return ListView.builder(
+                      itemCount: snapshot.data?.docs.length,
+                      itemBuilder: (context, i){
+
+                        RequestModel request = databaseService.createRequestFromJson(snapshot.data?.docs[i]);
+                        final TextEditingController controller = TextEditingController();
+                        controller.text = request.id;
+
+                        return GestureDetector(
+                          onTap: (){},
+                          child: Card(
+                            margin: EdgeInsets.only(bottom: 20.h),
+                            elevation: 7,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.r)
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                      child: LabelInputField(
+                                        text: "ID",
+                                        controller: controller,
+                                      ),
+                                    )
+                                ),
+                                Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.horizontal(right: Radius.circular(15.r)),
+                                      color: kLightBlue,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(5.w,35.w,5.w,35.w),
+                                      child: Icon(Icons.arrow_forward, color: Colors.white,),
+                                    )
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                  );
+                },
               ),
-              Card(
-                margin: EdgeInsets.only(bottom: 20.h),
-                elevation: 7,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.r)
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      child: LabelInputField(text: "Fornavn"),
-                      )
-                    ),
-                    Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15.w),
-                          child: LabelInputField(text: "Efternavn"),
-                        )
-                    ),
-                    Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.horizontal(right: Radius.circular(15.r)),
-                          color: kLightBlue,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(5.w,35.w,5.w,35.w),
-                          child: Icon(Icons.arrow_forward, color: Colors.white,),
-                        )
-                    )
-                  ],
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.only(bottom: 20.h),
-                elevation: 7,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.r)
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      child: LabelInputField(text: "Fornavn"),
-                      )
-                    ),
-                    Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15.w),
-                          child: LabelInputField(text: "Efternavn"),
-                        )
-                    ),
-                    Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.horizontal(right: Radius.circular(15.r)),
-                          color: kLightBlue,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(5.w,35.w,5.w,35.w),
-                          child: Icon(Icons.arrow_forward, color: Colors.white,),
-                        )
-                    )
-                  ],
-                ),
-              ),
+            ),
           ],
         ),
       ),

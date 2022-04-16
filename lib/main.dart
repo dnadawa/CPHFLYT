@@ -2,6 +2,7 @@ import 'package:cphflyt/screens/details.dart';
 import 'package:cphflyt/screens/login.dart';
 import 'package:cphflyt/screens/user_management.dart';
 import 'package:cphflyt/services/auth_service.dart';
+import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
       builder: ()=>MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => AuthService()),
+          Provider<DatabaseService>(create: (_)=>DatabaseService()),
         ],
         child: MaterialApp(
           theme: ThemeData(

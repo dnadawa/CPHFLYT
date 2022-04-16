@@ -5,12 +5,14 @@ class LabelInputField extends StatelessWidget {
   
   final String text;
   final int? maxLines;
+  final TextEditingController? controller;
 
-  const LabelInputField({required this.text, this.maxLines=1});
+  const LabelInputField({required this.text, this.maxLines=1, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       enabled: false,
       maxLines: maxLines,
       textAlign: maxLines==1?TextAlign.center:TextAlign.left,

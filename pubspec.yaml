@@ -39,8 +39,13 @@ dependencies:
   multi_select_flutter: ^4.1.2
   provider: ^6.0.2
   firebase_core: ^1.12.0
-  firebase_auth: ^2.0.0
+  firebase_auth: ^3.3.8
   fluttertoast: ^8.0.9
+  cloud_firestore: ^3.1.9
+
+dependency_overrides:
+  firebase_auth_platform_interface: 6.1.11
+  cloud_firestore_platform_interface: 5.4.13
 
 dev_dependencies:
   flutter_test:
