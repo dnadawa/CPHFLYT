@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
 
+import '../bottom_nav_controller.dart';
+
 class Home extends StatelessWidget {
 
   @override
@@ -42,6 +44,7 @@ class Home extends StatelessWidget {
               ),
             SizedBox(height: 30.h,),
 
+            if(Provider.of<BottomNavController>(context).getSelectedNavItem() == Nav.Manual)
             ElevatedButton(
                   onPressed: (){},
                   style: ElevatedButton.styleFrom(
@@ -63,6 +66,7 @@ class Home extends StatelessWidget {
                     ),
                   ),
             ),
+            if(Provider.of<BottomNavController>(context).getSelectedNavItem() == Nav.Manual)
             SizedBox(height: 30.h,),
 
             Expanded(

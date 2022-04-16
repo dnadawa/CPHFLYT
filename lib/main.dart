@@ -1,3 +1,4 @@
+import 'package:cphflyt/bottom_nav_controller.dart';
 import 'package:cphflyt/screens/details.dart';
 import 'package:cphflyt/screens/login.dart';
 import 'package:cphflyt/screens/user_management.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         providers: [
           Provider<AuthService>(create: (_) => AuthService()),
           Provider<DatabaseService>(create: (_)=>DatabaseService()),
+          ChangeNotifierProvider<BottomNavController>(create: (_)=>BottomNavController()),
         ],
         child: MaterialApp(
           theme: ThemeData(
