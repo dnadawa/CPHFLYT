@@ -7,9 +7,10 @@ class InputField extends StatefulWidget {
   final String text;
   final IconData icon;
   final TextInputType keyboard;
-  final isBorder;
+  final bool isBorder;
+  final TextEditingController? controller;
 
-  const InputField({this.isPassword=false,required this.text, required this.icon, this.keyboard=TextInputType.text, this.isBorder=true});
+  const InputField({this.isPassword=false,required this.text, required this.icon, this.keyboard=TextInputType.text, this.isBorder=true, this.controller});
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -28,6 +29,7 @@ class _InputFieldState extends State<InputField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       obscureText: _hideText,
       keyboardType: widget.keyboard,
       decoration: InputDecoration(

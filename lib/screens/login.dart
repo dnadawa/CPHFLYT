@@ -1,10 +1,15 @@
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/input_field.dart';
+import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatelessWidget {
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +38,25 @@ class Login extends StatelessWidget {
               ///email
               Padding(
                 padding: EdgeInsets.fromLTRB(35.w, 90.h, 35.w, 20.h),
-                child: InputField(text: 'Email', icon: Icons.email,keyboard: TextInputType.emailAddress,isBorder: false,),
+                child: InputField(
+                  text: 'Email',
+                  icon: Icons.email,
+                  keyboard: TextInputType.emailAddress,
+                  isBorder: false,
+                  controller: email,
+                ),
               ),
 
               ///password
               Padding(
                 padding: EdgeInsets.fromLTRB(35.w, 0, 35.w, 20.h),
-                child: InputField(text: 'Password', icon: Icons.lock, isPassword: true,isBorder: false,),
+                child: InputField(
+                  text: 'Password',
+                  icon: Icons.lock,
+                  isPassword: true,
+                  isBorder: false,
+                  controller: password,
+                ),
               ),
 
               ///login button
@@ -54,7 +71,15 @@ class Login extends StatelessWidget {
                       borderRadius: BorderRadius.circular(40.r)
                     )
                   ),
-                  onPressed: (){},
+                  onPressed: (){
+                    if (email.text.isNotEmpty && password.text.isNotEmpty) {
+                        ToastBar(text: "Please wait", color: Colors.orange).show();
+                        Provider.of<AuthService>(context, listen: false).signIn(email.text, password.text);
+                    }
+                    else{
+                      ToastBar(text: "Please fill all the fields!", color: Colors.red).show();
+                    }
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
