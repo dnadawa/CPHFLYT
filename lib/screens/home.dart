@@ -94,7 +94,7 @@ class Home extends StatelessWidget {
 
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getRequests(filter: _filter),
+                stream: databaseService.getRequests(filter: _filter, from: navController.getSelectedNavItem()),
                 builder: (BuildContext context, snapshot){
                   if(!snapshot.hasData){
                     return Center(child: CircularProgressIndicator());

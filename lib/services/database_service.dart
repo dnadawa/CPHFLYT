@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cphflyt/bottom_nav_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,18 +13,24 @@ class DatabaseService extends ChangeNotifier{
     notifyListeners();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getRequests({Filter filter = Filter.Pending}) {
-    if (filter == Filter.Pending){
-      print("pending called");
-      return _firestore.collection('requests').where('status', isEqualTo: 'pending').snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website}) {
+    if (filter == Filter.Pending && from == Nav.Website){
+      return _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'website').snapshots();
     }
-    else if (filter == Filter.Approved){
-      print("approved called");
-      return _firestore.collection('requests').where('status', isEqualTo: 'approved').snapshots();
+    else if (filter == Filter.Pending && from == Nav.Manual){
+      return _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'manual').snapshots();
     }
-    else if (filter == Filter.Trash){
-      print("trash called");
-      return _firestore.collection('requests').where('status', isEqualTo: 'trash').snapshots();
+    else if (filter == Filter.Approved && from == Nav.Website){
+      return _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'website').snapshots();
+    }
+    else if (filter == Filter.Approved && from == Nav.Manual){
+      return _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'manual').snapshots();
+    }
+    else if (filter == Filter.Trash && from == Nav.Website){
+      return _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'website').snapshots();
+    }
+    else if (filter == Filter.Trash && from == Nav.Manual){
+      return _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'manual').snapshots();
     }
     else {
       return _firestore.collection('requests').snapshots();
