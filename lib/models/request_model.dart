@@ -1,4 +1,5 @@
 import 'package:cphflyt/models/address_model.dart';
+import 'package:cphflyt/services/database_service.dart';
 
 class RequestModel {
 
@@ -20,6 +21,7 @@ class RequestModel {
   final bool isBreakable;
   final String breakCount;
   final String others;
+  final Filter status;
 
   RequestModel({
         required this.id,
@@ -39,7 +41,8 @@ class RequestModel {
         required this.heavyCount,
         required this.isBreakable,
         required this.breakCount,
-        required this.others
+        required this.others,
+        required this.status
       });
 
 

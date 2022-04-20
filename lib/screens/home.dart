@@ -4,6 +4,7 @@ import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/bottom_nav_bar.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -11,12 +12,17 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
 
 import '../bottom_nav_controller.dart';
+import 'details.dart';
 
 class Home extends StatelessWidget {
 
+  Filter _filter = Filter.Pending;
+  int filterSelectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    var databaseService = Provider.of<DatabaseService>(context, listen: false);
+    var databaseService = Provider.of<DatabaseService>(context);
+    var navController = Provider.of<BottomNavController>(context);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -27,7 +33,7 @@ class Home extends StatelessWidget {
         child: Column(
           children: [
             ToggleSwitch(
-                initialLabelIndex: 0,
+                initialLabelIndex: filterSelectedIndex,
                 activeFgColor: Colors.white,
                 inactiveBgColor: Color(0xffE6E6E6),
                 inactiveFgColor: Color(0xff747474),
@@ -41,10 +47,27 @@ class Home extends StatelessWidget {
                 animationDuration: 200,
                 curve: Curves.easeIn,
                 minWidth: 110.w,
+                onToggle: (index) async {
+                  if (index==0){
+                    filterSelectedIndex = 0;
+                    _filter = Filter.Pending;
+                    databaseService.updateData();
+                  }
+                  else if (index==1){
+                    filterSelectedIndex = 1;
+                    _filter = Filter.Approved;
+                    databaseService.updateData();
+                  }
+                  else {
+                    filterSelectedIndex = 2;
+                    _filter = Filter.Trash;
+                    databaseService.updateData();
+                  }
+                },
               ),
             SizedBox(height: 30.h,),
 
-            if(Provider.of<BottomNavController>(context).getSelectedNavItem() == Nav.Manual)
+            if(navController.getSelectedNavItem() == Nav.Manual)
             ElevatedButton(
                   onPressed: (){},
                   style: ElevatedButton.styleFrom(
@@ -66,12 +89,12 @@ class Home extends StatelessWidget {
                     ),
                   ),
             ),
-            if(Provider.of<BottomNavController>(context).getSelectedNavItem() == Nav.Manual)
+            if(navController.getSelectedNavItem() == Nav.Manual)
             SizedBox(height: 30.h,),
 
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getRequests(),
+                stream: databaseService.getRequests(filter: _filter),
                 builder: (BuildContext context, snapshot){
                   if(!snapshot.hasData){
                     return Center(child: CircularProgressIndicator());
@@ -86,7 +109,12 @@ class Home extends StatelessWidget {
                         controller.text = request.id;
 
                         return GestureDetector(
-                          onTap: (){},
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(builder: (context) => Details(request: request)),
+                            );
+                          },
                           child: Card(
                             margin: EdgeInsets.only(bottom: 20.h),
                             elevation: 7,

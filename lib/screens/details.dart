@@ -1,5 +1,7 @@
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
+import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
@@ -7,13 +9,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class Details extends StatelessWidget {
+class Details extends StatefulWidget {
+
+  final RequestModel request;
+
+  Details({required this.request});
+
+  @override
+  State<Details> createState() => _DetailsState();
+}
+
+class _DetailsState extends State<Details> {
+  TextEditingController firstName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
+  TextEditingController telephone = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController date = TextEditingController();
+  TextEditingController fromAddress = TextEditingController();
+  TextEditingController toAddress = TextEditingController();
+  TextEditingController flexible = TextEditingController();
+  TextEditingController heavyCount = TextEditingController();
+  TextEditingController breakCount = TextEditingController();
+  TextEditingController others = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    firstName.text = widget.request.firstName;
+    lastName.text = widget.request.lastName;
+    telephone.text = widget.request.telePhone;
+    email.text = widget.request.email;
+    date.text = widget.request.date;
+    fromAddress.text = widget.request.fromAddress.getAddressAsString();
+    toAddress.text = widget.request.toAddress.getAddressAsString();
+    flexible.text = widget.request.flexible;
+    heavyCount.text = widget.request.heavyCount;
+    breakCount.text = widget.request.breakCount;
+    others.text = widget.request.others;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: CustomText(text: "Task #1234", fontSize: 22.sp, isBold: true,color: Colors.white,),
+        title: CustomText(text: widget.request.id, fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
       body: Card(
         margin: EdgeInsets.all(20.w),
@@ -26,19 +67,20 @@ class Details extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(height: 10.h,),
                 ///name
                 Row(
                   children: [
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(right: 15.w),
-                          child: LabelInputField(text: "Fornavn"),
+                          child: LabelInputField(text: "Fornavn", controller: firstName,),
                         )
                     ),
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(left: 15.w),
-                          child: LabelInputField(text: "Efternavn"),
+                          child: LabelInputField(text: "Efternavn", controller: lastName,),
                         )
                     ),
                   ],
@@ -46,11 +88,11 @@ class Details extends StatelessWidget {
 
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Tlf.Nr."),
+                  child: LabelInputField(text: "Tlf.Nr.",controller: telephone,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Mail"),
+                  child: LabelInputField(text: "Mail",controller: email,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
@@ -67,7 +109,7 @@ class Details extends StatelessWidget {
                       selectedChipColor: Theme.of(context).primaryColor,
                       selectedTextStyle: TextStyle(color: Colors.white),
                       scroll: false,
-                      initialValue: ['Privat'],
+                      initialValue: [widget.request.type],
                       items: [
                         MultiSelectItem('Privat', "Privat"),
                         MultiSelectItem('Erhverv', "Erhverv"),
@@ -90,7 +132,7 @@ class Details extends StatelessWidget {
                       selectedChipColor: Theme.of(context).primaryColor,
                       selectedTextStyle: TextStyle(color: Colors.white),
                       scroll: false,
-                      initialValue: ['Mellem pakke'],
+                      initialValue: [widget.request.packageType],
                       items: [
                         MultiSelectItem('Mellem pakke', "Mellem pakke"),
                         MultiSelectItem('Stor pakke', "Stor pakke"),
@@ -102,19 +144,19 @@ class Details extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvornår skal du flytte?"),
+                  child: LabelInputField(text: "Hvornår skal du flytte?",controller: date,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvor skal du flytte fra?", maxLines: null,),
+                  child: LabelInputField(text: "Hvor skal du flytte fra?", maxLines: null,controller: fromAddress,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvor skal du flytte til?", maxLines: null,),
+                  child: LabelInputField(text: "Hvor skal du flytte til?", maxLines: null,controller: toAddress,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Er flyttedagen fleksibel?"),
+                  child: LabelInputField(text: "Er flyttedagen fleksibel?",controller: flexible,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
@@ -131,7 +173,7 @@ class Details extends StatelessWidget {
                       selectedChipColor: Theme.of(context).primaryColor,
                       selectedTextStyle: TextStyle(color: Colors.white),
                       scroll: false,
-                      initialValue: ['Ja'],
+                      initialValue: [widget.request.isPacking?"Ja":"Nej"],
                       items: [
                         MultiSelectItem('Ja', "Ja"),
                         MultiSelectItem('Nej', "Nej"),
@@ -154,7 +196,7 @@ class Details extends StatelessWidget {
                       selectedChipColor: Theme.of(context).primaryColor,
                       selectedTextStyle: TextStyle(color: Colors.white),
                       scroll: false,
-                      initialValue: ['Ja'],
+                      initialValue: [widget.request.isCleaning?"Ja":"Nej"],
                       items: [
                         MultiSelectItem('Ja', "Ja"),
                         MultiSelectItem('Nej', "Nej"),
@@ -177,7 +219,7 @@ class Details extends StatelessWidget {
                       selectedChipColor: Theme.of(context).primaryColor,
                       selectedTextStyle: TextStyle(color: Colors.white),
                       scroll: false,
-                      initialValue: ['Ja'],
+                      initialValue: [widget.request.isHeavy?"Ja":"Nej"],
                       items: [
                         MultiSelectItem('Ja', "Ja"),
                         MultiSelectItem('Nej', "Nej"),
@@ -188,7 +230,7 @@ class Details extends StatelessWidget {
 
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvis ja, hvor meget?"),
+                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: heavyCount,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
@@ -205,7 +247,7 @@ class Details extends StatelessWidget {
                       selectedChipColor: Theme.of(context).primaryColor,
                       selectedTextStyle: TextStyle(color: Colors.white),
                       scroll: false,
-                      initialValue: ['Ja'],
+                      initialValue: [widget.request.isBreakable?"Ja":"Nej"],
                       items: [
                         MultiSelectItem('Ja', "Ja"),
                         MultiSelectItem('Nej', "Nej"),
@@ -216,15 +258,15 @@ class Details extends StatelessWidget {
 
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvis ja, hvor meget?"),
+                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: breakCount,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Andre bemærkninger", maxLines: null,),
+                  child: LabelInputField(text: "Andre bemærkninger", maxLines: null,controller: others,),
                 ),
 
-
-                Padding(
+                if (widget.request.status == Filter.Pending)
+                  Padding(
                   padding: EdgeInsets.only(top: 45.h),
                   child: Row(
                     children: [

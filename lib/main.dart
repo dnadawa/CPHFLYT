@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       builder: ()=>MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => AuthService()),
-          Provider<DatabaseService>(create: (_)=>DatabaseService()),
+          ChangeNotifierProvider<DatabaseService>(create: (_)=>DatabaseService()),
           ChangeNotifierProvider<BottomNavController>(create: (_)=>BottomNavController()),
         ],
         child: MaterialApp(
