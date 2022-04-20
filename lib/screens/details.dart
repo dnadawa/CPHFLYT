@@ -3,6 +3,7 @@ import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
 import 'package:cphflyt/widgets/button.dart';
+import 'package:cphflyt/widgets/chip_field.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +12,17 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class Details extends StatefulWidget {
 
-  final RequestModel request;
+  final RequestModel? request;
+  final bool isAdd;
 
-  const Details({required this.request});
+  const Details({this.request, this.isAdd=false});
 
   @override
   State<Details> createState() => _DetailsState();
 }
 
 class _DetailsState extends State<Details> {
+  //when viewing
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
   TextEditingController telephone = TextEditingController();
@@ -32,21 +35,28 @@ class _DetailsState extends State<Details> {
   TextEditingController breakCount = TextEditingController();
   TextEditingController others = TextEditingController();
 
+  //when adding
+  TextEditingController fromAdd = TextEditingController();
+  TextEditingController fromZip = TextEditingController();
+  TextEditingController fromBy = TextEditingController();
+  TextEditingController toAdd = TextEditingController();
+  TextEditingController toZip = TextEditingController();
+  TextEditingController toBy = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-
-    firstName.text = widget.request.firstName;
-    lastName.text = widget.request.lastName;
-    telephone.text = widget.request.telePhone;
-    email.text = widget.request.email;
-    date.text = widget.request.date;
-    fromAddress.text = widget.request.fromAddress.getAddressAsString();
-    toAddress.text = widget.request.toAddress.getAddressAsString();
-    flexible.text = widget.request.flexible;
-    heavyCount.text = widget.request.heavyCount;
-    breakCount.text = widget.request.breakCount;
-    others.text = widget.request.others;
+    firstName.text = widget.request?.firstName ?? "";
+    lastName.text = widget.request?.lastName ?? "";
+    telephone.text = widget.request?.telePhone ?? "";
+    email.text = widget.request?.email ?? "";
+    date.text = widget.request?.date ?? "";
+    fromAddress.text = widget.request?.fromAddress.getAddressAsString() ?? "";
+    toAddress.text = widget.request?.toAddress.getAddressAsString() ?? "";
+    flexible.text = widget.request?.flexible ?? "";
+    heavyCount.text = widget.request?.heavyCount ?? "";
+    breakCount.text = widget.request?.breakCount ?? "";
+    others.text = widget.request?.others ?? "";
   }
 
   @override
@@ -54,7 +64,7 @@ class _DetailsState extends State<Details> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: CustomText(text: widget.request.id, fontSize: 22.sp, isBold: true,color: Colors.white,),
+        title: CustomText(text: widget.isAdd?"Add a New Task":widget.request!.id, fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
       body: Card(
         margin: EdgeInsets.all(20.w),
@@ -66,6 +76,7 @@ class _DetailsState extends State<Details> {
           padding: EdgeInsets.all(20.w),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 10.h,),
                 ///name
@@ -74,13 +85,13 @@ class _DetailsState extends State<Details> {
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(right: 15.w),
-                          child: LabelInputField(text: "Fornavn", controller: firstName,),
+                          child: LabelInputField(text: "Fornavn", controller: firstName,enabled: widget.isAdd,),
                         )
                     ),
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(left: 15.w),
-                          child: LabelInputField(text: "Efternavn", controller: lastName,),
+                          child: LabelInputField(text: "Efternavn", controller: lastName,enabled: widget.isAdd,),
                         )
                     ),
                   ],
@@ -88,184 +99,148 @@ class _DetailsState extends State<Details> {
 
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Tlf.Nr.",controller: telephone,),
+                  child: LabelInputField(text: "Tlf.Nr.",controller: telephone,enabled: widget.isAdd,keyBoardType: TextInputType.phone,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Mail",controller: email,),
+                  child: LabelInputField(text: "Mail",controller: email,enabled: widget.isAdd,keyBoardType: TextInputType.emailAddress,),
+                ),
+                ChipField(
+                  text: 'Privat eller erhverv?',
+                  initialValue: [widget.request?.type],
+                  items: [
+                    MultiSelectItem('Privat', "Privat"),
+                    MultiSelectItem('Erhverv', "Erhverv"),
+                  ],
+                ),
+                ChipField(
+                    text: 'Hvilken pakke ønsker du tilbud på?',
+                    initialValue: [widget.request?.packageType],
+                    items: [
+                      MultiSelectItem('Mellem pakke', "Mellem pakke"),
+                      MultiSelectItem('Stor pakke', "Stor pakke"),
+                      MultiSelectItem('Lille pakke', "Lille pakke"),
+                      MultiSelectItem('Lej flyttemænd', "Lej flyttemænd"),
+                    ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: MultiSelectChipField(
-                      searchable: false,
-                      title: Text('Privat eller erhverv?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
-                      chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).primaryColor,width: 3),
-                          borderRadius: BorderRadius.circular(8.r)
-                      ),
-                      selectedChipColor: Theme.of(context).primaryColor,
-                      selectedTextStyle: TextStyle(color: Colors.white),
-                      scroll: false,
-                      initialValue: [widget.request.type],
-                      items: [
-                        MultiSelectItem('Privat', "Privat"),
-                        MultiSelectItem('Erhverv', "Erhverv"),
-                      ],
-                    ),
-                  ),
+                  child: LabelInputField(text: "Hvornår skal du flytte?",controller: date,enabled: widget.isAdd,),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: MultiSelectChipField(
-                      searchable: false,
-                      title: Text('Hvilken pakke ønsker du tilbud på?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 16.sp),),
-                      chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).primaryColor,width: 3),
-                          borderRadius: BorderRadius.circular(8.r)
-                      ),
-                      selectedChipColor: Theme.of(context).primaryColor,
-                      selectedTextStyle: TextStyle(color: Colors.white),
-                      scroll: false,
-                      initialValue: [widget.request.packageType],
-                      items: [
-                        MultiSelectItem('Mellem pakke', "Mellem pakke"),
-                        MultiSelectItem('Stor pakke', "Stor pakke"),
-                        MultiSelectItem('Lille pakke', "Lille pakke"),
-                        MultiSelectItem('Lej flyttemænd', "Lej flyttemænd"),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvornår skal du flytte?",controller: date,),
-                ),
-                Padding(
+
+                //show only when adding
+                if(!widget.isAdd)
+                  Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvor skal du flytte fra?", maxLines: null,controller: fromAddress,),
                 ),
-                Padding(
+                if(!widget.isAdd)
+                  Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvor skal du flytte til?", maxLines: null,controller: toAddress,),
                 ),
+
+                //show only when viewing
+                /// FROM ADDRESS
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 25.h),
+                    child: CustomText(text: "Hvor skal du flytte fra?",isBold: true),
+                  ),
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "Adresse",controller: fromAdd,enabled: widget.isAdd,),
+                  ),
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "Postnummer",controller: fromZip,enabled: widget.isAdd,),
+                  ),
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "By",controller: fromBy,enabled: widget.isAdd,),
+                  ),
+
+
+                /// TO ADDRESS
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 25.h),
+                    child: CustomText(text: "Hvor skal du flytte til?",isBold: true),
+                  ),
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "Adresse",controller: toAdd,enabled: widget.isAdd,),
+                  ),
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "Postnummer",controller: toZip,enabled: widget.isAdd,),
+                  ),
+                if(widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "By",controller: toBy,enabled: widget.isAdd,),
+                  ),
+
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Er flyttedagen fleksibel?",controller: flexible,),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: MultiSelectChipField(
-                      searchable: false,
-                      title: Text('Skal flyttefirmaet stå for nedpakning af dine ting?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 12.sp),),
-                      chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).primaryColor,width: 3),
-                          borderRadius: BorderRadius.circular(8.r)
-                      ),
-                      selectedChipColor: Theme.of(context).primaryColor,
-                      selectedTextStyle: TextStyle(color: Colors.white),
-                      scroll: false,
-                      initialValue: [widget.request.isPacking?"Ja":"Nej"],
-                      items: [
-                        MultiSelectItem('Ja', "Ja"),
-                        MultiSelectItem('Nej', "Nej"),
-                      ],
-                    ),
-                  ),
+                ChipField(
+                  text: 'Skal flyttefirmaet stå for nedpakning af dine ting?',
+                  initialValue: widget.isAdd?null:[widget.request!.isPacking?"Ja":"Nej"],
+                  fontSize: 12.sp,
+                  items: [
+                    MultiSelectItem('Ja', "Ja"),
+                    MultiSelectItem('Nej', "Nej"),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: MultiSelectChipField(
-                      searchable: false,
-                      title: Text('Vil du have flytterengøring i din nuværende bolig?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 12.sp),),
-                      chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).primaryColor,width: 3),
-                          borderRadius: BorderRadius.circular(8.r)
-                      ),
-                      selectedChipColor: Theme.of(context).primaryColor,
-                      selectedTextStyle: TextStyle(color: Colors.white),
-                      scroll: false,
-                      initialValue: [widget.request.isCleaning?"Ja":"Nej"],
-                      items: [
-                        MultiSelectItem('Ja', "Ja"),
-                        MultiSelectItem('Nej', "Nej"),
-                      ],
-                    ),
-                  ),
+                ChipField(
+                  text: 'Vil du have flytterengøring i din nuværende bolig?',
+                  initialValue:  widget.isAdd?null:[widget.request!.isCleaning?"Ja":"Nej"],
+                  fontSize: 12.sp,
+                  items: [
+                    MultiSelectItem('Ja', "Ja"),
+                    MultiSelectItem('Nej', "Nej"),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: MultiSelectChipField(
-                      searchable: false,
-                      title: Text('Skal der flyttes særligt tungt inventar?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 16.sp),),
-                      chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).primaryColor,width: 3),
-                          borderRadius: BorderRadius.circular(8.r)
-                      ),
-                      selectedChipColor: Theme.of(context).primaryColor,
-                      selectedTextStyle: TextStyle(color: Colors.white),
-                      scroll: false,
-                      initialValue: [widget.request.isHeavy?"Ja":"Nej"],
-                      items: [
-                        MultiSelectItem('Ja', "Ja"),
-                        MultiSelectItem('Nej', "Nej"),
-                      ],
-                    ),
-                  ),
+                ChipField(
+                  text: 'Skal der flyttes særligt tungt inventar?',
+                  initialValue: widget.isAdd?null:[widget.request!.isHeavy?"Ja":"Nej"],
+                  items: [
+                    MultiSelectItem('Ja', "Ja"),
+                    MultiSelectItem('Nej', "Nej"),
+                  ],
                 ),
 
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: heavyCount,),
+                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: heavyCount,enabled: widget.isAdd,keyBoardType: TextInputType.number,),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: MultiSelectChipField(
-                      searchable: false,
-                      title: Text('Skal der flyttes inventar som nemt kan gå i stykker?',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 12.sp),),
-                      chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Theme.of(context).primaryColor,width: 3),
-                          borderRadius: BorderRadius.circular(8.r)
-                      ),
-                      selectedChipColor: Theme.of(context).primaryColor,
-                      selectedTextStyle: TextStyle(color: Colors.white),
-                      scroll: false,
-                      initialValue: [widget.request.isBreakable?"Ja":"Nej"],
-                      items: [
-                        MultiSelectItem('Ja', "Ja"),
-                        MultiSelectItem('Nej', "Nej"),
-                      ],
-                    ),
-                  ),
+                ChipField(
+                  text: 'Skal der flyttes inventar som nemt kan gå i stykker?',
+                  initialValue: widget.isAdd?null:[widget.request!.isBreakable?"Ja":"Nej"],
+                  fontSize: 12.sp,
+                  items: [
+                    MultiSelectItem('Ja', "Ja"),
+                    MultiSelectItem('Nej', "Nej"),
+                  ],
                 ),
 
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: breakCount,),
+                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: breakCount,enabled: widget.isAdd,keyBoardType: TextInputType.number,),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Andre bemærkninger", maxLines: null,controller: others,),
+                  child: LabelInputField(text: "Andre bemærkninger", maxLines: null,controller: others,enabled: widget.isAdd,),
                 ),
 
-                if (widget.request.status == Filter.Pending)
+                if (!widget.isAdd && widget.request!.status == Filter.Pending)
                   Padding(
                   padding: EdgeInsets.only(top: 45.h),
                   child: Row(
@@ -287,6 +262,16 @@ class _DetailsState extends State<Details> {
                     ],
                   ),
                 ),
+
+                if (widget.isAdd)
+                  Padding(
+                    padding: EdgeInsets.only(top: 45.h),
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: Button(color: kApproved, text: "Add Task", onPressed: (){}
+                        )
+                    ),
+                  ),
               ],
             ),
           ),

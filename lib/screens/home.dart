@@ -62,7 +62,12 @@ class Home extends StatelessWidget {
 
             if(navController.getSelectedNavItem() == Nav.Manual)
             ElevatedButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(builder: (context) => Details(isAdd: true,)),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.r)
