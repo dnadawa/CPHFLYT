@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cphflyt/controllers/bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
+import 'package:cphflyt/screens/details.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/bottom_nav_bar.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
@@ -11,17 +14,12 @@ import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
 
-import '../bottom_nav_controller.dart';
-import 'details.dart';
-
 class Home extends StatelessWidget {
-
-  Filter _filter = Filter.Pending;
-  int filterSelectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     var databaseService = Provider.of<DatabaseService>(context);
     var navController = Provider.of<BottomNavController>(context);
+    var filterController = Provider.of<FilterController>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +31,8 @@ class Home extends StatelessWidget {
         child: Column(
           children: [
             ToggleSwitch(
-                initialLabelIndex: filterSelectedIndex,
+                initialLabelIndex: filterController.getFilter()==Filter.Pending?0:
+                                   filterController.getFilter()==Filter.Approved?1:2,
                 activeFgColor: Colors.white,
                 inactiveBgColor: Color(0xffE6E6E6),
                 inactiveFgColor: Color(0xff747474),
@@ -49,19 +48,13 @@ class Home extends StatelessWidget {
                 minWidth: 110.w,
                 onToggle: (index) async {
                   if (index==0){
-                    filterSelectedIndex = 0;
-                    _filter = Filter.Pending;
-                    databaseService.updateData();
+                    filterController.setFilter(Filter.Pending);
                   }
                   else if (index==1){
-                    filterSelectedIndex = 1;
-                    _filter = Filter.Approved;
-                    databaseService.updateData();
+                    filterController.setFilter(Filter.Approved);
                   }
                   else {
-                    filterSelectedIndex = 2;
-                    _filter = Filter.Trash;
-                    databaseService.updateData();
+                    filterController.setFilter(Filter.Trash);
                   }
                 },
               ),
@@ -94,7 +87,7 @@ class Home extends StatelessWidget {
 
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getRequests(filter: _filter, from: navController.getSelectedNavItem()),
+                stream: databaseService.getRequests(filter: filterController.getFilter(), from: navController.getSelectedNavItem()),
                 builder: (BuildContext context, snapshot){
                   if(!snapshot.hasData){
                     return Center(child: CircularProgressIndicator());

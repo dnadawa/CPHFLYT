@@ -1,17 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cphflyt/bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:flutter/cupertino.dart';
 
-enum Filter {Pending, Approved, Trash}
-
 class DatabaseService extends ChangeNotifier{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  void updateData(){
-    notifyListeners();
-  }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website}) {
     if (filter == Filter.Pending && from == Nav.Website){

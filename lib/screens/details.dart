@@ -1,7 +1,7 @@
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
-import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
@@ -13,7 +13,7 @@ class Details extends StatefulWidget {
 
   final RequestModel request;
 
-  Details({required this.request});
+  const Details({required this.request});
 
   @override
   State<Details> createState() => _DetailsState();

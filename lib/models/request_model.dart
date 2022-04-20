@@ -1,5 +1,5 @@
+import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
-import 'package:cphflyt/services/database_service.dart';
 
 class RequestModel {
 

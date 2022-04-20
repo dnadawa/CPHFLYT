@@ -1,4 +1,4 @@
-import 'package:cphflyt/bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
