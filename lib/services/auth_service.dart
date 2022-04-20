@@ -36,8 +36,27 @@ class AuthService {
             }
         }
         catch (e){
-            ToastBar(text: 'Something went wrong!', color: Colors.red).show();
+            ToastBar(text: e.toString(), color: Colors.red).show();
         }
     }
 
+    Future<User?>? signUp(String email, String password) async {
+        try {
+            final credential = await _auth.createUserWithEmailAndPassword(
+                email: email,
+                password: password,
+            );
+
+            return _userFromFirebase(credential.user);
+
+        } on auth.FirebaseAuthException catch (e) {
+            if (e.code == 'weak-password') {
+                ToastBar(text: 'The password provided is too weak.', color: Colors.red).show();
+            } else if (e.code == 'email-already-in-use') {
+                ToastBar(text: 'The account already exists for that email.', color: Colors.red).show();
+            }
+        } catch (e) {
+            ToastBar(text: e.toString(), color: Colors.red).show();
+        }
+    }
 }

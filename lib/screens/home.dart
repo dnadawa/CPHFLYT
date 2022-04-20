@@ -31,8 +31,8 @@ class Home extends StatelessWidget {
         child: Column(
           children: [
             ToggleSwitch(
-                initialLabelIndex: filterController.getFilter()==Filter.Pending?0:
-                                   filterController.getFilter()==Filter.Approved?1:2,
+                initialLabelIndex: filterController.filter==Filter.Pending?0:
+                                   filterController.filter==Filter.Approved?1:2,
                 activeFgColor: Colors.white,
                 inactiveBgColor: Color(0xffE6E6E6),
                 inactiveFgColor: Color(0xff747474),
@@ -48,19 +48,19 @@ class Home extends StatelessWidget {
                 minWidth: 110.w,
                 onToggle: (index) async {
                   if (index==0){
-                    filterController.setFilter(Filter.Pending);
+                    filterController.filter = Filter.Pending;
                   }
                   else if (index==1){
-                    filterController.setFilter(Filter.Approved);
+                    filterController.filter = Filter.Approved;
                   }
                   else {
-                    filterController.setFilter(Filter.Trash);
+                    filterController.filter = Filter.Trash;
                   }
                 },
               ),
             SizedBox(height: 30.h,),
 
-            if(navController.getSelectedNavItem() == Nav.Manual)
+            if(navController.navItem == Nav.Manual)
             ElevatedButton(
                   onPressed: (){
                     Navigator.push(
@@ -87,12 +87,12 @@ class Home extends StatelessWidget {
                     ),
                   ),
             ),
-            if(navController.getSelectedNavItem() == Nav.Manual)
+            if(navController.navItem == Nav.Manual)
             SizedBox(height: 30.h,),
 
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getRequests(filter: filterController.getFilter(), from: navController.getSelectedNavItem()),
+                stream: databaseService.getRequests(filter: filterController.filter, from: navController.navItem),
                 builder: (BuildContext context, snapshot){
                   if(!snapshot.hasData){
                     return Center(child: CircularProgressIndicator());

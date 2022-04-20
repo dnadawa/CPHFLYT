@@ -6,11 +6,11 @@ class FilterController extends ChangeNotifier {
 
   Filter _selected = Filter.Pending;
 
-  Filter getFilter(){
+  Filter get filter{
     return _selected;
   }
 
-  void setFilter(Filter filter){
+  set filter(Filter filter){
     _selected = filter;
     notifyListeners();
   }

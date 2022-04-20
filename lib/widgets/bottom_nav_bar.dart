@@ -16,18 +16,18 @@ class BottomNavBar extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             onTap: (){
-                controller.setSelectedNavItem(Nav.Website);
+                controller.navItem = Nav.Website;
             },
             child: Container(
-              color: controller.getSelectedNavItem()==Nav.Website?kLightBlue:Colors.white,
+              color: controller.navItem == Nav.Website?kLightBlue:Colors.white,
               child: Padding(
                 padding: EdgeInsets.all(7.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.dynamic_feed,size: 25.h,color: controller.getSelectedNavItem()==Nav.Website?Colors.white:Theme.of(context).primaryColor,),
+                    Icon(Icons.dynamic_feed,size: 25.h,color: controller.navItem==Nav.Website?Colors.white:Theme.of(context).primaryColor,),
                     SizedBox(width: 15.w,),
-                    CustomText(text: "Website\nTasks",fontSize: 18.sp,color: controller.getSelectedNavItem()==Nav.Website?Colors.white:Theme.of(context).primaryColor,)
+                    CustomText(text: "Website\nTasks",fontSize: 18.sp,color: controller.navItem==Nav.Website?Colors.white:Theme.of(context).primaryColor,)
                   ],
                 ),
               ),
@@ -38,18 +38,18 @@ class BottomNavBar extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             onTap: (){
-              controller.setSelectedNavItem(Nav.Manual);
+              controller.navItem = Nav.Manual;
             },
             child: Container(
-              color: controller.getSelectedNavItem()==Nav.Manual?kLightBlue:Colors.white,
+              color: controller.navItem==Nav.Manual?kLightBlue:Colors.white,
               child: Padding(
                 padding: EdgeInsets.all(7.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.create_new_folder_outlined,size: 25.h,color: controller.getSelectedNavItem()==Nav.Manual?Colors.white:Theme.of(context).primaryColor,),
+                    Icon(Icons.create_new_folder_outlined,size: 25.h,color: controller.navItem==Nav.Manual?Colors.white:Theme.of(context).primaryColor,),
                     SizedBox(width: 15.w,),
-                    CustomText(text: "Manual\nTasks",fontSize: 18.sp,color: controller.getSelectedNavItem()==Nav.Manual?Colors.white:Theme.of(context).primaryColor,)
+                    CustomText(text: "Manual\nTasks",fontSize: 18.sp,color: controller.navItem==Nav.Manual?Colors.white:Theme.of(context).primaryColor,)
                   ],
                 ),
               ),

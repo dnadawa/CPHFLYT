@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
+import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/request_model.dart';
+import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class DatabaseService extends ChangeNotifier{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -56,6 +59,23 @@ class DatabaseService extends ChangeNotifier{
       );
 
       return requestModel;
+  }
+
+  Future<bool> addDriver(Driver driver) async {
+    try{
+      await _firestore.collection('drivers').doc(driver.uid).set({
+        'email': driver.email,
+        'name': driver.name,
+        'id': driver.uid
+      });
+
+      ToastBar(text: "Driver Successfully added!", color: Colors.green).show();
+      return true;
+    }
+    catch(e){
+      ToastBar(text: e.toString(), color: Colors.red).show();
+      return false;
+    }
   }
 
 }

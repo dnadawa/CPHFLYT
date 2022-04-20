@@ -6,11 +6,11 @@ class BottomNavController extends ChangeNotifier {
 
     Nav _selected = Nav.Website;
 
-    Nav getSelectedNavItem(){
+    Nav get navItem{
       return _selected;
     }
 
-    void setSelectedNavItem(Nav nav){
+    set navItem(Nav nav){
         _selected = nav;
         notifyListeners();
     }
