@@ -107,13 +107,59 @@ class _DetailsState extends State<Details> {
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Mail",controller: email,enabled: widget.isAdd,keyBoardType: TextInputType.emailAddress,),
                 ),
-                ChipField(
-                  text: 'Privat eller erhverv?',
-                  initialValue: [widget.request?.type],
-                  items: [
-                    MultiSelectItem('Privat', "Privat"),
-                    MultiSelectItem('Erhverv', "Erhverv"),
-                  ],
+                Padding(
+                  padding: EdgeInsets.only(top: 25.h),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
+                      color: Color(0xff1470AF),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(10.h),
+                      child: Text("Privat eller erhverv?",
+                        style: TextStyle(
+                            color: Colors.white
+                        ),
+                      ),
+                    ),
+                    width: double.infinity,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
+                    border: Border.all(color: Color(0xff5B9AC6),width: 4),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xff1470AF),width: 2),
+                          color: Color(0xff1470AF),
+                        ),
+                        margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 30.w),
+                          child: Text("Privat",
+                            style: TextStyle(
+                                color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xff5B9AC6),width: 2),
+                        ),
+                        margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 30.w),
+                          child: Text("Erhverv"),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 ChipField(
                     text: 'Hvilken pakke ønsker du tilbud på?',
