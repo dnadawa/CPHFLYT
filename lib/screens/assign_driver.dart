@@ -1,20 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/controllers/driver_assign_controller.dart';
+import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class AssignDriver extends StatefulWidget {
+class AssignDriver extends StatelessWidget {
 
-  @override
-  State<AssignDriver> createState() => _AssignDriverState();
-}
+  final String requestID;
 
-class _AssignDriverState extends State<AssignDriver> {
-  int? selectedDriver;
+  const AssignDriver({required this.requestID});
 
   @override
   Widget build(BuildContext context) {
+    var controller = Provider.of<DriverAssignController>(context);
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.r)
@@ -44,49 +47,57 @@ class _AssignDriverState extends State<AssignDriver> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.all(15.w),
-                  child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: 10,
-                    itemBuilder: (context, i){
-                      return GestureDetector(
-                        onTap: (){
-                          setState(() {
-                              selectedDriver = i;
-                          });
-                        },
-                        child: Card(
-                          elevation: 8,
-                          margin: EdgeInsets.only(bottom: 15.h),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.horizontal(left: Radius.circular(10.r)),
-                                    color: kLightBlue,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(15.w),
-                                    child: Visibility(
-                                        visible: selectedDriver==i,
-                                        maintainAnimation: true,
-                                        maintainState: true,
-                                        maintainSize: true,
-                                        child: Icon(Icons.check_box, color: Colors.white,)
+                  child: FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>(
+                    future: controller.getDrivers(context),
+                    builder: (context, snapshot){
+                      if (snapshot.hasData){
+                        return ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: snapshot.data?.length,
+                          itemBuilder: (context, i){
+
+                            Driver driver = controller.createDriverFromDocument(snapshot.data![i]);
+
+                            return GestureDetector(
+                              onTap: ()=>controller.selectedDriver = driver.uid,
+                              child: Card(
+                                elevation: 8,
+                                margin: EdgeInsets.only(bottom: 15.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.horizontal(left: Radius.circular(10.r)),
+                                          color: kLightBlue,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(15.w),
+                                          child: Visibility(
+                                              visible: controller.selectedDriver==driver.uid,
+                                              maintainAnimation: true,
+                                              maintainState: true,
+                                              maintainSize: true,
+                                              child: Icon(Icons.check_box, color: Colors.white,)
+                                          ),
+                                        )
                                     ),
-                                  )
+                                    SizedBox(width: 20.w),
+                                    CustomText(
+                                      text: driver.name,
+                                      fontSize: 18.sp,
+                                    )
+                                  ],
+                                ),
                               ),
-                              SizedBox(width: 20.w),
-                              CustomText(
-                                text: "Saman Kumara",
-                                fontSize: 18.sp,
-                              )
-                            ],
-                          ),
-                        ),
-                      );
+                            );
+                          },
+                        );
+                      }
+
+                      return Center(child: CircularProgressIndicator());
                     },
                   ),
                 ),
@@ -97,7 +108,7 @@ class _AssignDriverState extends State<AssignDriver> {
                 child: Button(
                     color: kApproved,
                     text: "Assign",
-                    onPressed: (){}
+                    onPressed: ()=>controller.assignDriver(controller.selectedDriver, requestID, context)
                 ),
               ),
           ],

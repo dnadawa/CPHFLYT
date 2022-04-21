@@ -5,7 +5,6 @@ import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/widgets/toast.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseService extends ChangeNotifier{
@@ -76,6 +75,24 @@ class DatabaseService extends ChangeNotifier{
       ToastBar(text: e.toString(), color: Colors.red).show();
       return false;
     }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getDrivers() async {
+    var sub = await _firestore.collection('drivers').get();
+    return sub.docs;
+  }
+
+  assignDriver(String? uid, String requestID) async {
+    await _firestore.collection('requests').doc(requestID).update({
+      'driver': uid,
+      'status': 'approved'
+    });
+  }
+
+  trashRequest(String requestID) async {
+    await _firestore.collection('requests').doc(requestID).update({
+      'status': 'trash'
+    });
   }
 
 }

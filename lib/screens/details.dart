@@ -1,4 +1,5 @@
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/controllers/driver_assign_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
@@ -9,6 +10,7 @@ import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:provider/provider.dart';
 
 class Details extends StatefulWidget {
 
@@ -246,18 +248,24 @@ class _DetailsState extends State<Details> {
                   child: Row(
                     children: [
                       Expanded(
-                          child: Button(color: kApproved, text: "Approve", onPressed: (){}),
+                          child: Button(color: kApproved, text: "Approve", onPressed: ()=>showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AssignDriver(requestID: widget.request!.id))
+                          ),
                       ),
                       SizedBox(width: 30.w),
                       Expanded(
                         child: Button(color: kDeclined, text: "Decline", onPressed: (){
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context){
-                              return AssignDriver();
-                            }
-                          );
-                        }),
+                          showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(
+                              content: CustomText(text: "Are you sure you want to decline this request?"),
+                              actions: [
+                                TextButton(onPressed: ()=>Provider.of<DriverAssignController>(context, listen: false).trashRequest(widget.request!.id, context), child: CustomText(text: "Yes")),
+                                TextButton(onPressed: ()=>Navigator.pop(context), child: CustomText(text: "No")),
+                              ],
+                            );
+                          });
+                        })
                       ),
                     ],
                   ),

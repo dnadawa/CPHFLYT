@@ -1,4 +1,5 @@
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/driver_assign_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/screens/details.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider<BottomNavController>(create: (_)=>BottomNavController()),
           ChangeNotifierProvider<FilterController>(create: (_)=>FilterController()),
           ChangeNotifierProvider<UserManagementController>(create: (_)=>UserManagementController()),
+          ChangeNotifierProvider<DriverAssignController>(create: (_)=>DriverAssignController()),
         ],
         child: MaterialApp(
           theme: ThemeData(
@@ -46,7 +48,7 @@ class MyApp extends StatelessWidget {
               color: Color(0xff105A8C)
             )
           ),
-          home: UserManagement(),
+          home: Wrapper(),
         ),
       ),
     );
