@@ -107,14 +107,6 @@ class _DetailsState extends State<Details> {
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Mail",controller: email,enabled: widget.isAdd,keyBoardType: TextInputType.emailAddress,),
                 ),
-                // ChipField(
-                //   text: 'Privat eller erhverv?',
-                //   initialValue: [widget.request?.type],
-                //   items: [
-                //     MultiSelectItem('Privat', "Privat"),
-                //     MultiSelectItem('Erhverv', "Erhverv"),
-                //   ],
-                // ),
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: Container(
