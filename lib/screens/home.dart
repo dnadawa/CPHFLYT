@@ -6,6 +6,7 @@ import 'package:cphflyt/screens/details.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/bottom_nav_bar.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
+import 'package:cphflyt/widgets/drawer.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class Home extends StatelessWidget {
         centerTitle: true,
         title: CustomText(text: "Home", fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
+      drawer: AppDrawer("home"),
       body: Padding(
         padding: EdgeInsets.all(20.w),
         child: Column(

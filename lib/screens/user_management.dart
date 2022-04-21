@@ -2,6 +2,7 @@ import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
+import 'package:cphflyt/widgets/drawer.dart';
 import 'package:cphflyt/widgets/input_field.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class UserManagement extends StatelessWidget {
         centerTitle: true,
         title: CustomText(text: "User Management", fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
+      drawer: AppDrawer("user-management"),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(25.w),
