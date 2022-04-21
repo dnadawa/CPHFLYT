@@ -43,7 +43,7 @@ class DatabaseService extends ChangeNotifier{
           email: doc['email'],
           type: doc['type'],
           packageType: doc['package'],
-          date: "${doc['dateYear']}-${doc['dateMonth']}-${doc['dateDay']}",
+          date: "${doc['dateDay']}.${doc['dateMonth']} ${doc['dateYear']}",
           flexible: doc['flexible'],
           isPacking: doc['isUnpack'] == 'Ja',
           isCleaning: doc['isCleaning'] == 'Ja',

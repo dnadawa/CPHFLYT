@@ -3,12 +3,15 @@ import 'package:cphflyt/controllers/driver_assign_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
+import 'package:cphflyt/widgets/add_chip_field.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/chip_field.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -99,89 +102,70 @@ class _DetailsState extends State<Details> {
                   ],
                 ),
 
+                ///telephone
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Tlf.Nr.",controller: telephone,enabled: widget.isAdd,keyBoardType: TextInputType.phone,),
                 ),
+
+                ///email
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Mail",controller: email,enabled: widget.isAdd,keyBoardType: TextInputType.emailAddress,),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                      color: Color(0xff1470AF),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(10.h),
-                      child: Text("Privat eller erhverv?",
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                      ),
-                    ),
-                    width: double.infinity,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                    border: Border.all(color: Color(0xff5B9AC6),width: 4),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xff1470AF),width: 2),
-                          color: Color(0xff1470AF),
-                        ),
-                        margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 30.w),
-                          child: Text("Privat",
-                            style: TextStyle(
-                                color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xff5B9AC6),width: 2),
-                        ),
-                        margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 30.w),
-                          child: Text("Erhverv"),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                ChipField(
+
+                ///type
+                widget.isAdd?
+                  AddChipField(
                     text: 'Hvilken pakke ønsker du tilbud på?',
-                    initialValue: [widget.request?.packageType],
                     items: [
-                      MultiSelectItem('Mellem pakke', "Mellem pakke"),
-                      MultiSelectItem('Stor pakke', "Stor pakke"),
-                      MultiSelectItem('Lille pakke', "Lille pakke"),
-                      MultiSelectItem('Lej flyttemænd', "Lej flyttemænd"),
+                      'Mellem pakke',
+                      'Stor pakke',
+                      'Lille pakke',
+                      'Lej flyttemænd'
                     ],
-                ),
+                    onChanged: (value){},
+                  ):
+                  ChipField(
+                      text: 'Hvilken pakke ønsker du tilbud på?',
+                      initialValue: [widget.request?.packageType],
+                      items: [
+                        MultiSelectItem('Mellem pakke', "Mellem pakke"),
+                        MultiSelectItem('Stor pakke', "Stor pakke"),
+                        MultiSelectItem('Lille pakke', "Lille pakke"),
+                        MultiSelectItem('Lej flyttemænd', "Lej flyttemænd"),
+                      ],
+                  ),
+
+                ///date
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvornår skal du flytte?",controller: date,enabled: widget.isAdd,),
+                  child: GestureDetector(
+                      onTap: () async {
+                        if (widget.isAdd){
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2021, 1, 1),
+                              lastDate: DateTime(2023, 12, 31),
+                          );
+
+                          await initializeDateFormatting('da_DK');
+                          date.text = DateFormat.yMMMMd('da_DK').format(pickedDate!);
+                        }
+                      },
+                      child: LabelInputField(text: "Hvornår skal du flytte?",controller: date,)),
                 ),
 
                 //show only when adding
+                ///from address
                 if(!widget.isAdd)
                   Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvor skal du flytte fra?", maxLines: null,controller: fromAddress,),
                 ),
+
+                ///to address
                 if(!widget.isAdd)
                   Padding(
                   padding: EdgeInsets.only(top: 25.h),
@@ -234,44 +218,105 @@ class _DetailsState extends State<Details> {
                     child: LabelInputField(text: "By",controller: toBy,enabled: widget.isAdd,),
                   ),
 
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Er flyttedagen fleksibel?",controller: flexible,),
-                ),
-                ChipField(
+                ///flexible
+                widget.isAdd?
+                  AddChipField(
+                    text: 'Er flyttedagen fleksibel?',
+                    items: [
+                      '3 dage',
+                      '1 dag',
+                      '2 dage',
+                      '4 dage',
+                      '5 dage',
+                      '1 uge+',
+                      'Nej',
+                    ],
+                    onChanged: (value){},
+                  ):
+                  Padding(
+                    padding: EdgeInsets.only(top: 25.h),
+                    child: LabelInputField(text: "Er flyttedagen fleksibel?",controller: flexible,),
+                  ),
+
+
+                ///isPacking
+                widget.isAdd?
+                  AddChipField(
+                    text: 'Skal flyttefirmaet stå for nedpakning af dine ting?',
+                    items: [
+                      'Ja',
+                      'Nej'
+                    ],
+                    onChanged: (value){},
+                  ):
+                  ChipField(
                   text: 'Skal flyttefirmaet stå for nedpakning af dine ting?',
-                  initialValue: widget.isAdd?null:[widget.request!.isPacking?"Ja":"Nej"],
+                  initialValue: [widget.request!.isPacking?"Ja":"Nej"],
                   fontSize: 12.sp,
-                  items: [
-                    MultiSelectItem('Ja', "Ja"),
-                    MultiSelectItem('Nej', "Nej"),
-                  ],
-                ),
-                ChipField(
-                  text: 'Vil du have flytterengøring i din nuværende bolig?',
-                  initialValue:  widget.isAdd?null:[widget.request!.isCleaning?"Ja":"Nej"],
-                  fontSize: 12.sp,
-                  items: [
-                    MultiSelectItem('Ja', "Ja"),
-                    MultiSelectItem('Nej', "Nej"),
-                  ],
-                ),
-                ChipField(
-                  text: 'Skal der flyttes særligt tungt inventar?',
-                  initialValue: widget.isAdd?null:[widget.request!.isHeavy?"Ja":"Nej"],
                   items: [
                     MultiSelectItem('Ja', "Ja"),
                     MultiSelectItem('Nej', "Nej"),
                   ],
                 ),
 
+                ///isCleaning
+                widget.isAdd?
+                  AddChipField(
+                    text: 'Vil du have flytterengøring i din nuværende bolig?',
+                    items: [
+                      'Ja',
+                      'Nej'
+                    ],
+                    onChanged: (value){},
+                  ):
+                  ChipField(
+                  text: 'Vil du have flytterengøring i din nuværende bolig?',
+                  initialValue:  [widget.request!.isCleaning?"Ja":"Nej"],
+                  fontSize: 12.sp,
+                  items: [
+                    MultiSelectItem('Ja', "Ja"),
+                    MultiSelectItem('Nej', "Nej"),
+                  ],
+                ),
+
+                ///isHeavy
+                widget.isAdd?
+                  AddChipField(
+                    text: 'Skal der flyttes særligt tungt inventar?',
+                    items: [
+                      'Ja',
+                      'Nej'
+                    ],
+                    onChanged: (value){},
+                  ):
+                  ChipField(
+                  text: 'Skal der flyttes særligt tungt inventar?',
+                  initialValue: [widget.request!.isHeavy?"Ja":"Nej"],
+                  items: [
+                    MultiSelectItem('Ja', "Ja"),
+                    MultiSelectItem('Nej', "Nej"),
+                  ],
+                ),
+
+                ///heavy count
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvis ja, hvor meget?",controller: heavyCount,enabled: widget.isAdd,keyBoardType: TextInputType.number,),
                 ),
-                ChipField(
+
+                ///isBreakable
+                widget.isAdd?
+                  AddChipField(
+                    text: 'Skal der flyttes inventar som nemt kan gå i stykker?',
+                    items: [
+                      'Ja',
+                      'Nej'
+                    ],
+                    onChanged: (value){},
+                  ):
+                  ChipField(
                   text: 'Skal der flyttes inventar som nemt kan gå i stykker?',
-                  initialValue: widget.isAdd?null:[widget.request!.isBreakable?"Ja":"Nej"],
+                  initialValue: [widget.request!.isBreakable?"Ja":"Nej"],
                   fontSize: 12.sp,
                   items: [
                     MultiSelectItem('Ja', "Ja"),
@@ -279,10 +324,13 @@ class _DetailsState extends State<Details> {
                   ],
                 ),
 
+                ///break count
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvis ja, hvor meget?",controller: breakCount,enabled: widget.isAdd,keyBoardType: TextInputType.number,),
                 ),
+
+                ///others
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Andre bemærkninger", maxLines: null,controller: others,enabled: widget.isAdd,),
@@ -322,7 +370,12 @@ class _DetailsState extends State<Details> {
                     padding: EdgeInsets.only(top: 45.h),
                     child: SizedBox(
                         width: double.infinity,
-                        child: Button(color: kApproved, text: "Add Task", onPressed: (){}
+                        child: Button(
+                            color: kApproved,
+                            text: "Add Task",
+                            onPressed: (){
+
+                            }
                         )
                     ),
                   ),
