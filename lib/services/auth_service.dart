@@ -7,7 +7,6 @@ import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AuthService {
 
@@ -25,7 +24,27 @@ class AuthService {
         return _auth.authStateChanges().map(_userFromFirebase);
     }
 
-    signIn(String email, String password, UserManagementController userManagement) async {
+    setUserType(String? uid, UserManagementController userManagement, BottomNavController bottomNavController) async {
+        DocumentSnapshot userData = await DatabaseService().getUserDataFromFirebase(uid!);
+
+        if (userData.exists && userData.get('role') == 'admin') {
+            userManagement.loggedInUserType = UserType.Employee;
+            Employee employee = Employee(uid: uid, email: userData.get('email'), name: userData.get('name'), page: userData.get('page') == 'website' ? Nav.Website : Nav.Manual);
+            userManagement.loggedInEmployee = employee;
+            bottomNavController.navItem = userData.get('page') == 'website' ? Nav.Website : Nav.Manual;
+            ToastBar(text: "Login Successful!", color: Colors.green).show();
+        }
+        else if (userData.exists && userData.get('role') == 'main-admin'){
+            userManagement.loggedInUserType = UserType.SuperAdmin;
+            ToastBar(text: "Login Successful!", color: Colors.green).show();
+        }
+        else {
+            signOut();
+            ToastBar(text: "Access Denied!", color: Colors.red).show();
+        }
+    }
+
+    signIn(String email, String password, UserManagementController userManagement, BottomNavController bottomNavController) async {
         try {
             final credential = await _auth.signInWithEmailAndPassword(
                 email: email,
@@ -33,18 +52,7 @@ class AuthService {
             );
 
             String? uid = credential.user?.uid;
-            DocumentSnapshot userData = await DatabaseService().getUserDataFromFirebase(uid!);
-
-            if (userData.exists && userData.get('role') == 'admin') {
-                userManagement.loggedInUserType = UserType.Employee;
-                Employee employee = Employee(uid: uid, email: email, name: userData.get('name'), page: userData.get('page') == 'website' ? Nav.Website : Nav.Manual);
-                userManagement.loggedInEmployee = employee;
-            }
-            else{
-                userManagement.loggedInUserType = UserType.SuperAdmin;
-            }
-
-            ToastBar(text: "Login Successful!", color: Colors.green).show();
+            setUserType(uid, userManagement, bottomNavController);
 
         } on auth.FirebaseAuthException catch (e) {
             if (e.code == 'user-not-found') {

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
+import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/details.dart';
 import 'package:cphflyt/services/database_service.dart';
@@ -21,6 +22,7 @@ class Home extends StatelessWidget {
     var databaseService = Provider.of<DatabaseService>(context);
     var navController = Provider.of<BottomNavController>(context);
     var filterController = Provider.of<FilterController>(context);
+    var userManagement = Provider.of<UserManagementController>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -155,7 +157,7 @@ class Home extends StatelessWidget {
         ),
       ),
 
-      bottomNavigationBar: BottomNavBar(),
+      bottomNavigationBar: userManagement.loggedInUserType == UserType.SuperAdmin ? BottomNavBar() : null,
     );
   }
 }

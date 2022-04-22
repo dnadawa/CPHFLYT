@@ -1,4 +1,5 @@
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
@@ -75,7 +76,12 @@ class Login extends StatelessWidget {
                   onPressed: (){
                     if (email.text.isNotEmpty && password.text.isNotEmpty) {
                         ToastBar(text: "Please wait", color: Colors.orange).show();
-                        Provider.of<AuthService>(context, listen: false).signIn(email.text, password.text, Provider.of<UserManagementController>(context, listen: false));
+                        Provider.of<AuthService>(context, listen: false).signIn(
+                            email.text,
+                            password.text,
+                            Provider.of<UserManagementController>(context, listen: false),
+                            Provider.of<BottomNavController>(context, listen: false),
+                        );
                     }
                     else{
                       ToastBar(text: "Please fill all the fields!", color: Colors.red).show();
