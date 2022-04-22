@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/models/driver_model.dart';
+import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,18 @@ class DriverAssignController extends ChangeNotifier{
       Navigator.popUntil(context, (route) => route.isFirst);
     }
     catch(e){
+      ToastBar(text: e.toString(), color: Colors.red).show();
+    }
+  }
+
+  Future<void> addRequest(RequestModel request, BuildContext context) async {
+    ToastBar(text: "Please wait", color: Colors.orange).show();
+    try{
+      await DatabaseService().addRequest(request);
+      ToastBar(text: "New Task Added!", color: Colors.green).show();
+      Navigator.popUntil(context, (route) => route.isFirst);
+    }
+    catch (e){
       ToastBar(text: e.toString(), color: Colors.red).show();
     }
   }

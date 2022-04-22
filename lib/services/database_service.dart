@@ -6,6 +6,8 @@ import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseService extends ChangeNotifier{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -49,8 +51,8 @@ class DatabaseService extends ChangeNotifier{
           isCleaning: doc['isCleaning'] == 'Ja',
           isHeavy: doc['isHeavy'] == 'Ja',
           isBreakable: doc['isBreakable'] == 'Ja',
-          others: doc.data().containsKey("others") ? doc['others'] : "",
-          breakCount: doc.data().containsKey("breakCount") ? doc['breakCount'] : "0",
+          others: doc.data().containsKey("other") ? doc['other'] : "",
+          breakCount: doc.data().containsKey("breakableCount") ? doc['breakableCount'] : "0",
           heavyCount: doc.data().containsKey("heavyCount") ? doc['heavyCount'] : "0",
           fromAddress: AddressModel(doc['fromAddress'], doc['fromZip'], doc['fromBy']),
           toAddress: AddressModel(doc['toAddress'], doc['toZip'], doc['toBy']),
@@ -92,6 +94,40 @@ class DatabaseService extends ChangeNotifier{
   trashRequest(String requestID) async {
     await _firestore.collection('requests').doc(requestID).update({
       'status': 'trash'
+    });
+  }
+
+  addRequest(RequestModel request) async {
+
+    await initializeDateFormatting('da_DK');
+    DateTime parsedDate = DateTime.parse(request.date);
+
+    await _firestore.collection('requests').add({
+      'firstName': request.firstName,
+      'lastName': request.lastName,
+      'phone': request.telePhone,
+      'email': request.email,
+      'type': request.type,
+      'package': request.packageType,
+      'dateDay': parsedDate.day,
+      'dateMonth': DateFormat('MMMM', 'da_DK').format(parsedDate),
+      'dateYear': parsedDate.year,
+      'fromAddress': request.fromAddress.address,
+      'fromZip': request.fromAddress.zip,
+      'fromBy': request.fromAddress.by,
+      'toAddress': request.toAddress.address,
+      'toZip': request.toAddress.zip,
+      'toBy': request.toAddress.by,
+      'flexible': request.flexible,
+      'isUnpack': request.isPacking?'Ja':'Nej',
+      'isCleaning': request.isCleaning?'Ja':'Nej',
+      'isHeavy': request.isHeavy?'Ja':'Nej',
+      'heavyCount': request.heavyCount,
+      'isBreakable': request.isBreakable?'Ja':'Nej',
+      'breakableCount': request.breakCount,
+      'other': request.others,
+      'status': 'pending',
+      'from': 'manual'
     });
   }
 

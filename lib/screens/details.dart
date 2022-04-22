@@ -1,6 +1,7 @@
 import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/controllers/driver_assign_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
+import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
 import 'package:cphflyt/widgets/add_chip_field.dart';
@@ -8,6 +9,7 @@ import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/chip_field.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
+import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -47,6 +49,16 @@ class _DetailsState extends State<Details> {
   TextEditingController toAdd = TextEditingController();
   TextEditingController toZip = TextEditingController();
   TextEditingController toBy = TextEditingController();
+
+  DateTime? selectedDate;
+  String type = "Privat";
+  String packageType = "Mellem pakke";
+  String flexibleAdd = "3 dage";
+  bool isPacking = true;
+  bool isCleaning = true;
+  bool isHeavy = true;
+  bool isBreakable = true;
+
 
   @override
   void initState() {
@@ -90,13 +102,13 @@ class _DetailsState extends State<Details> {
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(right: 15.w),
-                          child: LabelInputField(text: "Fornavn", controller: firstName,enabled: widget.isAdd,),
+                          child: LabelInputField(text: "Fornavn *", controller: firstName,enabled: widget.isAdd,),
                         )
                     ),
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(left: 15.w),
-                          child: LabelInputField(text: "Efternavn", controller: lastName,enabled: widget.isAdd,),
+                          child: LabelInputField(text: "Efternavn *", controller: lastName,enabled: widget.isAdd,),
                         )
                     ),
                   ],
@@ -105,16 +117,35 @@ class _DetailsState extends State<Details> {
                 ///telephone
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Tlf.Nr.",controller: telephone,enabled: widget.isAdd,keyBoardType: TextInputType.phone,),
+                  child: LabelInputField(text: "Tlf.Nr. *",controller: telephone,enabled: widget.isAdd,keyBoardType: TextInputType.phone,),
                 ),
 
                 ///email
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Mail",controller: email,enabled: widget.isAdd,keyBoardType: TextInputType.emailAddress,),
+                  child: LabelInputField(text: "Mail *",controller: email,enabled: widget.isAdd,keyBoardType: TextInputType.emailAddress,),
                 ),
 
                 ///type
+                widget.isAdd?
+                AddChipField(
+                  text: 'Privat eller erhverv?',
+                  items: [
+                    'Privat',
+                    'Erhverv',
+                  ],
+                  onChanged: (value)=>type=value,
+                ):
+                ChipField(
+                  text: 'Privat eller erhverv?',
+                  initialValue: [widget.request?.type],
+                  items: [
+                    MultiSelectItem('Privat', "Privat"),
+                    MultiSelectItem('Erhverv', "Erhverv"),
+                  ],
+                ),
+
+                ///package type
                 widget.isAdd?
                   AddChipField(
                     text: 'Hvilken pakke ønsker du tilbud på?',
@@ -124,7 +155,7 @@ class _DetailsState extends State<Details> {
                       'Lille pakke',
                       'Lej flyttemænd'
                     ],
-                    onChanged: (value){},
+                    onChanged: (value)=>packageType=value,
                   ):
                   ChipField(
                       text: 'Hvilken pakke ønsker du tilbud på?',
@@ -150,11 +181,12 @@ class _DetailsState extends State<Details> {
                               lastDate: DateTime(2023, 12, 31),
                           );
 
+                          selectedDate = pickedDate;
                           await initializeDateFormatting('da_DK');
                           date.text = DateFormat.yMMMMd('da_DK').format(pickedDate!);
                         }
                       },
-                      child: LabelInputField(text: "Hvornår skal du flytte?",controller: date,)),
+                      child: LabelInputField(text: "Hvornår skal du flytte? *",controller: date,)),
                 ),
 
                 //show only when adding
@@ -182,17 +214,17 @@ class _DetailsState extends State<Details> {
                 if(widget.isAdd)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Adresse",controller: fromAdd,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "Adresse *",controller: fromAdd,enabled: widget.isAdd,),
                   ),
                 if(widget.isAdd)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Postnummer",controller: fromZip,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "Postnummer *",controller: fromZip,enabled: widget.isAdd,),
                   ),
                 if(widget.isAdd)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "By",controller: fromBy,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "By *",controller: fromBy,enabled: widget.isAdd,),
                   ),
 
 
@@ -205,17 +237,17 @@ class _DetailsState extends State<Details> {
                 if(widget.isAdd)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Adresse",controller: toAdd,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "Adresse *",controller: toAdd,enabled: widget.isAdd,),
                   ),
                 if(widget.isAdd)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Postnummer",controller: toZip,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "Postnummer *",controller: toZip,enabled: widget.isAdd,),
                   ),
                 if(widget.isAdd)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "By",controller: toBy,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "By *",controller: toBy,enabled: widget.isAdd,),
                   ),
 
                 ///flexible
@@ -231,7 +263,7 @@ class _DetailsState extends State<Details> {
                       '1 uge+',
                       'Nej',
                     ],
-                    onChanged: (value){},
+                    onChanged: (value)=>flexibleAdd=value,
                   ):
                   Padding(
                     padding: EdgeInsets.only(top: 25.h),
@@ -247,7 +279,7 @@ class _DetailsState extends State<Details> {
                       'Ja',
                       'Nej'
                     ],
-                    onChanged: (value){},
+                    onChanged: (value)=>isPacking = value == 'Ja',
                   ):
                   ChipField(
                   text: 'Skal flyttefirmaet stå for nedpakning af dine ting?',
@@ -267,7 +299,7 @@ class _DetailsState extends State<Details> {
                       'Ja',
                       'Nej'
                     ],
-                    onChanged: (value){},
+                    onChanged: (value)=>isCleaning = value == 'Ja',
                   ):
                   ChipField(
                   text: 'Vil du have flytterengøring i din nuværende bolig?',
@@ -287,7 +319,7 @@ class _DetailsState extends State<Details> {
                       'Ja',
                       'Nej'
                     ],
-                    onChanged: (value){},
+                    onChanged: (value)=>isHeavy = value == 'Ja',
                   ):
                   ChipField(
                   text: 'Skal der flyttes særligt tungt inventar?',
@@ -312,7 +344,7 @@ class _DetailsState extends State<Details> {
                       'Ja',
                       'Nej'
                     ],
-                    onChanged: (value){},
+                    onChanged: (value)=>isBreakable = value == 'Ja',
                   ):
                   ChipField(
                   text: 'Skal der flyttes inventar som nemt kan gå i stykker?',
@@ -336,6 +368,7 @@ class _DetailsState extends State<Details> {
                   child: LabelInputField(text: "Andre bemærkninger", maxLines: null,controller: others,enabled: widget.isAdd,),
                 ),
 
+                /// approve and decline
                 if (!widget.isAdd && widget.request!.status == Filter.Pending)
                   Padding(
                   padding: EdgeInsets.only(top: 45.h),
@@ -365,6 +398,7 @@ class _DetailsState extends State<Details> {
                   ),
                 ),
 
+                ///add task
                 if (widget.isAdd)
                   Padding(
                     padding: EdgeInsets.only(top: 45.h),
@@ -375,6 +409,38 @@ class _DetailsState extends State<Details> {
                             text: "Add Task",
                             onPressed: (){
 
+                              bool isValidated = firstName.text.isNotEmpty && lastName.text.isNotEmpty && telephone.text.isNotEmpty && email.text.isNotEmpty &&
+                                  date.text.isNotEmpty && fromAdd.text.isNotEmpty && fromZip.text.isNotEmpty && fromBy.text.isNotEmpty &&
+                                  toAdd.text.isNotEmpty && toZip.text.isNotEmpty && toBy.text.isNotEmpty;
+
+                                if (isValidated){
+                                  RequestModel newRequest = RequestModel(
+                                      id: "",
+                                      firstName: firstName.text,
+                                      lastName: lastName.text,
+                                      telePhone: telephone.text,
+                                      email: email.text,
+                                      type: type,
+                                      packageType: packageType,
+                                      date: DateFormat('yyyy-MM-dd').format(selectedDate!),
+                                      fromAddress: AddressModel(fromAdd.text, fromZip.text, fromBy.text),
+                                      toAddress: AddressModel(toAdd.text, toZip.text, toBy.text),
+                                      flexible: flexibleAdd,
+                                      isPacking: isPacking,
+                                      isCleaning: isCleaning,
+                                      isHeavy: isHeavy,
+                                      heavyCount: heavyCount.text,
+                                      isBreakable: isBreakable,
+                                      breakCount: breakCount.text,
+                                      others: others.text,
+                                      status: Filter.Pending
+                                  );
+
+                                  Provider.of<DriverAssignController>(context, listen: false).addRequest(newRequest, context);
+                                }
+                                else {
+                                  ToastBar(text: "Please fill required fields!", color: Colors.red).show();
+                                }
                             }
                         )
                     ),
