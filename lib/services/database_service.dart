@@ -151,4 +151,8 @@ class DatabaseService extends ChangeNotifier{
     });
   }
 
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDataFromFirebase(String id) async {
+    return await _firestore.collection('admins').doc(id).get();
+  }
+
 }

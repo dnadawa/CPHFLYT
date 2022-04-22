@@ -7,11 +7,13 @@ import 'package:flutter/foundation.dart';
 
 import 'bottom_nav_controller.dart';
 
-enum UserType {Driver, Employee}
+enum UserType {Driver, Employee, SuperAdmin}
 
 class UserManagementController extends ChangeNotifier {
 
   UserType _selected = UserType.Driver;
+  UserType? _loggedInUserType;
+  Employee? _loggedInEmployee;
 
   UserType get userType{
     return _selected;
@@ -22,6 +24,23 @@ class UserManagementController extends ChangeNotifier {
     notifyListeners();
   }
 
+  UserType? get loggedInUserType {
+    return _loggedInUserType;
+  }
+
+  set loggedInUserType(UserType? loggedInUser){
+    _loggedInUserType = loggedInUser;
+    notifyListeners();
+  }
+
+  Employee? get loggedInEmployee {
+    return _loggedInEmployee;
+  }
+
+  set loggedInEmployee(Employee? employee){
+    _loggedInEmployee = employee;
+    notifyListeners();
+  }
 
   Future<bool> registerUser({required String name, required String email, required String password, required UserType type, Nav? accessedPage}) async {
     User? registeredUser = await AuthService().signUp(email, password);
