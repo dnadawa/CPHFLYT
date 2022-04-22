@@ -1,4 +1,5 @@
 import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
@@ -20,6 +21,7 @@ class UserManagement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var userController = Provider.of<UserManagementController>(context);
+    var dropDownValue = Provider.of<BottomNavController>(context).dropDownValue;
     bool isDriver = userController.userType == UserType.Driver;
 
     return Scaffold(
@@ -71,12 +73,12 @@ class UserManagement extends StatelessWidget {
                     underline: SizedBox.shrink(),
                     isExpanded: true,
                     hint: Text("Which page need to access?"),
+                    value: dropDownValue,
                     items: [
-                      DropdownMenuItem(child: CustomText(text: "1st Page",align: TextAlign.center,),value: '1',),
-                      DropdownMenuItem(child: CustomText(text: "2nd Page"),value: '2',),
-                      DropdownMenuItem(child: CustomText(text: "3rd Page"),value: '3',),
+                      DropdownMenuItem(child: CustomText(text: "Website Tasks",align: TextAlign.center,),value: Nav.Website,),
+                      DropdownMenuItem(child: CustomText(text: "Manual Tasks"),value: Nav.Manual,),
                     ],
-                    onChanged: (b){}
+                    onChanged: (Nav? value)=>Provider.of<BottomNavController>(context, listen: false).dropDownValue = value!
                 ),
               ),
 
@@ -94,16 +96,16 @@ class UserManagement extends StatelessWidget {
                     color: kLightBlue,
                     text: "Create Account",
                     onPressed: () async {
-                      ToastBar(text: "Please wait", color: Colors.orange).show();
-
-                      if (name.text.isEmpty || email.text.isEmpty || password.text.isEmpty){
+                      if (name.text.isEmpty || email.text.isEmpty || password.text.isEmpty || (dropDownValue == null && !isDriver)){
                         ToastBar(text: "Please fill all the fields!", color: Colors.red).show();
                       }
                       else if (password.text != confirmPassword.text){
                         ToastBar(text: "Passwords doesn't match!", color: Colors.red).show();
                       }
                       else{
-                         if(await userController.registerUser(name: name.text, email: email.text, password: password.text, type: userController.userType)){
+                        ToastBar(text: "Please wait", color: Colors.orange).show();
+
+                         if(await userController.registerUser(name: name.text, email: email.text, password: password.text, type: userController.userType, accessedPage: dropDownValue)){
                            name.clear();
                            email.clear();
                            password.clear();
