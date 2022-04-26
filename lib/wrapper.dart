@@ -1,3 +1,4 @@
+import 'package:cphflyt/screens/driver_home.dart';
 import 'package:cphflyt/screens/home.dart';
 import 'package:cphflyt/screens/login.dart';
 import 'package:cphflyt/services/auth_service.dart';
@@ -23,7 +24,7 @@ class Wrapper extends StatelessWidget {
             authService.setUserType(user.uid, Provider.of<UserManagementController>(context, listen: false),  Provider.of<BottomNavController>(context, listen: false));
           }
 
-          return user == null ? Login() : Home();
+          return user == null ? Login() : DriverHome();
         }
         else {
           return Scaffold(

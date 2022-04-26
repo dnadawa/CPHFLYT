@@ -14,6 +14,7 @@ class UserManagementController extends ChangeNotifier {
   UserType _selected = UserType.Driver;
   UserType? _loggedInUserType;
   Employee? _loggedInEmployee;
+  Driver? _loggedInDriver;
 
   UserType get userType{
     return _selected;
@@ -39,6 +40,15 @@ class UserManagementController extends ChangeNotifier {
 
   set loggedInEmployee(Employee? employee){
     _loggedInEmployee = employee;
+    notifyListeners();
+  }
+
+  Driver? get loggedInDriver {
+    return _loggedInDriver;
+  }
+
+  set loggedInDriver(Driver? driver){
+    _loggedInDriver = driver;
     notifyListeners();
   }
 

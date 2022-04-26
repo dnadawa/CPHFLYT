@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
+import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/employee_model.dart';
 import 'package:cphflyt/models/user_model.dart';
 import 'package:cphflyt/services/database_service.dart';
@@ -24,27 +25,45 @@ class AuthService {
         return _auth.authStateChanges().map(_userFromFirebase);
     }
 
-    setUserType(String? uid, UserManagementController userManagement, BottomNavController bottomNavController) async {
-        DocumentSnapshot userData = await DatabaseService().getUserDataFromFirebase(uid!);
+    setUserType(String? uid, UserManagementController userManagement, BottomNavController bottomNavController, {bool isDriver=true}) async {
+        if (isDriver){
+            DocumentSnapshot userData = await DatabaseService().getDriverFromFirebase(uid!);
+            
+            if (userData.exists){
+                userManagement.loggedInUserType = UserType.Driver;
+                Driver driver = Driver(uid: uid, email: userData.get('email'), name: userData.get('name'));
+                userManagement.loggedInDriver = driver;
+                ToastBar(text: "Login Successful!", color: Colors.green).show();
+            }
+            else {
+                signOut();
+                ToastBar(text: "No Driver found for that email!", color: Colors.red).show();
+            }
+        }
 
-        if (userData.exists && userData.get('role') == 'admin') {
-            userManagement.loggedInUserType = UserType.Employee;
-            Employee employee = Employee(uid: uid, email: userData.get('email'), name: userData.get('name'), page: userData.get('page') == 'website' ? Nav.Website : Nav.Manual);
-            userManagement.loggedInEmployee = employee;
-            bottomNavController.navItem = userData.get('page') == 'website' ? Nav.Website : Nav.Manual;
-            ToastBar(text: "Login Successful!", color: Colors.green).show();
-        }
-        else if (userData.exists && userData.get('role') == 'main-admin'){
-            userManagement.loggedInUserType = UserType.SuperAdmin;
-            ToastBar(text: "Login Successful!", color: Colors.green).show();
-        }
         else {
-            signOut();
-            ToastBar(text: "Access Denied!", color: Colors.red).show();
+            DocumentSnapshot userData = await DatabaseService().getUserDataFromFirebase(uid!);
+
+            if (userData.exists && userData.get('role') == 'admin') {
+                userManagement.loggedInUserType = UserType.Employee;
+                Employee employee = Employee(uid: uid, email: userData.get('email'), name: userData.get('name'), page: userData.get('page') == 'website' ? Nav.Website : Nav.Manual);
+                userManagement.loggedInEmployee = employee;
+                bottomNavController.navItem = userData.get('page') == 'website' ? Nav.Website : Nav.Manual;
+                ToastBar(text: "Login Successful!", color: Colors.green).show();
+            }
+            else if (userData.exists && userData.get('role') == 'main-admin'){
+                userManagement.loggedInUserType = UserType.SuperAdmin;
+                ToastBar(text: "Login Successful!", color: Colors.green).show();
+            }
+            else {
+                signOut();
+                ToastBar(text: "Access Denied!", color: Colors.red).show();
+            }
         }
+
     }
 
-    signIn(String email, String password, UserManagementController userManagement, BottomNavController bottomNavController) async {
+    signIn(String email, String password, UserManagementController userManagement, BottomNavController bottomNavController, {bool isDriver=true}) async {
         try {
             final credential = await _auth.signInWithEmailAndPassword(
                 email: email,
@@ -52,7 +71,7 @@ class AuthService {
             );
 
             String? uid = credential.user?.uid;
-            setUserType(uid, userManagement, bottomNavController);
+            setUserType(uid, userManagement, bottomNavController, isDriver: isDriver);
 
         } on auth.FirebaseAuthException catch (e) {
             if (e.code == 'user-not-found') {

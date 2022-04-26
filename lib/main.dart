@@ -1,5 +1,6 @@
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/driver_assign_controller.dart';
+import 'package:cphflyt/controllers/driver_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/screens/details.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
       builder: ()=>MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => AuthService()),
+          Provider<DriverController>(create: (_) => DriverController()),
           ChangeNotifierProvider<DatabaseService>(create: (_)=>DatabaseService()),
           ChangeNotifierProvider<BottomNavController>(create: (_)=>BottomNavController()),
           ChangeNotifierProvider<FilterController>(create: (_)=>FilterController()),

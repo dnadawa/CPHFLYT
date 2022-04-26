@@ -37,6 +37,10 @@ class DatabaseService extends ChangeNotifier{
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getRequestsAsDriver(String driverID) {
+    return _firestore.collection('requests').where('driver', isEqualTo: driverID).get();
+  }
+
   RequestModel createRequestFromJson(var doc) {
       RequestModel requestModel = RequestModel(
           id: doc.id,
@@ -153,6 +157,10 @@ class DatabaseService extends ChangeNotifier{
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserDataFromFirebase(String id) async {
     return await _firestore.collection('admins').doc(id).get();
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getDriverFromFirebase(String id) async {
+    return await _firestore.collection('drivers').doc(id).get();
   }
 
 }
