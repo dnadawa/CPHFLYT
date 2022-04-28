@@ -38,7 +38,7 @@ class DatabaseService extends ChangeNotifier{
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getRequestsAsDriver(String driverID) {
-    return _firestore.collection('requests').where('driver', isEqualTo: driverID).get();
+    return _firestore.collection('requests').where('driver', isEqualTo: driverID).where('isCompleted', isEqualTo: false).get();
   }
 
   emptyTrash(Nav type) async {
@@ -124,7 +124,8 @@ class DatabaseService extends ChangeNotifier{
   assignDriver(String? uid, String requestID) async {
     await _firestore.collection('requests').doc(requestID).update({
       'driver': uid,
-      'status': 'approved'
+      'status': 'approved',
+      'isCompleted': false
     });
   }
 
