@@ -4,6 +4,7 @@ import 'package:cphflyt/controllers/driver_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/screens/details.dart';
+import 'package:cphflyt/screens/home.dart';
 import 'package:cphflyt/screens/login.dart';
 import 'package:cphflyt/screens/user_management.dart';
 import 'package:cphflyt/services/auth_service.dart';
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
               color: Color(0xff0D47A1)
             )
           ),
-          home: Wrapper(),
+          home: Home(),
         ),
       ),
     );
