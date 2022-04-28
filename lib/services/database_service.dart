@@ -13,28 +13,40 @@ import 'package:intl/intl.dart';
 class DatabaseService extends ChangeNotifier{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website}) {
+  String _searchText = "";
+
+  set searchText(String text){
+    _searchText = text.trim().toLowerCase();
+    notifyListeners();
+  }
+
+  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website}) {
+    Query query = _firestore.collection('requests');
+
     if (filter == Filter.Pending && from == Nav.Website){
-      return _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'website').snapshots();
+      query = _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'website');
     }
     else if (filter == Filter.Pending && from == Nav.Manual){
-      return _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'manual').snapshots();
+      query = _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'manual');
     }
     else if (filter == Filter.Approved && from == Nav.Website){
-      return _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'website').snapshots();
+      query = _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'website');
     }
     else if (filter == Filter.Approved && from == Nav.Manual){
-      return _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'manual').snapshots();
+      query = _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'manual');
     }
     else if (filter == Filter.Trash && from == Nav.Website){
-      return _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'website').snapshots();
+      query = _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'website');
     }
     else if (filter == Filter.Trash && from == Nav.Manual){
-      return _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'manual').snapshots();
+      query = _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'manual');
     }
-    else {
-      return _firestore.collection('requests').snapshots();
+
+    if (_searchText.isNotEmpty){
+      query = query.where('email', isEqualTo: _searchText);
     }
+    
+    return query.snapshots();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getRequestsAsDriver(String driverID) {

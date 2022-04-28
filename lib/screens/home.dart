@@ -19,6 +19,9 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
 
 class Home extends StatelessWidget {
+
+  TextEditingController search = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var databaseService = Provider.of<DatabaseService>(context);
@@ -65,6 +68,46 @@ class Home extends StatelessWidget {
                   }
                 },
               ),
+            SizedBox(height: 20.h,),
+
+            ///search box
+            Row(
+              children: [
+                Expanded(
+                  child: Material(
+                    elevation: 7,
+                    child: TextField(
+                      controller: search,
+                      decoration: InputDecoration(
+                        hintText: "Enter email to search",
+                        hintStyle: TextStyle(color: Theme.of(context).primaryColor),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: InputBorder.none,
+                        suffixIconConstraints: BoxConstraints(
+                          maxHeight: 35,
+                          maxWidth: 35
+                        ),
+                        suffixIcon: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: ()=>search.clear(),
+                          icon: Icon(Icons.clear),
+                        )
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => databaseService.searchText = search.text,
+                  child: Container(
+                    padding: EdgeInsets.all(13.w),
+                    margin: EdgeInsets.only(left: 10.w),
+                    color: Theme.of(context).primaryColor,
+                    child: Icon(Icons.search, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: 30.h,),
 
             ///add task
