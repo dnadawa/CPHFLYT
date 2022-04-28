@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/driver_assign_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/details.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/bottom_nav_bar.dart';
+import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/drawer.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
@@ -23,6 +25,7 @@ class Home extends StatelessWidget {
     var navController = Provider.of<BottomNavController>(context);
     var filterController = Provider.of<FilterController>(context);
     var userManagement = Provider.of<UserManagementController>(context);
+    var requestController = Provider.of<DriverAssignController>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,6 +67,7 @@ class Home extends StatelessWidget {
               ),
             SizedBox(height: 30.h,),
 
+            ///add task
             if(navController.navItem == Nav.Manual)
             ElevatedButton(
                   onPressed: (){
@@ -92,6 +96,16 @@ class Home extends StatelessWidget {
                   ),
             ),
             if(navController.navItem == Nav.Manual)
+            SizedBox(height: 30.h,),
+
+            ///empty trash
+            if(filterController.filter == Filter.Trash)
+            Button(
+                color: kDeclined,
+                text: "Empty Trash",
+                onPressed: ()=>requestController.emptyTrash(navController.navItem, context)
+            ),
+            if(filterController.filter == Filter.Trash)
             SizedBox(height: 30.h,),
 
             Expanded(

@@ -41,6 +41,19 @@ class DatabaseService extends ChangeNotifier{
     return _firestore.collection('requests').where('driver', isEqualTo: driverID).get();
   }
 
+  emptyTrash(Nav type) async {
+    QuerySnapshot<Map<String, dynamic>> sub;
+    if (type == Nav.Website){
+      sub = await _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'website').get();
+    }
+    else{
+      sub = await _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'manual').get();
+    }
+    for (var document in sub.docs) {
+      await _firestore.collection('requests').doc(document.id).delete();
+    }
+  }
+
   RequestModel createRequestFromJson(var doc) {
       RequestModel requestModel = RequestModel(
           id: doc.id,
