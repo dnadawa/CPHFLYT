@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/driver_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
@@ -7,30 +6,25 @@ import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/details.dart';
 import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/services/database_service.dart';
-import 'package:cphflyt/widgets/bottom_nav_bar.dart';
-import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
-import 'package:cphflyt/widgets/drawer.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:cphflyt/wrapper.dart';
 
-import '../wrapper.dart';
+class DriverHome extends StatefulWidget {
+  @override
+  State<DriverHome> createState() => _DriverHomeState();
+}
 
-class DriverHome extends StatelessWidget {
+class _DriverHomeState extends State<DriverHome> {
   @override
   Widget build(BuildContext context) {
-    var databaseService = Provider.of<DatabaseService>(context);
-    var navController = Provider.of<BottomNavController>(context);
-    var filterController = Provider.of<FilterController>(context);
     var driverController = Provider.of<DriverController>(context);
     var userManagement = Provider.of<UserManagementController>(context);
-
 
     return Scaffold(
       appBar: AppBar(
@@ -45,45 +39,45 @@ class DriverHome extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: FutureBuilder<List>(
-          future: driverController.getRequests(userManagement.loggedInDriver?.uid ?? ''),
-          builder: (BuildContext context, snapshot){
-            if(!snapshot.hasData){
-              return Center(child: CircularProgressIndicator());
-            }
+      body: StatefulBuilder(
+        builder: (BuildContext context, setState){
+          return RefreshIndicator(
+            onRefresh: () async {setState(() {});},
+            child: Padding(
+              padding: EdgeInsets.all(20.w),
+              child: FutureBuilder<List>(
+                future: driverController.getRequests(userManagement.loggedInDriver?.uid ?? ''),
+                builder: (BuildContext context, snapshot){
+                  if(!snapshot.hasData){
+                    return Center(child: CircularProgressIndicator());
+                  }
 
-            return ListView.builder(
-                itemCount: snapshot.data?.length,
-                itemBuilder: (context, i){
+                  return ListView.builder(
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, i){
 
-                  RequestModel request = driverController.createRequestFromJson(snapshot.data?[i]);
-                  final TextEditingController controller = TextEditingController();
-                  controller.text = request.id;
+                        RequestModel request = driverController.createRequestFromJson(snapshot.data?[i]);
+                        final TextEditingController controller = TextEditingController();
+                        controller.text = request.fromAddress.getAddressAsString();
 
-                  return GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(builder: (context) => Details(request: request)),
-                      );
-                    },
-                    child: Card(
-                      margin: EdgeInsets.only(bottom: 20.h),
-                      elevation: 7,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.r)
-                      ),
-                      child: Padding(
-                        padding:  EdgeInsets.symmetric(vertical: 10.h),
-                        child: Column(
-                          children: [
-                            Row(
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(builder: (context) => Details(request: request)),
+                            );
+                          },
+                          child: Card(
+                            margin: EdgeInsets.only(bottom: 20.h),
+                            elevation: 7,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.r)
+                            ),
+                            child: Row(
                               children: [
                                 Expanded(
                                     child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
                                       child: LabelInputField(
                                         text: "Hvor skal du flytte fra?",
                                         controller: controller,
@@ -92,6 +86,7 @@ class DriverHome extends StatelessWidget {
                                     )
                                 ),
                                 Container(
+                                    height: 110.h,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.horizontal(right: Radius.circular(15.r)),
                                       color: kLightBlue,
@@ -103,24 +98,15 @@ class DriverHome extends StatelessWidget {
                                 )
                               ],
                             ),
-
-
-                            SizedBox(height: 10.h,),
-                            ///maps button
-                            Button(
-                                color: Colors.green,
-                                text: "View on Google map",
-                                onPressed: () async => driverController.redirectToGoogleMaps(request.fromAddress)
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
+                        );
+                      }
                   );
-                }
-            );
-          },
-        ),
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }

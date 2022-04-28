@@ -3,6 +3,8 @@ import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/document_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/services/database_service.dart';
+import 'package:cphflyt/widgets/toast.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,19 +13,40 @@ import 'filter_controller.dart';
 
 class DriverController {
 
-  // Future<QuerySnapshot<Map<String, dynamic>>> getRequests(String driverID) {
-  //   _sortRequests(driverID);
-  //   return DatabaseService().getRequestsAsDriver(driverID);
-  // }
+  Future<Position?> _getPosition() async {
+
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ToastBar(text: 'Location services are disabled.', color: Colors.red).show();
+      return null;
+    }
+    else {
+      LocationPermission permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ToastBar(text: 'Location permissions are denied', color: Colors.red).show();
+          return null;
+        }
+      }
+      else if (permission == LocationPermission.deniedForever) {
+        ToastBar(text: 'Location permissions are permanently denied. Please go to application setting and give the location permission to the app.', color: Colors.red).show();
+        return null;
+      }
+
+      return await Geolocator.getCurrentPosition();
+    }
+  }
 
   Future<List<Document>> getRequests(String driverID) async {
-
-    List<Document> returnList = [];
+    ToastBar(text: 'Fetching data', color: Colors.orange).show();
+    List<Document> tasksList = [];
 
     var sub = await DatabaseService().getRequestsAsDriver(driverID);
     var data = sub.docs;
 
-    Position currentPosition = await Geolocator.getCurrentPosition();
+    Position? currentPosition = await _getPosition();
 
     for (var element in data) {
       Map doc = element.data();
@@ -31,21 +54,23 @@ class DriverController {
       List<Location> locations = await locationFromAddress("${doc['fromAddress']} ${doc['fromZip']} ${doc['fromBy']}");
       double distanceInMeters = 999999999999999;
 
-      if (locations.isNotEmpty) {
+      if (locations.isNotEmpty && currentPosition!=null) {
         distanceInMeters = Geolocator.distanceBetween(currentPosition.latitude, currentPosition.longitude, locations[0].latitude, locations[0].longitude);
       }
 
       doc['distance'] = distanceInMeters;
-      returnList.add(Document(element.id, doc));
+      tasksList.add(Document(element.id, doc));
     }
 
-    returnList.sort((m1, m2) {
+    //sorting
+    tasksList.sort((m1, m2) {
       var r = m1.data["distance"].compareTo(m2.data["distance"]);
       if (r != 0) return r;
       return m1.data["distance"].compareTo(m2.data["distance"]);
     });
 
-    return returnList;
+    ToastBar(text: 'Fetch complete', color: Colors.green).show();
+    return tasksList;
   }
 
   redirectToGoogleMaps (AddressModel address) async {

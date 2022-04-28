@@ -1,6 +1,8 @@
 import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/controllers/driver_assign_controller.dart';
+import 'package:cphflyt/controllers/driver_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
+import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
@@ -78,6 +80,9 @@ class _DetailsState extends State<Details> {
 
   @override
   Widget build(BuildContext context) {
+    var driverController = Provider.of<DriverController>(context, listen: false);
+    var userController = Provider.of<UserManagementController>(context);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -86,6 +91,7 @@ class _DetailsState extends State<Details> {
       body: Card(
         margin: EdgeInsets.all(20.w),
         elevation: 8,
+        color: Color(0xfffafafa),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.r)
         ),
@@ -196,6 +202,15 @@ class _DetailsState extends State<Details> {
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvor skal du flytte fra?", maxLines: null,controller: fromAddress,),
                 ),
+                ///from add google map button
+                if(userController.loggedInUserType == UserType.Driver)
+                Center(
+                  child: Button(
+                      color: Color(0xffE68C36),
+                      text: "Show location on map",
+                      onPressed: () async => driverController.redirectToGoogleMaps(widget.request!.fromAddress)
+                  ),
+                ),
 
                 ///to address
                 if(!widget.isAdd)
@@ -203,6 +218,17 @@ class _DetailsState extends State<Details> {
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvor skal du flytte til?", maxLines: null,controller: toAddress,),
                 ),
+                ///to add google map button
+                if(userController.loggedInUserType == UserType.Driver)
+                  Center(
+                    child: Button(
+                        color: Color(0xffE68C36),
+                        text: "Show location on map",
+                        onPressed: () async => driverController.redirectToGoogleMaps(widget.request!.toAddress)
+                    ),
+                  ),
+                
+                
 
                 //show only when viewing
                 /// FROM ADDRESS
@@ -442,6 +468,20 @@ class _DetailsState extends State<Details> {
                                   ToastBar(text: "Please fill required fields!", color: Colors.red).show();
                                 }
                             }
+                        )
+                    ),
+                  ),
+
+                ///complete task
+                if (userController.loggedInUserType == UserType.Driver)
+                  Padding(
+                    padding: EdgeInsets.only(top: 45.h),
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: Button(
+                            color: kApproved,
+                            text: "Complete Task",
+                            onPressed: (){}
                         )
                     ),
                   ),
