@@ -1,22 +1,49 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:cphflyt/services/storage_service.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/drawer.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
+import 'package:cphflyt/widgets/signature_pad.dart';
+import 'package:cphflyt/widgets/upload_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:signature/signature.dart';
 
 import '../constants.dart';
 
 class DriverCompletion extends StatelessWidget {
+  final bool isAdd;
+
+  DriverCompletion({this.isAdd=true});
+
+  TextEditingController taskNumber = TextEditingController();
+  TextEditingController given = TextEditingController();
+  TextEditingController startTime = TextEditingController();
+  TextEditingController endTime = TextEditingController();
+  TextEditingController hourlyRate = TextEditingController();
+  TextEditingController numberOfHours = TextEditingController();
+  TextEditingController paymentType = TextEditingController();
+  TextEditingController heavyLifting = TextEditingController();
+  TextEditingController garbage = TextEditingController();
+  TextEditingController storage = TextEditingController();
+  TextEditingController total = TextEditingController();
+  TextEditingController driverName = TextEditingController();
+  TextEditingController customerName = TextEditingController();
+  Uint8List? driverSignature;
+  Uint8List? customerSignature;
+  File? image1, image2, image3, image4, image5, image6, image7, image8;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: CustomText(text: "Home", fontSize: 22.sp, isBold: true,color: Colors.white,),
+        title: CustomText(text: "Complete Task", fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
-      drawer: AppDrawer("home"),
       body: Card(
           color: Color(0xffFAFAFA),
           margin: EdgeInsets.all(20.w),
@@ -29,554 +56,105 @@ class DriverCompletion extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
+
+                ///task number
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Opgave nummer"),
+                  child: LabelInputField(text: "Opgave nummer",enabled: isAdd,controller: taskNumber,),
                 ),
+
+                ///given
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Dato"),
+                  child: LabelInputField(text: "Dato",enabled: isAdd,controller: given,),
                 ),
+
+                ///start time
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Start tidspunkt"),
+                  child: LabelInputField(text: "Start tidspunkt",enabled: isAdd,controller: startTime,),
                 ),
+
+                ///end time
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Slut tidspunkt"),
+                  child: LabelInputField(text: "Slut tidspunkt",enabled: isAdd,controller: endTime,),
                 ),
+
+                ///hourly rate
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Timepris"),
+                  child: LabelInputField(text: "Timepris",enabled: isAdd,controller: hourlyRate,),
                 ),
+
+                ///num of hours
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Antal timer"),
+                  child: LabelInputField(text: "Antal timer",enabled: isAdd,controller: numberOfHours,),
                 ),
+
+                ///payemnt type
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Betalingstype"),
+                  child: LabelInputField(text: "Betalingstype",enabled: isAdd,controller: paymentType,),
                 ),
+
+                ///heavy lifting
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Tungløft"),
+                  child: LabelInputField(text: "Tungløft",enabled: isAdd,controller: heavyLifting,),
                 ),
+
+                ///garbage
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Skrald"),
+                  child: LabelInputField(text: "Skrald",enabled: isAdd,controller: garbage,),
                 ),
+
+                ///storage
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Opbevaring"),
+                  child: LabelInputField(text: "Opbevaring",enabled: isAdd,controller: storage,),
                 ),
+
+                ///total amount
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Samlet beløb"),
+                  child: LabelInputField(text: "Samlet beløb",enabled: isAdd,controller: total,),
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 1",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+
+
+                UploadWidget(title: "Vedhæft 1",pickImage: (img)=> image1 = img),
+                UploadWidget(title: "Vedhæft 2",pickImage: (img)=> image2 = img),
+                UploadWidget(title: "Vedhæft 3",pickImage: (img)=> image3 = img),
+                UploadWidget(title: "Vedhæft 4",pickImage: (img)=> image4 = img),
+                UploadWidget(title: "Vedhæft 5",pickImage: (img)=> image5 = img),
+                UploadWidget(title: "Vedhæft 6",pickImage: (img)=> image6 = img),
+                UploadWidget(title: "Vedhæft 7",pickImage: (img)=> image7 = img),
+                UploadWidget(title: "Vedhæft 8",pickImage: (img)=> image8 = img),
+
+                ///driver name
+                SignaturePad(
+                    isAdd: isAdd,
+                    textEditingController: driverName,
+                    hint: "Medarbejders Navn",
+                    buttonText: "Medarbejders Underskrift",
+                    onComplete: (Uint8List? imageBytes){
+                        driverSignature = imageBytes;
+                    },
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 2",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+
+                ///customer name
+                SignaturePad(
+                    isAdd: isAdd,
+                    textEditingController: customerName,
+                    hint: "Kundens Navn",
+                    buttonText: "Kundens Underskrift",
+                    onComplete: (Uint8List? imageBytes){
+                        customerSignature = imageBytes;
+                    },
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 3",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 4",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 5",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 6",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 7",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.h),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-                          color: Color(0xff0D47A1),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(10.h),
-                          child: Text(
-                            "Vedhæft 8",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        width: double.infinity,
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                        border: Border.all(color: Color(0xff0D47A1), width: 4),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
-                        child: Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xffE0E0E0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Text("Choose File"),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: Container(
-                    margin: EdgeInsets.all(6.h),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
-                            blurRadius: 4,
-                            spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 20.w),
-                      child: Column(
-                        children: [
-                          LabelInputField(text: "Medarbejders Navn"),
-                          SizedBox(
-                            height: 30.h,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xff2FA4FF),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Center(
-                                  child: Text("Medarbejders Underskrift",
-                                    style: TextStyle(
-                                        color: Colors.white
-                                    ),
-                                  ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: Container(
-                    margin: EdgeInsets.all(6.h),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
-                            blurRadius: 4,
-                            spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 20.w),
-                      child: Column(
-                        children: [
-                          LabelInputField(text: "Kundens Navn"),
-                          SizedBox(
-                            height: 30.h,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              color: Color(0xff2FA4FF),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.25),
-                                    blurRadius: 3,
-                                    offset: Offset(1,1)
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 40.w),
-                              child: Center(
-                                  child: Text("Kundens Underskrift",
-                                    style: TextStyle(
-                                        color: Colors.white
-                                    ),
-                                  ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+
                 Padding(
                   padding: EdgeInsets.only(top: 45.h),
                   child: SizedBox(
@@ -584,7 +162,18 @@ class DriverCompletion extends StatelessWidget {
                       child: Button(
                         color: kApproved,
                         text: "Submit",
-                        onPressed: () {},
+                        onPressed: () async {
+                          // var storageService = Provider.of<StorageService>(context, listen: false);
+                          //
+                          // String url = await storageService.uploadBytes(customerName.text.replaceAll(' ', '_'), customerSignature!);
+                          // print(url);
+
+                          showDialog(context: context, builder: (BuildContext context){
+                            return AlertDialog(
+                              content: Image.file(image1!),
+                            );
+                          });
+                        },
                       )
                   ),
                 ),

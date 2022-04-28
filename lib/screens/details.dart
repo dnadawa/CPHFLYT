@@ -6,12 +6,14 @@ import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
+import 'package:cphflyt/screens/driver_completion.dart';
 import 'package:cphflyt/widgets/add_chip_field.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/chip_field.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:cphflyt/widgets/toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -481,7 +483,9 @@ class _DetailsState extends State<Details> {
                         child: Button(
                             color: kApproved,
                             text: "Complete Task",
-                            onPressed: (){}
+                            onPressed: (){
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DriverCompletion()));
+                            }
                         )
                     ),
                   ),

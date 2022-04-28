@@ -5,6 +5,7 @@ import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/services/database_service.dart';
+import 'package:cphflyt/services/storage_service.dart';
 import 'package:cphflyt/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         providers: [
           Provider<AuthService>(create: (_) => AuthService()),
           Provider<DriverController>(create: (_) => DriverController()),
+          Provider<StorageService>(create: (_) => StorageService()),
           ChangeNotifierProvider<DatabaseService>(create: (_)=>DatabaseService()),
           ChangeNotifierProvider<BottomNavController>(create: (_)=>BottomNavController()),
           ChangeNotifierProvider<FilterController>(create: (_)=>FilterController()),

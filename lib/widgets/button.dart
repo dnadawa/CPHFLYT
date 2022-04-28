@@ -6,9 +6,10 @@ class Button extends StatelessWidget {
 
   final Color color;
   final String text;
+  final Color textColor;
   final Function() onPressed;
 
-  const Button({required this.color,required this.text,required this.onPressed});
+  const Button({required this.color,required this.text,required this.onPressed, this.textColor=Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class Button extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r)
           )
       ),
-      child: CustomText(text: text,color: Colors.white,isBold: true,fontSize: 20.sp,),
+      child: CustomText(text: text,color: textColor,isBold: true,fontSize: 20.sp,),
     );
   }
 }
