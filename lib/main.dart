@@ -41,13 +41,13 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           theme: ThemeData(
-            primaryColor: Color(0xff1470AF),
+            primaryColor: Color(0xff0D47A1),
             fontFamily: "SF-Pro",
             scaffoldBackgroundColor: Colors.white,
             appBarTheme: AppBarTheme(
               centerTitle: true,
               elevation: 0,
-              color: Color(0xff105A8C)
+              color: Color(0xff0D47A1)
             )
           ),
           home: Wrapper(),

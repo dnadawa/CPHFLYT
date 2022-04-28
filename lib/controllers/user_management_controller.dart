@@ -15,6 +15,7 @@ class UserManagementController extends ChangeNotifier {
   UserType? _loggedInUserType;
   Employee? _loggedInEmployee;
   Driver? _loggedInDriver;
+  UserType _loginSelector = UserType.SuperAdmin;
 
   UserType get userType{
     return _selected;
@@ -51,6 +52,16 @@ class UserManagementController extends ChangeNotifier {
     _loggedInDriver = driver;
     notifyListeners();
   }
+
+  UserType get loginSelector {
+    return _loginSelector;
+  }
+
+  set loginSelector(UserType userType){
+    _loginSelector = userType;
+    notifyListeners();
+  }
+
 
   Future<bool> registerUser({required String name, required String email, required String password, required UserType type, Nav? accessedPage}) async {
     User? registeredUser = await AuthService().signUp(email, password);

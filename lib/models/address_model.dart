@@ -18,6 +18,10 @@ class AddressModel {
     return _by;
   }
 
+  String get addressJoined {
+    return _address + " " + _postalCode + " " + _by;
+  }
+
   String getAddressAsString(){
       return "Adresse - $_address\n"
       "Postnummer - $_postalCode\n"

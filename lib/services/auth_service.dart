@@ -4,10 +4,14 @@ import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/employee_model.dart';
 import 'package:cphflyt/models/user_model.dart';
+import 'package:cphflyt/screens/driver_home.dart';
+import 'package:cphflyt/screens/home.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
 
@@ -21,11 +25,20 @@ class AuthService {
         return User(user.uid, user.email);
     }
 
-    Stream<User?>? get user {
-        return _auth.authStateChanges().map(_userFromFirebase);
+    User? get currentUser {
+        try{
+            _auth.currentUser?.reload();
+        }
+        catch (e) {
+            ToastBar(text: e.toString(), color: Colors.red).show();
+            signOut();
+        }
+
+        _auth.currentUser?.reload();
+        return _userFromFirebase(_auth.currentUser);
     }
 
-    setUserType(String? uid, UserManagementController userManagement, BottomNavController bottomNavController, {bool isDriver=true}) async {
+    setUserType(String? uid,BuildContext context, UserManagementController userManagement, BottomNavController bottomNavController, {required bool isDriver}) async {
         if (isDriver){
             DocumentSnapshot userData = await DatabaseService().getDriverFromFirebase(uid!);
             
@@ -33,6 +46,11 @@ class AuthService {
                 userManagement.loggedInUserType = UserType.Driver;
                 Driver driver = Driver(uid: uid, email: userData.get('email'), name: userData.get('name'));
                 userManagement.loggedInDriver = driver;
+
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool('isDriver', true);
+                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
+                    DriverHome()), (Route<dynamic> route) => false);
                 ToastBar(text: "Login Successful!", color: Colors.green).show();
             }
             else {
@@ -49,10 +67,18 @@ class AuthService {
                 Employee employee = Employee(uid: uid, email: userData.get('email'), name: userData.get('name'), page: userData.get('page') == 'website' ? Nav.Website : Nav.Manual);
                 userManagement.loggedInEmployee = employee;
                 bottomNavController.navItem = userData.get('page') == 'website' ? Nav.Website : Nav.Manual;
+
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setBool('isDriver', false);
+
+                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
+                    Home()), (Route<dynamic> route) => false);
                 ToastBar(text: "Login Successful!", color: Colors.green).show();
             }
             else if (userData.exists && userData.get('role') == 'main-admin'){
                 userManagement.loggedInUserType = UserType.SuperAdmin;
+                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
+                    Home()), (Route<dynamic> route) => false);
                 ToastBar(text: "Login Successful!", color: Colors.green).show();
             }
             else {
@@ -63,7 +89,7 @@ class AuthService {
 
     }
 
-    signIn(String email, String password, UserManagementController userManagement, BottomNavController bottomNavController, {bool isDriver=true}) async {
+    signIn(String email, String password,BuildContext context, UserManagementController userManagement, BottomNavController bottomNavController, {required bool isDriver}) async {
         try {
             final credential = await _auth.signInWithEmailAndPassword(
                 email: email,
@@ -71,7 +97,7 @@ class AuthService {
             );
 
             String? uid = credential.user?.uid;
-            setUserType(uid, userManagement, bottomNavController, isDriver: isDriver);
+            setUserType(uid, context, userManagement, bottomNavController, isDriver: isDriver);
 
         } on auth.FirebaseAuthException catch (e) {
             if (e.code == 'user-not-found') {
@@ -106,6 +132,9 @@ class AuthService {
     }
 
     void signOut() async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.clear();
+
         try{
             await _auth.signOut();
         }

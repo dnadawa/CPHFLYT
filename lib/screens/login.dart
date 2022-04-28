@@ -8,6 +8,7 @@ import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class Login extends StatelessWidget {
   final TextEditingController email = TextEditingController();
@@ -15,9 +16,11 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userController = Provider.of<UserManagementController>(context);
+
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color(0xff5897C3),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -34,12 +37,41 @@ class Login extends StatelessWidget {
               ///login image
               Padding(
                 padding: EdgeInsets.only(top: 55.h),
-                child: Image.asset('assets/login.png'),
+                child: Image.asset(userController.loginSelector == UserType.SuperAdmin?'assets/login_admin.png':'assets/login_driver.png'),
               ),
+
+              SizedBox(height: 45.h),
+              ///switch
+              ToggleSwitch(
+                initialLabelIndex: userController.loginSelector == UserType.SuperAdmin?0:1,
+                activeFgColor: Colors.white,
+                inactiveBgColor: Color(0xffE6E6E6),
+                inactiveFgColor: Color(0xff747474),
+                totalSwitches: 2,
+                labels: ['ADMIN LOGIN', 'DRIVER LOGIN'],
+                fontSize: 14.sp,
+                activeBgColor: [Theme.of(context).primaryColor],
+                cornerRadius: 5.r,
+                animate: true,
+                animationDuration: 200,
+                borderWidth: 5,
+                borderColor: [Colors.white],
+                curve: Curves.easeIn,
+                customWidths: [120.w, 120.w],
+                onToggle: (index) async {
+                  if (index==0){
+                    userController.loginSelector = UserType.SuperAdmin;
+                  }
+                  else {
+                    userController.loginSelector = UserType.Driver;
+                  }
+                },
+              ),
+
 
               ///email
               Padding(
-                padding: EdgeInsets.fromLTRB(35.w, 90.h, 35.w, 20.h),
+                padding: EdgeInsets.fromLTRB(35.w, 45.h, 35.w, 20.h),
                 child: InputField(
                   text: 'Email',
                   icon: Icons.email,
@@ -79,8 +111,10 @@ class Login extends StatelessWidget {
                         Provider.of<AuthService>(context, listen: false).signIn(
                             email.text,
                             password.text,
+                            context,
                             Provider.of<UserManagementController>(context, listen: false),
                             Provider.of<BottomNavController>(context, listen: false),
+                            isDriver: userController.loginSelector == UserType.Driver
                         );
                     }
                     else{

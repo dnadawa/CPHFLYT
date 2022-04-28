@@ -5,6 +5,7 @@ import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/details.dart';
+import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/bottom_nav_bar.dart';
 import 'package:cphflyt/widgets/button.dart';
@@ -18,6 +19,8 @@ import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../wrapper.dart';
 
 class DriverHome extends StatelessWidget {
   @override
@@ -33,10 +36,18 @@ class DriverHome extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: CustomText(text: "Home", fontSize: 22.sp, isBold: true,color: Colors.white,),
+        leading: IconButton(
+          icon: Icon(Icons.logout),
+          onPressed: (){
+            Provider.of<AuthService>(context, listen: false).signOut();
+            Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
+                Wrapper()), (Route<dynamic> route) => false);
+          },
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(20.w),
-        child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        child: FutureBuilder<List>(
           future: driverController.getRequests(userManagement.loggedInDriver?.uid ?? ''),
           builder: (BuildContext context, snapshot){
             if(!snapshot.hasData){
@@ -44,12 +55,12 @@ class DriverHome extends StatelessWidget {
             }
 
             return ListView.builder(
-                itemCount: snapshot.data?.docs.length,
+                itemCount: snapshot.data?.length,
                 itemBuilder: (context, i){
 
-                  RequestModel request = databaseService.createRequestFromJson(snapshot.data?.docs[i]);
+                  RequestModel request = driverController.createRequestFromJson(snapshot.data?[i]);
                   final TextEditingController controller = TextEditingController();
-                  controller.text = request.fromAddress.getAddressAsString();
+                  controller.text = request.id;
 
                   return GestureDetector(
                     onTap: (){
@@ -99,10 +110,8 @@ class DriverHome extends StatelessWidget {
                             Button(
                                 color: Colors.green,
                                 text: "View on Google map",
-                                onPressed: () async {
-                                  Uri url = Uri.parse("https://www.google.com/maps/search/?api=1&query=${request.fromAddress.address} ${request.fromAddress.zip} ${request.fromAddress.by}");
-                                  await launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
-                            })
+                                onPressed: () async => driverController.redirectToGoogleMaps(request.fromAddress)
+                            )
                           ],
                         ),
                       ),
