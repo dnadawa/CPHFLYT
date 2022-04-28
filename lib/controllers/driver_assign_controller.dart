@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cphflyt/controllers/notification_controller.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/services/database_service.dart';
@@ -39,6 +40,11 @@ class DriverAssignController extends ChangeNotifier{
       ToastBar(text: "Please wait", color: Colors.orange).show();
       try{
         await DatabaseService().assignDriver(uid, requestID);
+        var doc = await DatabaseService().getDriverFromFirebase(uid!);
+        if (doc.data()!.containsKey('notification') && doc.data()!['notification'] != null){
+          await NotificationController().sendNotification(doc.data()!['notification']);
+        }
+
         ToastBar(text: "Driver is successfully added to the task.", color: Colors.green).show();
         Navigator.popUntil(context, (route) => route.isFirst);
       }

@@ -24,22 +24,22 @@ class DatabaseService extends ChangeNotifier{
     Query query = _firestore.collection('requests');
 
     if (filter == Filter.Pending && from == Nav.Website){
-      query = _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'website');
+      query = query.where('status', isEqualTo: 'pending').where('from', isEqualTo: 'website');
     }
     else if (filter == Filter.Pending && from == Nav.Manual){
-      query = _firestore.collection('requests').where('status', isEqualTo: 'pending').where('from', isEqualTo: 'manual');
+      query = query.where('status', isEqualTo: 'pending').where('from', isEqualTo: 'manual');
     }
     else if (filter == Filter.Approved && from == Nav.Website){
-      query = _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'website');
+      query = query.where('status', isEqualTo: 'approved').where('from', isEqualTo: 'website');
     }
     else if (filter == Filter.Approved && from == Nav.Manual){
-      query = _firestore.collection('requests').where('status', isEqualTo: 'approved').where('from', isEqualTo: 'manual');
+      query = query.where('status', isEqualTo: 'approved').where('from', isEqualTo: 'manual');
     }
     else if (filter == Filter.Trash && from == Nav.Website){
-      query = _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'website');
+      query = query.where('status', isEqualTo: 'trash').where('from', isEqualTo: 'website');
     }
     else if (filter == Filter.Trash && from == Nav.Manual){
-      query = _firestore.collection('requests').where('status', isEqualTo: 'trash').where('from', isEqualTo: 'manual');
+      query = query.where('status', isEqualTo: 'trash').where('from', isEqualTo: 'manual');
     }
 
     if (_searchText.isNotEmpty){
@@ -187,6 +187,12 @@ class DatabaseService extends ChangeNotifier{
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getDriverFromFirebase(String id) async {
     return await _firestore.collection('drivers').doc(id).get();
+  }
+
+  setNotificationID(String? notificationID, String driverID) async {
+    await _firestore.collection('drivers').doc(driverID).update({
+      'notification': notificationID
+    });
   }
 
 }

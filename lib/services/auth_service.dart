@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/notification_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/employee_model.dart';
@@ -49,6 +50,11 @@ class AuthService {
 
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setBool('isDriver', true);
+
+                NotificationController notificationController = NotificationController();
+                String? id = await notificationController.getUserID();
+                await DatabaseService().setNotificationID(id, uid);
+
                 Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
                     DriverHome()), (Route<dynamic> route) => false);
                 ToastBar(text: "Login Successful!", color: Colors.green).show();
