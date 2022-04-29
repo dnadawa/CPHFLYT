@@ -186,18 +186,25 @@ class Home extends StatelessWidget {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(10),),
-                                            color: kLightBlue,
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 20.w),
-                                            child: CustomText(
-                                              text: "Assign Driver : Saman",
-                                              color: Colors.white,
-                                            ),
-                                          ),
+
+                                        if (filterController.filter == Filter.Approved)
+                                        FutureBuilder<DocumentSnapshot<Map>>(
+                                          future: databaseService.getDriverFromFirebase(request.driver),
+                                          builder: (context, snapshot){
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10),),
+                                                color: kLightBlue,
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 20.w),
+                                                child: CustomText(
+                                                  text: "Assigned Driver : ${snapshot.hasData ? snapshot.data!.data()!['name'].toString().split(' ')[0] : 'Loading...'}",
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            );
+                                          },
                                         ),
                                         Padding(
                                           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
@@ -215,7 +222,7 @@ class Home extends StatelessWidget {
                                       color: kLightBlue,
                                     ),
                                     child: Padding(
-                                      padding: EdgeInsets.fromLTRB(5.w,47.h,5.w,47.h),
+                                      padding: EdgeInsets.symmetric(horizontal: 5.w,vertical: filterController.filter == Filter.Approved?47.h:35.h),
                                       child: Icon(Icons.arrow_forward, color: Colors.white,),
                                     )
                                 )

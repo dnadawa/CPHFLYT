@@ -22,6 +22,7 @@ class RequestModel {
   final String breakCount;
   final String others;
   final Filter status;
+  final String driver;
 
   RequestModel({
         required this.id,
@@ -42,7 +43,8 @@ class RequestModel {
         required this.isBreakable,
         required this.breakCount,
         required this.others,
-        required this.status
+        required this.status,
+        this.driver = ""
       });
 
 

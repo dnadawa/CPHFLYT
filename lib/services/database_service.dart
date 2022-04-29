@@ -88,6 +88,7 @@ class DatabaseService extends ChangeNotifier{
           fromAddress: AddressModel(doc['fromAddress'], doc['fromZip'], doc['fromBy']),
           toAddress: AddressModel(doc['toAddress'], doc['toZip'], doc['toBy']),
           status: doc['status']=='pending'?Filter.Pending:doc["status"]=='approved'?Filter.Approved:Filter.Trash,
+          driver: doc.data().containsKey("driver") ? doc['driver'] : ""
       );
 
       return requestModel;
