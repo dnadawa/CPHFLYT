@@ -21,30 +21,40 @@ class DatabaseService extends ChangeNotifier{
     notifyListeners();
   }
 
-  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website}) {
+  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website,CompletedFilter completedFilter = CompletedFilter.All}) {
     Query query = _firestore.collection('requests');
 
-    if (filter == Filter.Pending && from == Nav.Website){
-      query = query.where('status', isEqualTo: 'pending').where('from', isEqualTo: 'website');
+    ///filter
+    if (filter == Filter.Pending){
+      query = query.where('status', isEqualTo: 'pending');
     }
-    else if (filter == Filter.Pending && from == Nav.Manual){
-      query = query.where('status', isEqualTo: 'pending').where('from', isEqualTo: 'manual');
+    else if (filter == Filter.Approved){
+      if (completedFilter == CompletedFilter.All){
+        query = query.where('status', isEqualTo: 'approved');
+      }
+      else if(completedFilter == CompletedFilter.Completed){
+        query = query.where('status', isEqualTo: 'approved').where('isCompleted', isEqualTo: true);
+      }
+      else{
+        query = query.where('status', isEqualTo: 'approved').where('isCompleted', isEqualTo: false);
+      }
+
     }
-    else if (filter == Filter.Approved && from == Nav.Website){
-      query = query.where('status', isEqualTo: 'approved').where('from', isEqualTo: 'website');
-    }
-    else if (filter == Filter.Approved && from == Nav.Manual){
-      query = query.where('status', isEqualTo: 'approved').where('from', isEqualTo: 'manual');
-    }
-    else if (filter == Filter.Trash && from == Nav.Website){
-      query = query.where('status', isEqualTo: 'trash').where('from', isEqualTo: 'website');
-    }
-    else if (filter == Filter.Trash && from == Nav.Manual){
-      query = query.where('status', isEqualTo: 'trash').where('from', isEqualTo: 'manual');
+    else if (filter == Filter.Trash){
+      query = query.where('status', isEqualTo: 'trash');
     }
 
+    ///search
     if (_searchText.isNotEmpty){
       query = query.where('email', isEqualTo: _searchText);
+    }
+
+    ///nav
+    if(from == Nav.Website){
+      query = query.where('from', isEqualTo: 'website');
+    }
+    else{
+      query = query.where('from', isEqualTo: 'manual');
     }
     
     return query.snapshots();

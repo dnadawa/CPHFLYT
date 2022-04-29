@@ -108,7 +108,7 @@ class Home extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 30.h,),
+            SizedBox(height: 20.h,),
 
             ///add task
             if(navController.navItem == Nav.Manual)
@@ -150,10 +150,40 @@ class Home extends StatelessWidget {
             ),
             if(filterController.filter == Filter.Trash)
             SizedBox(height: 30.h,),
+            
+            ///hide completed
+            if(filterController.filter == Filter.Approved)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor,
+                    width: 2
+                  )
+                ),
+                child: DropdownButton(
+                    underline: SizedBox.shrink(),
+                    value: filterController.completedFilter,
+                    items: [
+                      DropdownMenuItem(child: CustomText(text: 'All'), value: CompletedFilter.All,),
+                      DropdownMenuItem(child: CustomText(text: 'Not Completed'), value: CompletedFilter.NotCompleted,),
+                      DropdownMenuItem(child: CustomText(text: 'Completed'), value: CompletedFilter.Completed,),
+                    ],
+                    onChanged: (CompletedFilter? val){
+                      filterController.completedFilter = val ?? CompletedFilter.All;
+                    }
+                ),
+              ),
+            ),
+            if(filterController.filter == Filter.Approved)
+            SizedBox(height: 20.h,),
 
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getRequests(filter: filterController.filter, from: navController.navItem),
+                stream: databaseService.getRequests(filter: filterController.filter, from: navController.navItem, completedFilter: filterController.completedFilter),
                 builder: (BuildContext context, snapshot){
                   if(!snapshot.hasData){
                     return Center(child: CircularProgressIndicator());
