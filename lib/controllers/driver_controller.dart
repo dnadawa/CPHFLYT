@@ -1,14 +1,22 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/models/address_model.dart';
+import 'package:cphflyt/models/completion_model.dart';
 import 'package:cphflyt/models/document_model.dart';
 import 'package:cphflyt/models/request_model.dart';
+import 'package:cphflyt/screens/driver_home.dart';
 import 'package:cphflyt/services/database_service.dart';
+import 'package:cphflyt/services/storage_service.dart';
 import 'package:cphflyt/widgets/toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'filter_controller.dart';
 
 class DriverController {
@@ -78,7 +86,6 @@ class DriverController {
     await launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
   }
 
-
   RequestModel createRequestFromJson(Document doc) {
     RequestModel requestModel = RequestModel(
       id: doc.id,
@@ -103,6 +110,93 @@ class DriverController {
     );
 
     return requestModel;
+  }
+
+  completeTask({
+    required Uint8List customerSign,
+    required Uint8List driverSign,
+    required String customerName,
+    required String driverName,
+    required List<File?> images,
+    required String taskID,
+    required String given,
+    required String startTime,
+    required String endTime,
+    required String hourlyRate,
+    required String numOfHours,
+    required String paymentType,
+    required String heavyLifting,
+    required String garbage,
+    required String storage,
+    required String total,
+    required BuildContext context
+  }) async {
+    SimpleFontelicoProgressDialog pd = SimpleFontelicoProgressDialog(context: context, barrierDimisable:  false);
+    pd.show(
+        message: "Data uploading...",
+        indicatorColor: Theme.of(context).primaryColor,
+        width: 0.6.sw,
+        height: 100.h,
+        textAlign: TextAlign.center,
+        separation: 30.h,
+    );
+
+    try{
+      StorageService storageService = StorageService();
+      String customerSignature = await storageService.uploadBytes(customerName.replaceAll(' ', '_'), customerSign);
+      pd.updateMessageText("Customer Signature Uploaded...");
+
+      String driverSignature = await storageService.uploadBytes(driverName.replaceAll(' ', '_'), driverSign);
+      pd.updateMessageText("Driver Signature Uploaded...");
+
+      List<String> imageUrls = List.filled(images.length, "", growable: false);
+
+      for (int i = 0; i < images.length; i++){
+        if (images[i] != null){
+          String url = await storageService.uploadFile(i.toString(), taskID, images[i]!);
+          pd.updateMessageText("Image ${i+1} Uploaded...");
+          imageUrls[i] = url;
+        }
+      }
+
+      CompleteTask completeTask = CompleteTask(
+          taskId: taskID,
+          given: given,
+          startTime: startTime,
+          endTime: endTime,
+          hourlyRate: hourlyRate,
+          numberOfHours: numOfHours,
+          paymentType: paymentType,
+          garbage: garbage,
+          heavyLifting: heavyLifting,
+          storage: storage,
+          total: total,
+          image1: imageUrls[0],
+          image2: imageUrls[1],
+          image3: imageUrls[2],
+          image4: imageUrls[3],
+          image5: imageUrls[4],
+          image6: imageUrls[5],
+          image7: imageUrls[6],
+          image8: imageUrls[7],
+          driverName: driverName,
+          driverSign: driverSignature,
+          customerName: customerName,
+          customerSign: customerSignature
+      );
+
+      await DatabaseService().completeTask(completeTask);
+
+      pd.hide();
+      ToastBar(text: "Task is mark as completed!", color: Colors.green).show();
+
+      Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
+          DriverHome()), (Route<dynamic> route) => false);
+    }
+    catch (e){
+      pd.hide();
+      ToastBar(text: e.toString(), color: Colors.red).show();
+    }
   }
 
 }

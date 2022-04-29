@@ -484,7 +484,7 @@ class _DetailsState extends State<Details> {
                             color: kApproved,
                             text: "Complete Task",
                             onPressed: (){
-                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DriverCompletion()));
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DriverCompletion(isAdd: true,taskID: widget.request!.id)));
                             }
                         )
                     ),

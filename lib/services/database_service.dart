@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
+import 'package:cphflyt/models/completion_model.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/employee_model.dart';
 import 'package:cphflyt/models/request_model.dart';
@@ -192,6 +193,37 @@ class DatabaseService extends ChangeNotifier{
   setNotificationID(String? notificationID, String driverID) async {
     await _firestore.collection('drivers').doc(driverID).update({
       'notification': notificationID
+    });
+  }
+  
+  completeTask(CompleteTask task) async {
+    await _firestore.collection('requests').doc(task.taskId).collection('completed').doc('details').set({
+      'given': task.given,
+      'startTime': task.startTime,
+      'endTime': task.endTime,
+      'hourlyRate': task.hourlyRate,
+      'numberOfHours': task.numberOfHours,
+      'paymentType': task.paymentType,
+      'heavyLifting': task.heavyLifting,
+      'garbage': task.garbage,
+      'storage': task.storage,
+      'total': task.total,
+      'image1': task.image1,
+      'image2': task.image2,
+      'image3': task.image3,
+      'image4': task.image4,
+      'image5': task.image5,
+      'image6': task.image6,
+      'image7': task.image7,
+      'image8': task.image8,
+      'driverName': task.driverName,
+      'driverSign': task.driverSign,
+      'customerName': task.customerName,
+      'customerSign': task.customerSign
+    });
+
+    await _firestore.collection('requests').doc(task.taskId).update({
+      'isCompleted': true,
     });
   }
 

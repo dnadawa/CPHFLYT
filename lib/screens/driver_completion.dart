@@ -1,24 +1,29 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:cphflyt/services/storage_service.dart';
+import 'package:cphflyt/controllers/driver_controller.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
-import 'package:cphflyt/widgets/drawer.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:cphflyt/widgets/signature_pad.dart';
+import 'package:cphflyt/widgets/toast.dart';
 import 'package:cphflyt/widgets/upload_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cphflyt/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:signature/signature.dart';
 
-import '../constants.dart';
-
-class DriverCompletion extends StatelessWidget {
+class DriverCompletion extends StatefulWidget {
   final bool isAdd;
+  final String taskID;
 
-  DriverCompletion({this.isAdd=true});
+  DriverCompletion({this.isAdd=true,required this.taskID});
+
+  @override
+  State<DriverCompletion> createState() => _DriverCompletionState();
+}
+
+class _DriverCompletionState extends State<DriverCompletion> {
 
   TextEditingController taskNumber = TextEditingController();
   TextEditingController given = TextEditingController();
@@ -36,6 +41,12 @@ class DriverCompletion extends StatelessWidget {
   Uint8List? driverSignature;
   Uint8List? customerSignature;
   File? image1, image2, image3, image4, image5, image6, image7, image8;
+
+  @override
+  void initState() {
+    super.initState();
+    taskNumber.text = widget.taskID;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,67 +71,67 @@ class DriverCompletion extends StatelessWidget {
                 ///task number
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Opgave nummer",enabled: isAdd,controller: taskNumber,),
+                  child: LabelInputField(text: "Opgave nummer",enabled: false,controller: taskNumber,),
                 ),
 
                 ///given
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Dato",enabled: isAdd,controller: given,),
+                  child: LabelInputField(text: "Dato",enabled: widget.isAdd,controller: given,),
                 ),
 
                 ///start time
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Start tidspunkt",enabled: isAdd,controller: startTime,),
+                  child: LabelInputField(text: "Start tidspunkt",enabled: widget.isAdd,controller: startTime,),
                 ),
 
                 ///end time
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Slut tidspunkt",enabled: isAdd,controller: endTime,),
+                  child: LabelInputField(text: "Slut tidspunkt",enabled: widget.isAdd,controller: endTime,),
                 ),
 
                 ///hourly rate
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Timepris",enabled: isAdd,controller: hourlyRate,),
+                  child: LabelInputField(text: "Timepris",enabled: widget.isAdd,controller: hourlyRate,keyBoardType: TextInputType.number),
                 ),
 
                 ///num of hours
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Antal timer",enabled: isAdd,controller: numberOfHours,),
+                  child: LabelInputField(text: "Antal timer",enabled: widget.isAdd,controller: numberOfHours,keyBoardType: TextInputType.number),
                 ),
 
                 ///payemnt type
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Betalingstype",enabled: isAdd,controller: paymentType,),
+                  child: LabelInputField(text: "Betalingstype",enabled: widget.isAdd,controller: paymentType,),
                 ),
 
                 ///heavy lifting
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Tungløft",enabled: isAdd,controller: heavyLifting,),
+                  child: LabelInputField(text: "Tungløft",enabled: widget.isAdd,controller: heavyLifting,),
                 ),
 
                 ///garbage
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Skrald",enabled: isAdd,controller: garbage,),
+                  child: LabelInputField(text: "Skrald",enabled: widget.isAdd,controller: garbage,),
                 ),
 
                 ///storage
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Opbevaring",enabled: isAdd,controller: storage,),
+                  child: LabelInputField(text: "Opbevaring",enabled: widget.isAdd,controller: storage,),
                 ),
 
                 ///total amount
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Samlet beløb",enabled: isAdd,controller: total,),
+                  child: LabelInputField(text: "Samlet beløb",enabled: widget.isAdd,controller: total,keyBoardType: TextInputType.number),
                 ),
 
 
@@ -135,7 +146,7 @@ class DriverCompletion extends StatelessWidget {
 
                 ///driver name
                 SignaturePad(
-                    isAdd: isAdd,
+                    isAdd: widget.isAdd,
                     textEditingController: driverName,
                     hint: "Medarbejders Navn",
                     buttonText: "Medarbejders Underskrift",
@@ -146,7 +157,7 @@ class DriverCompletion extends StatelessWidget {
 
                 ///customer name
                 SignaturePad(
-                    isAdd: isAdd,
+                    isAdd: widget.isAdd,
                     textEditingController: customerName,
                     hint: "Kundens Navn",
                     buttonText: "Kundens Underskrift",
@@ -163,16 +174,30 @@ class DriverCompletion extends StatelessWidget {
                         color: kApproved,
                         text: "Submit",
                         onPressed: () async {
-                          // var storageService = Provider.of<StorageService>(context, listen: false);
-                          //
-                          // String url = await storageService.uploadBytes(customerName.text.replaceAll(' ', '_'), customerSignature!);
-                          // print(url);
-
-                          showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(
-                              content: Image.file(image1!),
+                          if (startTime.text.isNotEmpty && endTime.text.isNotEmpty && driverName.text.isNotEmpty && customerName.text.isNotEmpty && driverSignature != null && customerSignature != null){
+                            Provider.of<DriverController>(context, listen: false).completeTask(
+                                customerSign: customerSignature!,
+                                driverSign: driverSignature!,
+                                customerName: customerName.text,
+                                driverName: driverName.text,
+                                images: [image1, image2, image3, image4, image5, image6, image7, image8],
+                                taskID: taskNumber.text,
+                                given: given.text,
+                                startTime: startTime.text,
+                                endTime: endTime.text,
+                                hourlyRate: hourlyRate.text,
+                                numOfHours: numberOfHours.text,
+                                paymentType: paymentType.text,
+                                heavyLifting: heavyLifting.text,
+                                garbage: garbage.text,
+                                storage: storage.text,
+                                total: total.text,
+                                context: context
                             );
-                          });
+                          }
+                          else {
+                            ToastBar(text: "Please fill required fields and sign!", color: Colors.red).show();
+                          }
                         },
                       )
                   ),
