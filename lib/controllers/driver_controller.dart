@@ -17,7 +17,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'filter_controller.dart';
+import 'package:cphflyt/controllers/filter_controller.dart';
 
 class DriverController {
 
@@ -200,7 +200,6 @@ class DriverController {
   }
 
   Future<CompleteTask> getCompletedTask(String id) async {
-    print('called');
     var dbService = DatabaseService();
     DocumentSnapshot document = await dbService.getCompletedTask(id);
     return dbService.createCompleteTaskFromJson(document.data(), id);

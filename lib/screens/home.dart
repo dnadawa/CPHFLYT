@@ -20,7 +20,7 @@ import 'package:cphflyt/constants.dart';
 
 class Home extends StatelessWidget {
 
-  TextEditingController search = TextEditingController();
+  final TextEditingController search = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

@@ -3,11 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:signature/signature.dart';
-
-import '../constants.dart';
-import 'button.dart';
-import 'custom_text.dart';
-import 'label_input_field.dart';
+import 'package:cphflyt/constants.dart';
+import 'package:cphflyt/widgets/button.dart';
+import 'package:cphflyt/widgets/custom_text.dart';
+import 'package:cphflyt/widgets/label_input_field.dart';
 
 class SignaturePad extends StatelessWidget {
 

@@ -13,10 +13,10 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 class UserManagement extends StatelessWidget {
 
-  TextEditingController email = TextEditingController();
-  TextEditingController name = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController confirmPassword = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController name = TextEditingController();
+  final TextEditingController password = TextEditingController();
+  final TextEditingController confirmPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

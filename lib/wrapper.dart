@@ -12,7 +12,6 @@ class Wrapper extends StatelessWidget {
 
   Future<bool> getDriverStatus() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    print(preferences.getBool('isDriver'));
     return preferences.getBool('isDriver') ?? false;
   }
 

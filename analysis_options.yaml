@@ -10,6 +10,7 @@ linter:
     unnecessary_statements: true
     prefer_const_literals_to_create_immutables: false
     always_use_package_imports: true
+    constant_identifier_names: false
 #    always_declare_return_types: true
 #    always_put_control_body_on_new_line: true
 #    always_put_required_named_parameters_first: true

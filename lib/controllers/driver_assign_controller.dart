@@ -7,8 +7,7 @@ import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 
 class DriverAssignController extends ChangeNotifier{
   String? _selectedDriver;

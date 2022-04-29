@@ -4,8 +4,7 @@ import 'package:cphflyt/models/user_model.dart';
 import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:flutter/foundation.dart';
-
-import 'bottom_nav_controller.dart';
+import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 
 enum UserType {Driver, Employee, SuperAdmin}
 
