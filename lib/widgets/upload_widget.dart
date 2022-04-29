@@ -8,8 +8,10 @@ import 'package:image_picker/image_picker.dart';
 class UploadWidget extends StatelessWidget {
   final String title;
   final Function pickImage;
+  final bool isAdd;
+  final String? image;
 
-  const UploadWidget({required this.title,required this.pickImage});
+  const UploadWidget({required this.title,required this.pickImage,required this.isAdd, this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +42,10 @@ class UploadWidget extends StatelessWidget {
             border: Border.all(color: Color(0xff0D47A1), width: 4),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 12.h),
+            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: isAdd?0:12.w),
             child: Center(
-              child: Button(
+              child: isAdd?
+              Button(
                   color: Color(0xffE0E0E0),
                   text: "Choose File",
                   textColor: Colors.black,
@@ -54,7 +57,8 @@ class UploadWidget extends StatelessWidget {
                        pickImage(File(image.path));
                     }
                   }
-              ),
+              ):
+              Image.network(image!, fit: BoxFit.cover,),
             ),
           ),
         ),

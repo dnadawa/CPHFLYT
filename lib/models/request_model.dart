@@ -23,6 +23,7 @@ class RequestModel {
   final String others;
   final Filter status;
   final String driver;
+  final bool isCompleted;
 
   RequestModel({
         required this.id,
@@ -44,7 +45,8 @@ class RequestModel {
         required this.breakCount,
         required this.others,
         required this.status,
-        this.driver = ""
+        this.driver = "",
+        this.isCompleted = false,
       });
 
 

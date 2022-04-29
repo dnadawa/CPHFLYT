@@ -201,7 +201,7 @@ class Home extends StatelessWidget {
                           onTap: (){
                             Navigator.push(
                               context,
-                              CupertinoPageRoute(builder: (context) => Details(request: request)),
+                              CupertinoPageRoute(builder: (context) => Details(request: request, isCompleted: request.isCompleted,)),
                             );
                           },
                           child: Card(

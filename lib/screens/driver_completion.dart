@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cphflyt/controllers/driver_controller.dart';
+import 'package:cphflyt/models/completion_model.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
@@ -16,8 +17,9 @@ import 'package:provider/provider.dart';
 class DriverCompletion extends StatefulWidget {
   final bool isAdd;
   final String taskID;
+  final CompleteTask? completeTask;
 
-  DriverCompletion({this.isAdd=true,required this.taskID});
+  const DriverCompletion({this.isAdd=true,required this.taskID, this.completeTask});
 
   @override
   State<DriverCompletion> createState() => _DriverCompletionState();
@@ -46,6 +48,18 @@ class _DriverCompletionState extends State<DriverCompletion> {
   void initState() {
     super.initState();
     taskNumber.text = widget.taskID;
+    given.text = widget.completeTask?.given ?? "";
+    startTime.text = widget.completeTask?.startTime ?? "";
+    endTime.text = widget.completeTask?.endTime ?? "";
+    hourlyRate.text = widget.completeTask?.hourlyRate ?? "";
+    numberOfHours.text = widget.completeTask?.numberOfHours ?? "";
+    paymentType.text = widget.completeTask?.paymentType ?? "";
+    heavyLifting.text = widget.completeTask?.heavyLifting ?? "";
+    garbage.text = widget.completeTask?.garbage ?? "";
+    storage.text = widget.completeTask?.storage ?? "";
+    total.text = widget.completeTask?.total ?? "";
+    driverName.text = widget.completeTask?.driverName ?? "";
+    customerName.text = widget.completeTask?.customerName ?? "";
   }
 
   @override
@@ -134,15 +148,22 @@ class _DriverCompletionState extends State<DriverCompletion> {
                   child: LabelInputField(text: "Samlet beløb",enabled: widget.isAdd,controller: total,keyBoardType: TextInputType.number),
                 ),
 
-
-                UploadWidget(title: "Vedhæft 1",pickImage: (img)=> image1 = img),
-                UploadWidget(title: "Vedhæft 2",pickImage: (img)=> image2 = img),
-                UploadWidget(title: "Vedhæft 3",pickImage: (img)=> image3 = img),
-                UploadWidget(title: "Vedhæft 4",pickImage: (img)=> image4 = img),
-                UploadWidget(title: "Vedhæft 5",pickImage: (img)=> image5 = img),
-                UploadWidget(title: "Vedhæft 6",pickImage: (img)=> image6 = img),
-                UploadWidget(title: "Vedhæft 7",pickImage: (img)=> image7 = img),
-                UploadWidget(title: "Vedhæft 8",pickImage: (img)=> image8 = img),
+                if (widget.isAdd || widget.completeTask!.image1.isNotEmpty)
+                UploadWidget(title: "Vedhæft 1",pickImage: (img)=> image1 = img, isAdd: widget.isAdd, image: widget.completeTask?.image1,),
+                if (widget.isAdd || widget.completeTask!.image2.isNotEmpty)
+                UploadWidget(title: "Vedhæft 2",pickImage: (img)=> image2 = img, isAdd: widget.isAdd, image: widget.completeTask?.image2,),
+                if (widget.isAdd || widget.completeTask!.image3.isNotEmpty)
+                UploadWidget(title: "Vedhæft 3",pickImage: (img)=> image3 = img, isAdd: widget.isAdd, image: widget.completeTask?.image3,),
+                if (widget.isAdd || widget.completeTask!.image4.isNotEmpty)
+                UploadWidget(title: "Vedhæft 4",pickImage: (img)=> image4 = img, isAdd: widget.isAdd, image: widget.completeTask?.image4,),
+                if (widget.isAdd || widget.completeTask!.image5.isNotEmpty)
+                UploadWidget(title: "Vedhæft 5",pickImage: (img)=> image5 = img, isAdd: widget.isAdd, image: widget.completeTask?.image5,),
+                if (widget.isAdd || widget.completeTask!.image6.isNotEmpty)
+                UploadWidget(title: "Vedhæft 6",pickImage: (img)=> image6 = img, isAdd: widget.isAdd, image: widget.completeTask?.image6,),
+                if (widget.isAdd || widget.completeTask!.image7.isNotEmpty)
+                UploadWidget(title: "Vedhæft 7",pickImage: (img)=> image7 = img, isAdd: widget.isAdd, image: widget.completeTask?.image7,),
+                if (widget.isAdd || widget.completeTask!.image8.isNotEmpty)
+                UploadWidget(title: "Vedhæft 8",pickImage: (img)=> image8 = img, isAdd: widget.isAdd, image: widget.completeTask?.image8,),
 
                 ///driver name
                 SignaturePad(
@@ -150,6 +171,7 @@ class _DriverCompletionState extends State<DriverCompletion> {
                     textEditingController: driverName,
                     hint: "Medarbejders Navn",
                     buttonText: "Medarbejders Underskrift",
+                    image: widget.completeTask?.driverSign,
                     onComplete: (Uint8List? imageBytes){
                         driverSignature = imageBytes;
                     },
@@ -161,11 +183,13 @@ class _DriverCompletionState extends State<DriverCompletion> {
                     textEditingController: customerName,
                     hint: "Kundens Navn",
                     buttonText: "Kundens Underskrift",
+                  image: widget.completeTask?.customerSign,
                     onComplete: (Uint8List? imageBytes){
                         customerSignature = imageBytes;
                     },
                 ),
 
+                if (widget.isAdd)
                 Padding(
                   padding: EdgeInsets.only(top: 45.h),
                   child: SizedBox(

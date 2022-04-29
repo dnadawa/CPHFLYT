@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/controllers/driver_assign_controller.dart';
 import 'package:cphflyt/controllers/driver_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
+import 'package:cphflyt/models/completion_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
 import 'package:cphflyt/screens/driver_completion.dart';
+import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/add_chip_field.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/chip_field.dart';
@@ -25,8 +28,9 @@ class Details extends StatefulWidget {
 
   final RequestModel? request;
   final bool isAdd;
+  final bool isCompleted;
 
-  const Details({this.request, this.isAdd=false});
+  const Details({this.request, this.isAdd=false, this.isCompleted=false});
 
   @override
   State<Details> createState() => _DetailsState();
@@ -485,6 +489,30 @@ class _DetailsState extends State<Details> {
                             text: "Complete Task",
                             onPressed: (){
                               Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DriverCompletion(isAdd: true,taskID: widget.request!.id)));
+                            }
+                        )
+                    ),
+                  ),
+
+                ///completed details
+                if (widget.isCompleted)
+                  Padding(
+                    padding: EdgeInsets.only(top: 45.h),
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: Button(
+                            color: kApproved,
+                            text: "Completed Details",
+                            onPressed: () async {
+                              ToastBar(text: 'Fetching data', color: Colors.orange).show();
+                              var driverController = Provider.of<DriverController>(context, listen: false);
+                              CompleteTask task = await driverController.getCompletedTask(widget.request!.id);
+
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => DriverCompletion(
+                                  isAdd: false,
+                                  taskID: widget.request!.id,
+                                  completeTask: task,
+                              )));
                             }
                         )
                     ),

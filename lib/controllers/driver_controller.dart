@@ -199,4 +199,11 @@ class DriverController {
     }
   }
 
+  Future<CompleteTask> getCompletedTask(String id) async {
+    print('called');
+    var dbService = DatabaseService();
+    DocumentSnapshot document = await dbService.getCompletedTask(id);
+    return dbService.createCompleteTaskFromJson(document.data(), id);
+  }
+
 }

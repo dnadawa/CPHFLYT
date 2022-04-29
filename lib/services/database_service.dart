@@ -98,11 +98,43 @@ class DatabaseService extends ChangeNotifier{
           fromAddress: AddressModel(doc['fromAddress'], doc['fromZip'], doc['fromBy']),
           toAddress: AddressModel(doc['toAddress'], doc['toZip'], doc['toBy']),
           status: doc['status']=='pending'?Filter.Pending:doc["status"]=='approved'?Filter.Approved:Filter.Trash,
-          driver: doc.data().containsKey("driver") ? doc['driver'] : ""
+          driver: doc.data().containsKey("driver") ? doc['driver'] : "",
+          isCompleted: doc.data().containsKey("isCompleted") ? doc['isCompleted'] : false
       );
 
       return requestModel;
   }
+
+  CompleteTask createCompleteTaskFromJson(var doc, String taskID) {
+    CompleteTask completeTask = CompleteTask(
+        customerName: doc['customerName'],
+        customerSign: doc['customerSign'],
+        driverName: doc['driverName'],
+        driverSign: doc['driverSign'],
+        endTime: doc['endTime'],
+        garbage: doc['garbage'],
+        given: doc['given'],
+        heavyLifting: doc['heavyLifting'],
+        hourlyRate: doc['hourlyRate'],
+        image1: doc['image1'],
+        image2: doc['image2'],
+        image3: doc['image3'],
+        image4: doc['image4'],
+        image5: doc['image5'],
+        image6: doc['image6'],
+        image7: doc['image7'],
+        image8: doc['image8'],
+        numberOfHours: doc['numberOfHours'],
+        paymentType: doc['paymentType'],
+        startTime: doc['startTime'],
+        storage: doc['storage'],
+        total: doc['total'],
+        taskId: taskID
+    );
+
+    return completeTask;
+  }
+
 
   Future<bool> addDriver(Driver driver) async {
     try{
@@ -236,6 +268,10 @@ class DatabaseService extends ChangeNotifier{
     await _firestore.collection('requests').doc(task.taskId).update({
       'isCompleted': true,
     });
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getCompletedTask(String id) async {
+    return await _firestore.collection('requests').doc(id).collection('completed').doc('details').get();
   }
 
 }

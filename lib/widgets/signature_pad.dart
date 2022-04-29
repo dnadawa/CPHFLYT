@@ -16,8 +16,9 @@ class SignaturePad extends StatelessWidget {
   final String hint;
   final String buttonText;
   final Function onComplete;
+  final String? image;
 
-  const SignaturePad({required this.isAdd,required this.textEditingController,required this.hint,required this.buttonText,required this.onComplete});
+  const SignaturePad({required this.isAdd,required this.textEditingController,required this.hint,required this.buttonText,required this.onComplete, this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +43,8 @@ class SignaturePad extends StatelessWidget {
             children: [
               LabelInputField(text: hint,enabled: isAdd,controller: textEditingController,),
               SizedBox(height: 20.h),
+
+              isAdd?
               SizedBox(
                 width: double.infinity,
                 child: Button(
@@ -125,7 +128,9 @@ class SignaturePad extends StatelessWidget {
                       );
                     }
                 ),
-              ),
+              ):
+              Image.network(image!)
+              ,
             ],
           ),
         ),
