@@ -39,7 +39,7 @@ class AuthService {
         return _userFromFirebase(_auth.currentUser);
     }
 
-    setUserType(String? uid,BuildContext context, UserManagementController userManagement, BottomNavController bottomNavController, {required bool isDriver}) async {
+    setUserType(String? uid,BuildContext context, UserManagementController userManagement, BottomNavController bottomNavController,bool isSignIn, {required bool isDriver}) async {
         if (isDriver){
             DocumentSnapshot userData = await DatabaseService().getDriverFromFirebase(uid!);
             
@@ -55,9 +55,12 @@ class AuthService {
                 String? id = await notificationController.getUserID();
                 await DatabaseService().setNotificationID(id, uid);
 
-                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
-                    DriverHome()), (Route<dynamic> route) => false);
-                ToastBar(text: "Login Successful!", color: Colors.green).show();
+                if(isSignIn){
+                    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
+                        DriverHome()), (Route<dynamic> route) => false);
+                }
+
+                // ToastBar(text: "Login Successful!", color: Colors.green).show();
             }
             else {
                 signOut();
@@ -77,15 +80,22 @@ class AuthService {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setBool('isDriver', false);
 
-                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
-                    Home()), (Route<dynamic> route) => false);
-                ToastBar(text: "Login Successful!", color: Colors.green).show();
+                if(isSignIn){
+                    Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
+                        Home()), (Route<dynamic> route) => false);
+                }
+
+                // ToastBar(text: "Login Successful!", color: Colors.green).show();
             }
             else if (userData.exists && userData.get('role') == 'main-admin'){
                 userManagement.loggedInUserType = UserType.SuperAdmin;
-                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
-                    Home()), (Route<dynamic> route) => false);
-                ToastBar(text: "Login Successful!", color: Colors.green).show();
+
+                if(isSignIn) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        CupertinoPageRoute(builder: (context) =>
+                            Home()), (Route<dynamic> route) => false);
+                }
+                // ToastBar(text: "Login Successful!", color: Colors.green).show();
             }
             else {
                 signOut();
@@ -103,7 +113,7 @@ class AuthService {
             );
 
             String? uid = credential.user?.uid;
-            setUserType(uid, context, userManagement, bottomNavController, isDriver: isDriver);
+            setUserType(uid, context, userManagement, bottomNavController,true, isDriver: isDriver);
 
         } on auth.FirebaseAuthException catch (e) {
             if (e.code == 'user-not-found') {

@@ -45,7 +45,7 @@ class _DriverHomeState extends State<DriverHome> {
               child: FutureBuilder<List>(
                 future: driverController.getRequests(userManagement.loggedInDriver?.uid ?? ''),
                 builder: (BuildContext context, snapshot){
-                  if(!snapshot.hasData){
+                  if(!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
                     return Center(child: CircularProgressIndicator());
                   }
 

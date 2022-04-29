@@ -31,6 +31,7 @@ class Wrapper extends StatelessWidget {
                 context,
                 Provider.of<UserManagementController>(context, listen: false),
                 Provider.of<BottomNavController>(context, listen: false),
+                false,
                 isDriver: snapshot.data ?? false
             );
 

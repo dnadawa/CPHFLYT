@@ -90,7 +90,10 @@ class Home extends StatelessWidget {
                         ),
                         suffixIcon: IconButton(
                           padding: EdgeInsets.zero,
-                          onPressed: ()=>search.clear(),
+                          onPressed: (){
+                            FocusScope.of(context).unfocus();
+                            search.clear();
+                          },
                           icon: Icon(Icons.clear),
                         )
                       ),
@@ -150,7 +153,7 @@ class Home extends StatelessWidget {
             ),
             if(filterController.filter == Filter.Trash)
             SizedBox(height: 30.h,),
-            
+
             ///hide completed
             if(filterController.filter == Filter.Approved)
             Align(
@@ -185,7 +188,7 @@ class Home extends StatelessWidget {
               child: StreamBuilder<QuerySnapshot>(
                 stream: databaseService.getRequests(filter: filterController.filter, from: navController.navItem, completedFilter: filterController.completedFilter),
                 builder: (BuildContext context, snapshot){
-                  if(!snapshot.hasData){
+                  if(!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
                     return Center(child: CircularProgressIndicator());
                   }
 

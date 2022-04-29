@@ -48,7 +48,6 @@ class DriverController {
   }
 
   Future<List<Document>> getRequests(String driverID) async {
-    ToastBar(text: 'Fetching data', color: Colors.orange).show();
     List<Document> tasksList = [];
 
     var sub = await DatabaseService().getRequestsAsDriver(driverID);
@@ -59,7 +58,13 @@ class DriverController {
     for (var element in data) {
       Map doc = element.data();
 
-      List<Location> locations = await locationFromAddress("${doc['fromAddress']} ${doc['fromZip']} ${doc['fromBy']}");
+      List<Location> locations = [];
+      try{
+        locations = await locationFromAddress("${doc['fromAddress']} ${doc['fromZip']} ${doc['fromBy']}");
+      } catch(e){
+        print("error "+e.toString());
+      }
+
       double distanceInMeters = 999999999999999;
 
       if (locations.isNotEmpty && currentPosition!=null) {
@@ -77,7 +82,6 @@ class DriverController {
       return m1.data["distance"].compareTo(m2.data["distance"]);
     });
 
-    ToastBar(text: 'Fetch complete', color: Colors.green).show();
     return tasksList;
   }
 
