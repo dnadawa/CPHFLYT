@@ -12,6 +12,8 @@ import 'package:cphflyt/widgets/upload_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cphflyt/constants.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DriverCompletion extends StatefulWidget {
@@ -91,13 +93,40 @@ class _DriverCompletionState extends State<DriverCompletion> {
                 ///given
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Dato",enabled: widget.isAdd,controller: given,),
+                  child: GestureDetector(
+                      onTap: () async {
+                        if (widget.isAdd){
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2021, 1, 1),
+                            lastDate: DateTime(2023, 12, 31),
+                          );
+
+                          await initializeDateFormatting('da_DK');
+                          given.text = DateFormat.yMMMMd('da_DK').format(pickedDate!);
+                        }
+                      },
+                      child: LabelInputField(text: "Dato",enabled: false,controller: given,)
+                  ),
                 ),
 
                 ///start time
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Start tidspunkt",enabled: widget.isAdd,controller: startTime,),
+                  child: GestureDetector(
+                      onTap: () async {
+                        if (widget.isAdd){
+                          TimeOfDay? selectedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                          );
+
+                          startTime.text = selectedTime?.format(context) ?? '';
+                        }
+                      },
+                      child: LabelInputField(text: "Start tidspunkt",enabled: false,controller: startTime,)
+                  ),
                 ),
 
                 ///end time

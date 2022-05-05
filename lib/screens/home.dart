@@ -222,7 +222,7 @@ class Home extends StatelessWidget {
 
                                         if (filterController.filter == Filter.Approved)
                                         FutureBuilder<DocumentSnapshot<Map>>(
-                                          future: databaseService.getDriverFromFirebase(request.driver),
+                                          future: databaseService.getDriverFromFirebase(request.driver!),
                                           builder: (context, snapshot){
                                             return Container(
                                               decoration: BoxDecoration(

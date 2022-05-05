@@ -22,7 +22,7 @@ class RequestModel {
   final String breakCount;
   final String others;
   final Filter status;
-  final String driver;
+  final String? driver;
   final bool isCompleted;
 
   RequestModel({
@@ -45,7 +45,7 @@ class RequestModel {
         required this.breakCount,
         required this.others,
         required this.status,
-        this.driver = "",
+        this.driver,
         this.isCompleted = false,
       });
 

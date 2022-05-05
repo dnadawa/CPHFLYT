@@ -428,6 +428,23 @@ class _DetailsState extends State<Details> {
                   ),
                 ),
 
+                ///change driver
+                if (!widget.isAdd && widget.request!.status == Filter.Approved && !widget.isCompleted && userController.loggedInUserType != UserType.Driver)
+                  Padding(
+                    padding: EdgeInsets.only(top: 45.h),
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: Button(
+                            color: kApproved,
+                            text: "Change Driver",
+                            onPressed: ()=>showDialog(
+                                context: context,
+                                builder: (BuildContext context) => AssignDriver(requestID: widget.request!.id, assignedDriverID: widget.request!.driver)
+                            )
+                        )
+                    ),
+                  ),
+
                 ///add task
                 if (widget.isAdd)
                   Padding(

@@ -11,8 +11,9 @@ import 'package:provider/provider.dart';
 class AssignDriver extends StatelessWidget {
 
   final String requestID;
+  final String? assignedDriverID;
 
-  const AssignDriver({required this.requestID});
+  const AssignDriver({required this.requestID, this.assignedDriverID});
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,7 @@ class AssignDriver extends StatelessWidget {
                                         child: Padding(
                                           padding: EdgeInsets.all(15.w),
                                           child: Visibility(
-                                              visible: controller.selectedDriver==driver.uid,
+                                              visible: controller.selectedDriver == driver.uid,
                                               maintainAnimation: true,
                                               maintainState: true,
                                               maintainSize: true,
@@ -95,6 +96,18 @@ class AssignDriver extends StatelessWidget {
                             );
                           },
                         );
+                      }
+
+                      // select already selected driver
+                      if (snapshot.connectionState == ConnectionState.waiting){
+                        WidgetsBinding.instance?.addPostFrameCallback((_){
+                          if (assignedDriverID == null){
+                            controller.selectedDriver = null;
+                          }
+                          else{
+                            controller.selectedDriver = assignedDriverID;
+                          }
+                        });
                       }
 
                       return Center(child: CircularProgressIndicator());
