@@ -66,7 +66,7 @@ class DatabaseService extends ChangeNotifier{
           .where('dateDay', isEqualTo: dateFilter.day);
     }
 
-    return query.snapshots();
+    return query.where('idChanged', isEqualTo: 'true').snapshots();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getRequestsAsDriver(String driverID) {
@@ -234,7 +234,8 @@ class DatabaseService extends ChangeNotifier{
       'breakableCount': request.breakCount,
       'other': request.others,
       'status': 'pending',
-      'from': 'manual'
+      'from': 'manual',
+      'idChanged': 'false'
     });
   }
 

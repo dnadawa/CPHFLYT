@@ -26,7 +26,7 @@ class DriverAssignController extends ChangeNotifier{
   void assignDriver(String? uid,String requestID, BuildContext context) async {
       ToastBar(text: "Please wait", color: Colors.orange).show();
       try{
-        // await DatabaseService().assignDriver(uid, requestID);
+        await DatabaseService().assignDriver(uid, requestID);
         var doc = await DatabaseService().getDriverFromFirebase(uid!);
         if (doc.data()!.containsKey('notification') && doc.data()!['notification'] != null){
           await NotificationController().sendNotification(doc.data()!['notification']);
