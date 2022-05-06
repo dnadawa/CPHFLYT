@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/controllers/driver_assign_controller.dart';
+import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
@@ -49,7 +50,7 @@ class AssignDriver extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(15.w),
                   child: FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>(
-                    future: controller.getDrivers(context),
+                    future:  Provider.of<UserManagementController>(context).getDrivers(),
                     builder: (context, snapshot){
                       if (snapshot.hasData){
                         return ListView.builder(

@@ -37,7 +37,7 @@ class Home extends StatelessWidget {
         centerTitle: true,
         title: CustomText(text: "Home", fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
-      drawer: AppDrawer("home"),
+      drawer: AppDrawer("Home"),
       body: Padding(
         padding: EdgeInsets.all(20.w),
         child: Column(

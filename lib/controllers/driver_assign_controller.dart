@@ -21,16 +21,6 @@ class DriverAssignController extends ChangeNotifier{
     return _selectedDriver;
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> getDrivers(BuildContext context) async {
-    try{
-      return await Provider.of<DatabaseService>(context).getDrivers();
-    }
-    catch(e){
-      ToastBar(text: e.toString(), color: Colors.red).show();
-      return null;
-    }
-  }
-
   Driver createDriverFromDocument(var doc){
     return Driver(uid: doc.id, email: doc['email'], name: doc['name']);
   }

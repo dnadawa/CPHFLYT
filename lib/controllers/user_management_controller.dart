@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/employee_model.dart';
 import 'package:cphflyt/models/user_model.dart';
 import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/services/database_service.dart';
+import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
+import 'package:flutter/material.dart';
 
 enum UserType {Driver, Employee, SuperAdmin}
 
@@ -76,4 +79,23 @@ class UserManagementController extends ChangeNotifier {
     return false;
   }
 
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> getDrivers() async {
+    try{
+      return await DatabaseService().getDrivers();
+    }
+    catch(e){
+      ToastBar(text: e.toString(), color: Colors.red).show();
+      return null;
+    }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> getEmployees() async {
+    try{
+      return await DatabaseService().getEmployees();
+    }
+    catch(e){
+      ToastBar(text: e.toString(), color: Colors.red).show();
+      return null;
+    }
+  }
 }

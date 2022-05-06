@@ -29,7 +29,7 @@ class UserManagement extends StatelessWidget {
         centerTitle: true,
         title: CustomText(text: "User Management", fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
-      drawer: AppDrawer("user-management"),
+      drawer: AppDrawer("User Management"),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(25.w),

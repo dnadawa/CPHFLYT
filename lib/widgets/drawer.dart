@@ -2,8 +2,10 @@ import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/screens/home.dart';
 import 'package:cphflyt/screens/user_management.dart';
+import 'package:cphflyt/screens/users.dart';
 import 'package:cphflyt/services/auth_service.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
+import 'package:cphflyt/widgets/drawer_tile.dart';
 import 'package:cphflyt/wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,40 +20,33 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var loggedInUserType = Provider.of<UserManagementController>(context).loggedInUserType;
     return Drawer(
       child: Column(
         children: [
           SizedBox(height: 2 * ScreenUtil().statusBarHeight,),
           Image.asset('assets/logo.png'),
           SizedBox(height: 30.h,),
-          ListTile(
-            leading: Icon(Icons.home, color: location=='home'?Theme.of(context).primaryColor:null),
-            title: CustomText(text: "Home", isBold: true, color: location=='home'?Theme.of(context).primaryColor:Colors.black,),
-            onTap: (){
-              if (location=='home'){
-                Navigator.pop(context);
-              }
-              else{
-                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
-                    Home()), (Route<dynamic> route) => false);
-              }
-            },
-          ),
-          if (Provider.of<UserManagementController>(context).loggedInUserType == UserType.SuperAdmin)
-            ListTile(
-            leading: Icon(Icons.person, color: location=='user-management'?Theme.of(context).primaryColor:null,),
-            title: CustomText(text: "User Management", isBold: true, color: location=='user-management'?Theme.of(context).primaryColor:Colors.black,),
-            onTap: (){
-              if (location=='user-management'){
-                Navigator.pop(context);
-              }
-              else{
-                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
-                    UserManagement()), (Route<dynamic> route) => false);
-              }
-            },
-          ),
+
+          ///home
+          DrawerTile(location: location, iconData: Icons.home, name: "Home", destination: Home()),
+
+          ///user management
+          if (loggedInUserType == UserType.SuperAdmin)
+            DrawerTile(location: location, iconData: Icons.group, name: "User Management", destination: UserManagement()),
+
+          ///list of drivers
+          if (loggedInUserType == UserType.SuperAdmin)
+            DrawerTile(location: location, iconData: Icons.local_shipping, name: "List of Drivers", destination: Users(type: UserType.Driver)),
+
+          ///list of drivers
+          if (loggedInUserType == UserType.SuperAdmin)
+            DrawerTile(location: location, iconData: Icons.person_pin, name: "List of Employees", destination: Users(type: UserType.Employee)),
+
+
           Expanded(child: SizedBox.shrink()),
+
+          ///log out
           ListTile(
             leading: Icon(Icons.logout, color: kDeclined),
             title: CustomText(text: "Log out", isBold: true, color: Colors.black,),

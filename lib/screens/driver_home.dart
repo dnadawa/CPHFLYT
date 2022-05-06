@@ -12,12 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/wrapper.dart';
 
-class DriverHome extends StatefulWidget {
-  @override
-  State<DriverHome> createState() => _DriverHomeState();
-}
-
-class _DriverHomeState extends State<DriverHome> {
+class DriverHome extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     var driverController = Provider.of<DriverController>(context);

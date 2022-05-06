@@ -186,6 +186,11 @@ class DatabaseService extends ChangeNotifier{
     return sub.docs;
   }
 
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getEmployees() async {
+    var sub = await _firestore.collection('admins').where('role', isEqualTo: 'admin').get();
+    return sub.docs;
+  }
+
   assignDriver(String? uid, String requestID) async {
     await _firestore.collection('requests').doc(requestID).update({
       'driver': uid,
