@@ -8,11 +8,15 @@ class NotificationController{
   }
 
   sendNotification(String playerId) async {
-    await OneSignal.shared.postNotification(OSCreateNotification(
+    try {
+      await OneSignal.shared.postNotification(OSCreateNotification(
         playerIds: [playerId],
         content: "You have received a new job! Please check the app.",
         heading: "You have a new job!",
-    ));
+      ));
+    }catch (e){
+      print(e.toString());
+    }
   }
 
 }

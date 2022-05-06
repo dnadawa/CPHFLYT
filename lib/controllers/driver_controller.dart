@@ -99,7 +99,7 @@ class DriverController {
       email: doc.data['email'],
       type: doc.data['type'],
       packageType: doc.data['package'],
-      date: "${doc.data['dateDay']}.${doc.data['dateMonth']} ${doc.data['dateYear']}",
+      date: "${doc.data['dateDay']}. ${doc.data['dateMonth']} ${doc.data['dateYear']}",
       flexible: doc.data['flexible'],
       isPacking: doc.data['isUnpack'] == 'Ja',
       isCleaning: doc.data['isCleaning'] == 'Ja',

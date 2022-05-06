@@ -95,7 +95,7 @@ class DatabaseService extends ChangeNotifier{
           email: doc['email'],
           type: doc['type'],
           packageType: doc['package'],
-          date: "${doc['dateDay']}.${doc['dateMonth']} ${doc['dateYear']}",
+          date: "${doc['dateDay']}. ${doc['dateMonth']} ${doc['dateYear']}",
           flexible: doc['flexible'],
           isPacking: doc['isUnpack'] == 'Ja',
           isCleaning: doc['isCleaning'] == 'Ja',
@@ -207,7 +207,7 @@ class DatabaseService extends ChangeNotifier{
 
   addRequest(RequestModel request) async {
     await initializeDateFormatting('da_DK');
-    DateTime parsedDate = DateTime.parse(request.date);
+    DateTime parsedDate = DateFormat.yMMMMd('da_DK').parse(request.date);
 
     await _firestore.collection('requests').add({
       'firstName': request.firstName,
@@ -235,6 +235,37 @@ class DatabaseService extends ChangeNotifier{
       'other': request.others,
       'status': 'pending',
       'from': 'manual'
+    });
+  }
+
+  editRequest(RequestModel request) async {
+    await initializeDateFormatting('da_DK');
+    DateTime parsedDate = DateFormat.yMMMMd('da_DK').parse(request.date);
+
+    await _firestore.collection('requests').doc(request.id).update({
+      'firstName': request.firstName,
+      'lastName': request.lastName,
+      'phone': request.telePhone,
+      'email': request.email,
+      'type': request.type,
+      'package': request.packageType,
+      'dateDay': parsedDate.day,
+      'dateMonth': capitalize(DateFormat('MMMM', 'da_DK').format(parsedDate)),
+      'dateYear': parsedDate.year,
+      'fromAddress': request.fromAddress.address,
+      'fromZip': request.fromAddress.zip,
+      'fromBy': request.fromAddress.by,
+      'toAddress': request.toAddress.address,
+      'toZip': request.toAddress.zip,
+      'toBy': request.toAddress.by,
+      'flexible': request.flexible,
+      'isUnpack': request.isPacking?'Ja':'Nej',
+      'isCleaning': request.isCleaning?'Ja':'Nej',
+      'isHeavy': request.isHeavy?'Ja':'Nej',
+      'heavyCount': request.heavyCount,
+      'isBreakable': request.isBreakable?'Ja':'Nej',
+      'breakableCount': request.breakCount,
+      'other': request.others,
     });
   }
 

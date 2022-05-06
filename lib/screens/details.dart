@@ -54,15 +54,17 @@ class _DetailsState extends State<Details> {
   TextEditingController toZip = TextEditingController();
   TextEditingController toBy = TextEditingController();
 
-  DateTime? selectedDate;
-  String type = "Privat";
-  String packageType = "Mellem pakke";
-  String flexibleAdd = "3 dage";
-  bool isPacking = true;
-  bool isCleaning = true;
-  bool isHeavy = true;
-  bool isBreakable = true;
+  late String type;
+  late String packageType;
+  late bool isPacking;
+  late bool isCleaning;
+  late bool isHeavy;
+  late bool isBreakable;
+  late bool isEdit;
 
+  setAddress(TextEditingController controller, AddressModel addressModel){
+    controller.text = addressModel.getAddressAsString();
+  }
 
   @override
   void initState() {
@@ -74,10 +76,27 @@ class _DetailsState extends State<Details> {
     date.text = widget.request?.date ?? "";
     fromAddress.text = widget.request?.fromAddress.getAddressAsString() ?? "";
     toAddress.text = widget.request?.toAddress.getAddressAsString() ?? "";
-    flexible.text = widget.request?.flexible ?? "";
+    flexible.text = widget.request?.flexible ?? "3 dage";
     heavyCount.text = widget.request?.heavyCount ?? "";
     breakCount.text = widget.request?.breakCount ?? "";
     others.text = widget.request?.others ?? "";
+    isEdit = widget.isAdd;
+
+    fromAdd.text = widget.request?.fromAddress.address ?? "";
+    fromZip.text = widget.request?.fromAddress.zip ?? "";
+    fromBy.text = widget.request?.fromAddress.by ?? "";
+
+    toAdd.text = widget.request?.toAddress.address ?? "";
+    toZip.text = widget.request?.toAddress.zip ?? "";
+    toBy.text = widget.request?.toAddress.by ?? "";
+
+    type = widget.request?.type ?? "Privat";
+    packageType = widget.request?.packageType ?? "Mellem pakke";
+    isPacking = widget.request?.isPacking ?? true;
+    isCleaning = widget.request?.isCleaning ?? true;
+    isHeavy = widget.request?.isHeavy ?? true;
+    isBreakable = widget.request?.isBreakable ?? true;
+
   }
 
   @override
@@ -89,6 +108,23 @@ class _DetailsState extends State<Details> {
       appBar: AppBar(
         centerTitle: true,
         title: CustomText(text: widget.isAdd?"Add a New Task":widget.request!.id, fontSize: 22.sp, isBold: true,color: Colors.white,),
+        actions: [
+          if(!widget.isAdd && userController.loggedInUserType != UserType.Driver)
+            IconButton(
+                onPressed: (){
+                  setState(() {
+                    isEdit = !isEdit;
+                  });
+
+                  if (!isEdit){
+                    setAddress(fromAddress, AddressModel(fromAdd.text, fromZip.text, fromBy.text));
+                    setAddress(toAddress, AddressModel(toAdd.text, toZip.text, toBy.text));
+                    addEditTask(isEdit: true);
+                  }
+                },
+                icon: Icon(isEdit ? Icons.check : Icons.edit)
+            )
+        ],
       ),
       body: Card(
         margin: EdgeInsets.all(20.w),
@@ -110,13 +146,13 @@ class _DetailsState extends State<Details> {
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(right: 15.w),
-                          child: LabelInputField(text: "Fornavn *", controller: firstName,enabled: widget.isAdd,),
+                          child: LabelInputField(text: "Fornavn *", controller: firstName,enabled: isEdit,),
                         )
                     ),
                     Expanded(
                         child: Padding(
                           padding: EdgeInsets.only(left: 15.w),
-                          child: LabelInputField(text: "Efternavn *", controller: lastName,enabled: widget.isAdd,),
+                          child: LabelInputField(text: "Efternavn *", controller: lastName,enabled: isEdit,),
                         )
                     ),
                   ],
@@ -125,30 +161,30 @@ class _DetailsState extends State<Details> {
                 ///telephone
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Tlf.Nr. *",controller: telephone,enabled: widget.isAdd,keyBoardType: TextInputType.phone,),
+                  child: LabelInputField(text: "Tlf.Nr. *",controller: telephone,enabled: isEdit,keyBoardType: TextInputType.phone,),
                 ),
 
                 ///email
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Mail *",controller: email,enabled: widget.isAdd,keyBoardType: TextInputType.emailAddress,),
+                  child: LabelInputField(text: "Mail *",controller: email,enabled: isEdit,keyBoardType: TextInputType.emailAddress,),
                 ),
 
                 ///type
                 ChipField(
-                  isAdd: widget.isAdd,
+                  isAdd: isEdit,
                   text: 'Privat eller erhverv?',
                   items: [
                     'Privat',
                     'Erhverv',
                   ],
-                  initialItem: widget.request?.type,
+                  initialItem: type,
                   onChanged: (value)=>type=value,
                 ),
 
                 ///package type
-                  ChipField(
-                    isAdd: widget.isAdd,
+                ChipField(
+                    isAdd: isEdit,
                     text: 'Hvilken pakke ønsker du tilbud på?',
                     items: [
                       'Mellem pakke',
@@ -156,7 +192,7 @@ class _DetailsState extends State<Details> {
                       'Lille pakke',
                       'Lej flyttemænd'
                     ],
-                    initialItem: widget.request?.packageType,
+                    initialItem: packageType,
                     onChanged: (value)=>packageType=value,
                   ),
 
@@ -165,7 +201,7 @@ class _DetailsState extends State<Details> {
                   padding: EdgeInsets.only(top: 25.h),
                   child: GestureDetector(
                       onTap: () async {
-                        if (widget.isAdd){
+                        if (isEdit){
                           DateTime? pickedDate = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
@@ -173,7 +209,6 @@ class _DetailsState extends State<Details> {
                               lastDate: DateTime(2023, 12, 31),
                           );
 
-                          selectedDate = pickedDate;
                           await initializeDateFormatting('da_DK');
                           date.text = DateFormat.yMMMMd('da_DK').format(pickedDate!);
                         }
@@ -181,16 +216,16 @@ class _DetailsState extends State<Details> {
                       child: LabelInputField(text: "Hvornår skal du flytte? *",controller: date,)),
                 ),
 
-                //show only when adding
+                //show only when viewing
                 ///from address
-                if(!widget.isAdd)
+                if(!isEdit)
                   Padding(
                   padding: EdgeInsets.only(top: 25.h),
                   child: LabelInputField(text: "Hvor skal du flytte fra?", maxLines: null,controller: fromAddress,),
                 ),
                 ///from add google map button
                 if(userController.loggedInUserType == UserType.Driver)
-                Center(
+                  Center(
                   child: Button(
                       color: Color(0xffE68C36),
                       text: "Show location on map",
@@ -198,12 +233,36 @@ class _DetailsState extends State<Details> {
                   ),
                 ),
 
-                ///to address
-                if(!widget.isAdd)
+                //show only when adding
+                /// FROM ADDRESS ADD
+                if(isEdit)
                   Padding(
-                  padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvor skal du flytte til?", maxLines: null,controller: toAddress,),
-                ),
+                    padding: EdgeInsets.only(top: 25.h),
+                    child: CustomText(text: "Hvor skal du flytte fra?",isBold: true),
+                  ),
+                if(isEdit)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "Adresse *",controller: fromAdd,enabled: isEdit,),
+                  ),
+                if(isEdit)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "Postnummer *",controller: fromZip,enabled: isEdit,),
+                  ),
+                if(isEdit)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: LabelInputField(text: "By *",controller: fromBy,enabled: isEdit,),
+                  ),
+
+
+                ///to address
+                if(!isEdit)
+                  Padding(
+                    padding: EdgeInsets.only(top: 25.h),
+                    child: LabelInputField(text: "Hvor skal du flytte til?", maxLines: null,controller: toAddress,),
+                  ),
                 ///to add google map button
                 if(userController.loggedInUserType == UserType.Driver)
                   Center(
@@ -213,59 +272,33 @@ class _DetailsState extends State<Details> {
                         onPressed: () async => driverController.redirectToGoogleMaps(widget.request!.toAddress)
                     ),
                   ),
-                
-                
 
-                //show only when viewing
-                /// FROM ADDRESS
-                if(widget.isAdd)
-                  Padding(
-                    padding: EdgeInsets.only(top: 25.h),
-                    child: CustomText(text: "Hvor skal du flytte fra?",isBold: true),
-                  ),
-                if(widget.isAdd)
-                  Padding(
-                    padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Adresse *",controller: fromAdd,enabled: widget.isAdd,),
-                  ),
-                if(widget.isAdd)
-                  Padding(
-                    padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Postnummer *",controller: fromZip,enabled: widget.isAdd,),
-                  ),
-                if(widget.isAdd)
-                  Padding(
-                    padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "By *",controller: fromBy,enabled: widget.isAdd,),
-                  ),
-
-
-                /// TO ADDRESS
-                if(widget.isAdd)
+                /// TO ADDRESS ADD
+                if(isEdit)
                   Padding(
                     padding: EdgeInsets.only(top: 25.h),
                     child: CustomText(text: "Hvor skal du flytte til?",isBold: true),
                   ),
-                if(widget.isAdd)
+                if(isEdit)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Adresse *",controller: toAdd,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "Adresse *",controller: toAdd,enabled: isEdit,),
                   ),
-                if(widget.isAdd)
+                if(isEdit)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "Postnummer *",controller: toZip,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "Postnummer *",controller: toZip,enabled: isEdit,),
                   ),
-                if(widget.isAdd)
+                if(isEdit)
                   Padding(
                     padding: EdgeInsets.only(top: 8.h),
-                    child: LabelInputField(text: "By *",controller: toBy,enabled: widget.isAdd,),
+                    child: LabelInputField(text: "By *",controller: toBy,enabled: isEdit,),
                   ),
 
                 ///flexible
-                widget.isAdd?
+                isEdit?
                   ChipField(
-                    isAdd: widget.isAdd,
+                    isAdd: isEdit,
                     text: 'Er flyttedagen fleksibel?',
                     items: [
                       '3 dage',
@@ -276,7 +309,8 @@ class _DetailsState extends State<Details> {
                       '1 uge+',
                       'Nej',
                     ],
-                    onChanged: (value)=>flexibleAdd=value,
+                    initialItem: flexible.text,
+                    onChanged: (value) => flexible.text = value,
                   ):
                   Padding(
                     padding: EdgeInsets.only(top: 25.h),
@@ -285,74 +319,73 @@ class _DetailsState extends State<Details> {
 
 
                 ///isPacking
-
-                  ChipField(
-                    isAdd: widget.isAdd,
+                ChipField(
+                    isAdd: isEdit,
                     text: 'Skal flyttefirmaet stå for nedpakning af dine ting?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
-                    initialItem: !widget.isAdd ? (widget.request!.isPacking?"Ja":"Nej") : null,
-                    onChanged: (value)=>isPacking = value == 'Ja',
+                    initialItem: !widget.isAdd ? (isPacking?"Ja":"Nej") : null,
+                    onChanged: (value)=> isPacking = value == 'Ja',
                   ),
 
                 ///isCleaning
-                  ChipField(
-                    isAdd: widget.isAdd,
+                ChipField(
+                    isAdd: isEdit,
                     text: 'Vil du have flytterengøring i din nuværende bolig?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
-                    initialItem: !widget.isAdd ? (widget.request!.isCleaning?"Ja":"Nej") : null,
+                    initialItem: !widget.isAdd ? (isCleaning?"Ja":"Nej") : null,
                     onChanged: (value)=>isCleaning = value == 'Ja',
                   ),
 
                 ///isHeavy
-                  ChipField(
-                    isAdd: widget.isAdd,
+                ChipField(
+                    isAdd: isEdit,
                     text: 'Skal der flyttes særligt tungt inventar?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
-                    initialItem: !widget.isAdd ? (widget.request!.isHeavy?"Ja":"Nej") : null,
+                    initialItem: !widget.isAdd ? (isHeavy?"Ja":"Nej") : null,
                     onChanged: (value)=>isHeavy = value == 'Ja',
                   ),
 
                 ///heavy count
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: heavyCount,enabled: widget.isAdd,keyBoardType: TextInputType.number,),
+                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: heavyCount,enabled: isEdit,keyBoardType: TextInputType.number,),
                 ),
 
                 ///isBreakable
-                  ChipField(
-                    isAdd: widget.isAdd,
+                ChipField(
+                    isAdd: isEdit,
                     text: 'Skal der flyttes inventar som nemt kan gå i stykker?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
-                    initialItem: !widget.isAdd ? (widget.request!.isBreakable?"Ja":"Nej") : null,
+                    initialItem: !widget.isAdd ? (isBreakable?"Ja":"Nej") : null,
                     onChanged: (value)=>isBreakable = value == 'Ja',
                   ),
 
                 ///break count
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: breakCount,enabled: widget.isAdd,keyBoardType: TextInputType.number,),
+                  child: LabelInputField(text: "Hvis ja, hvor meget?",controller: breakCount,enabled: isEdit,keyBoardType: TextInputType.number,),
                 ),
 
                 ///others
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Andre bemærkninger", maxLines: null,controller: others,enabled: widget.isAdd,),
+                  child: LabelInputField(text: "Andre bemærkninger", maxLines: null,controller: others,enabled: isEdit,),
                 ),
 
                 /// approve and decline
-                if (!widget.isAdd && widget.request!.status == Filter.Pending)
+                if (!widget.isAdd && widget.request!.status == Filter.Pending && !isEdit)
                   Padding(
                   padding: EdgeInsets.only(top: 45.h),
                   child: Row(
@@ -382,7 +415,7 @@ class _DetailsState extends State<Details> {
                 ),
 
                 ///change driver
-                if (!widget.isAdd && widget.request!.status == Filter.Approved && !widget.isCompleted && userController.loggedInUserType != UserType.Driver)
+                if (!widget.isAdd && widget.request!.status == Filter.Approved && !widget.isCompleted && userController.loggedInUserType != UserType.Driver && !isEdit)
                   Padding(
                     padding: EdgeInsets.only(top: 45.h),
                     child: SizedBox(
@@ -407,41 +440,7 @@ class _DetailsState extends State<Details> {
                         child: Button(
                             color: kApproved,
                             text: "Add Task",
-                            onPressed: (){
-
-                              bool isValidated = firstName.text.isNotEmpty && lastName.text.isNotEmpty && telephone.text.isNotEmpty && email.text.isNotEmpty &&
-                                  date.text.isNotEmpty && fromAdd.text.isNotEmpty && fromZip.text.isNotEmpty && fromBy.text.isNotEmpty &&
-                                  toAdd.text.isNotEmpty && toZip.text.isNotEmpty && toBy.text.isNotEmpty;
-
-                                if (isValidated){
-                                  RequestModel newRequest = RequestModel(
-                                      id: "",
-                                      firstName: firstName.text,
-                                      lastName: lastName.text,
-                                      telePhone: telephone.text,
-                                      email: email.text,
-                                      type: type,
-                                      packageType: packageType,
-                                      date: DateFormat('yyyy-MM-dd').format(selectedDate!),
-                                      fromAddress: AddressModel(fromAdd.text, fromZip.text, fromBy.text),
-                                      toAddress: AddressModel(toAdd.text, toZip.text, toBy.text),
-                                      flexible: flexibleAdd,
-                                      isPacking: isPacking,
-                                      isCleaning: isCleaning,
-                                      isHeavy: isHeavy,
-                                      heavyCount: heavyCount.text,
-                                      isBreakable: isBreakable,
-                                      breakCount: breakCount.text,
-                                      others: others.text,
-                                      status: Filter.Pending
-                                  );
-
-                                  Provider.of<DriverAssignController>(context, listen: false).addRequest(newRequest, context);
-                                }
-                                else {
-                                  ToastBar(text: "Please fill required fields!", color: Colors.red).show();
-                                }
-                            }
+                            onPressed: () => addEditTask(isEdit: false)
                         )
                     ),
                   ),
@@ -463,7 +462,7 @@ class _DetailsState extends State<Details> {
                   ),
 
                 ///completed details
-                if (widget.isCompleted)
+                if (widget.isCompleted && !isEdit)
                   Padding(
                     padding: EdgeInsets.only(top: 45.h),
                     child: SizedBox(
@@ -492,4 +491,46 @@ class _DetailsState extends State<Details> {
       ),
     );
   }
+
+  addEditTask({required bool isEdit}){
+    bool isValidated = firstName.text.isNotEmpty && lastName.text.isNotEmpty && telephone.text.isNotEmpty && email.text.isNotEmpty &&
+        date.text.isNotEmpty && fromAdd.text.isNotEmpty && fromZip.text.isNotEmpty && fromBy.text.isNotEmpty &&
+        toAdd.text.isNotEmpty && toZip.text.isNotEmpty && toBy.text.isNotEmpty;
+
+    if (isValidated){
+      RequestModel newRequest = RequestModel(
+          id: widget.request?.id ?? "",
+          firstName: firstName.text,
+          lastName: lastName.text,
+          telePhone: telephone.text,
+          email: email.text,
+          type: type,
+          packageType: packageType,
+          date: date.text.toLowerCase(),
+          fromAddress: AddressModel(fromAdd.text, fromZip.text, fromBy.text),
+          toAddress: AddressModel(toAdd.text, toZip.text, toBy.text),
+          flexible: flexible.text,
+          isPacking: isPacking,
+          isCleaning: isCleaning,
+          isHeavy: isHeavy,
+          heavyCount: heavyCount.text,
+          isBreakable: isBreakable,
+          breakCount: breakCount.text,
+          others: others.text,
+          status: Filter.Pending
+      );
+
+      var controller = Provider.of<DriverAssignController>(context, listen: false);
+      if (isEdit){
+        controller.editRequest(newRequest, context);
+      }
+      else{
+        controller.addRequest(newRequest, context);
+      }
+    }
+    else {
+      ToastBar(text: "Please fill required fields!", color: Colors.red).show();
+    }
+  }
+
 }

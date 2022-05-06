@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/notification_controller.dart';
 import 'package:cphflyt/models/driver_model.dart';
 import 'package:cphflyt/models/request_model.dart';
@@ -6,7 +5,6 @@ import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 
 class DriverAssignController extends ChangeNotifier{
@@ -28,7 +26,7 @@ class DriverAssignController extends ChangeNotifier{
   void assignDriver(String? uid,String requestID, BuildContext context) async {
       ToastBar(text: "Please wait", color: Colors.orange).show();
       try{
-        await DatabaseService().assignDriver(uid, requestID);
+        // await DatabaseService().assignDriver(uid, requestID);
         var doc = await DatabaseService().getDriverFromFirebase(uid!);
         if (doc.data()!.containsKey('notification') && doc.data()!['notification'] != null){
           await NotificationController().sendNotification(doc.data()!['notification']);
@@ -82,6 +80,17 @@ class DriverAssignController extends ChangeNotifier{
       await DatabaseService().addRequest(request);
       ToastBar(text: "New Task Added!", color: Colors.green).show();
       Navigator.popUntil(context, (route) => route.isFirst);
+    }
+    catch (e){
+      ToastBar(text: e.toString(), color: Colors.red).show();
+    }
+  }
+
+  Future<void> editRequest(RequestModel request, BuildContext context) async {
+    ToastBar(text: "Please wait", color: Colors.orange).show();
+    try{
+      await DatabaseService().editRequest(request);
+      ToastBar(text: "Task Edited!", color: Colors.green).show();
     }
     catch (e){
       ToastBar(text: e.toString(), color: Colors.red).show();
