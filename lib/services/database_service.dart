@@ -10,6 +10,7 @@ import 'package:cphflyt/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:cphflyt/constants.dart';
 
 class DatabaseService extends ChangeNotifier{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -21,7 +22,7 @@ class DatabaseService extends ChangeNotifier{
     notifyListeners();
   }
 
-  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website,CompletedFilter completedFilter = CompletedFilter.All}) {
+  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website,CompletedFilter completedFilter = CompletedFilter.All, DateTime? dateFilter}) {
     Query query = _firestore.collection('requests');
 
     ///filter
@@ -56,7 +57,15 @@ class DatabaseService extends ChangeNotifier{
     else{
       query = query.where('from', isEqualTo: 'manual');
     }
-    
+
+    ///date filter
+    if(dateFilter != null){
+      query = query
+          .where('dateYear', isEqualTo: dateFilter.year)
+          .where('dateMonth', isEqualTo: capitalize(DateFormat.MMMM('da_DK').format(dateFilter)))
+          .where('dateDay', isEqualTo: dateFilter.day);
+    }
+
     return query.snapshots();
   }
 
@@ -192,7 +201,6 @@ class DatabaseService extends ChangeNotifier{
   }
 
   addRequest(RequestModel request) async {
-
     await initializeDateFormatting('da_DK');
     DateTime parsedDate = DateTime.parse(request.date);
 
@@ -204,7 +212,7 @@ class DatabaseService extends ChangeNotifier{
       'type': request.type,
       'package': request.packageType,
       'dateDay': parsedDate.day,
-      'dateMonth': DateFormat('MMMM', 'da_DK').format(parsedDate),
+      'dateMonth': capitalize(DateFormat('MMMM', 'da_DK').format(parsedDate)),
       'dateYear': parsedDate.year,
       'fromAddress': request.fromAddress.address,
       'fromZip': request.fromAddress.zip,

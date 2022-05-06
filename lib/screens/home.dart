@@ -14,6 +14,8 @@ import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:cphflyt/constants.dart';
@@ -154,39 +156,84 @@ class Home extends StatelessWidget {
             if(filterController.filter == Filter.Trash)
             SizedBox(height: 30.h,),
 
-            ///hide completed
-            if(filterController.filter == Filter.Approved)
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r),
-                  border: Border.all(
-                    color: Theme.of(context).primaryColor,
-                    width: 2
-                  )
+            ///hide completed & date filter
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ///date picker
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2021, 1, 1),
+                        lastDate: DateTime(2023, 12, 31),
+                        cancelText: 'Clear'
+                      );
+                      await initializeDateFormatting('da_DK');
+                      filterController.dateFilter = pickedDate;
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      height: 40.h,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          border: Border.all(
+                              color: Theme.of(context).primaryColor,
+                              width: 2
+                          )
+                      ),
+                      child: Center(
+                          child: filterController.dateFilter == null ?
+                          Icon(Icons.calendar_today, color: kLightBlue) :
+                          CustomText(text: filterController.dateFilter == null ? "" : DateFormat.yMMMMd('da_DK').format(filterController.dateFilter!))
+                      ),
+                    ),
+                  ),
                 ),
-                child: DropdownButton(
-                    underline: SizedBox.shrink(),
-                    value: filterController.completedFilter,
-                    items: [
-                      DropdownMenuItem(child: CustomText(text: 'All'), value: CompletedFilter.All,),
-                      DropdownMenuItem(child: CustomText(text: 'Not Completed'), value: CompletedFilter.NotCompleted,),
-                      DropdownMenuItem(child: CustomText(text: 'Completed'), value: CompletedFilter.Completed,),
-                    ],
-                    onChanged: (CompletedFilter? val){
-                      filterController.completedFilter = val ?? CompletedFilter.All;
-                    }
+
+                if(filterController.filter == Filter.Approved)
+                ///dropdown
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: Theme.of(context).primaryColor,
+                        width: 2
+                      )
+                    ),
+                    child: DropdownButton(
+                        underline: SizedBox.shrink(),
+                        value: filterController.completedFilter,
+                        items: [
+                          DropdownMenuItem(child: CustomText(text: 'All'), value: CompletedFilter.All,),
+                          DropdownMenuItem(child: CustomText(text: 'Not Completed'), value: CompletedFilter.NotCompleted,),
+                          DropdownMenuItem(child: CustomText(text: 'Completed'), value: CompletedFilter.Completed,),
+                        ],
+                        onChanged: (CompletedFilter? val){
+                          filterController.completedFilter = val ?? CompletedFilter.All;
+                        }
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-            if(filterController.filter == Filter.Approved)
             SizedBox(height: 20.h,),
 
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getRequests(filter: filterController.filter, from: navController.navItem, completedFilter: filterController.completedFilter),
+                stream: databaseService.getRequests(
+                    filter: filterController.filter,
+                    from: navController.navItem,
+                    completedFilter: filterController.completedFilter,
+                    dateFilter: filterController.dateFilter
+                ),
                 builder: (BuildContext context, snapshot){
                   if(!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting){
                     return Center(child: CircularProgressIndicator());
