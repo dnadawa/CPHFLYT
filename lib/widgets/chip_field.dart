@@ -1,37 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:multi_select_flutter/chip_field/multi_select_chip_field.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
 
-class ChipField extends StatelessWidget {
+class ChipField extends StatefulWidget {
   final String text;
-  final List<String?>? initialValue;
-  final List<MultiSelectItem> items;
-  final double? fontSize;
+  final List<String> items;
+  final Function onChanged;
+  final String? initialItem;
+  final bool isAdd;
 
-  const ChipField({required this.text,required this.initialValue,required this.items, this.fontSize});
+  const ChipField(
+      {required this.text,
+      required this.items,
+      required this.onChanged,
+      this.initialItem,
+      required this.isAdd});
+
+  @override
+  _ChipFieldState createState() => _ChipFieldState();
+}
+
+class _ChipFieldState extends State<ChipField> {
+  List<Widget> items = [];
+  String? selectedElement;
+
+  buildItems() {
+    items.clear();
+
+    for (var element in widget.items) {
+      items.add(GestureDetector(
+        onTap: () {
+          if (widget.isAdd) {
+            selectedElement = element;
+            buildItems();
+            widget.onChanged(element);
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xff1470AF), width: 2),
+            color: selectedElement == element ? Color(0xff1470AF) : Colors.white,
+          ),
+          margin: EdgeInsets.symmetric(vertical: 5.h, horizontal: 3.w),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 15.w),
+            child: Text(
+              element,
+              style: TextStyle(
+                color: selectedElement == element ? Colors.white : Colors.black,
+              ),
+            ),
+          ),
+        ),
+      ));
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedElement = widget.initialItem ?? widget.items[0];
+    buildItems();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 25.h),
-      child: AbsorbPointer(
-        absorbing: true,
-        child: MultiSelectChipField(
-          searchable: false,
-          title: Text(text,style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: fontSize??16.sp),),
-          chipShape: RoundedRectangleBorder(borderRadius: BorderRadius.zero,side: BorderSide(color: Theme.of(context).primaryColor)),
-          decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor,width: 3),
-              borderRadius: BorderRadius.circular(8.r)
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 25.h),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
+              color: Color(0xff1470AF),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(10.h),
+              child: Text(
+                widget.text,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            width: double.infinity,
           ),
-          selectedChipColor: Theme.of(context).primaryColor,
-          selectedTextStyle: TextStyle(color: Colors.white),
-          scroll: false,
-          initialValue: initialValue,
-          items: items,
         ),
-      ),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
+            border: Border.all(color: Color(0xff5B9AC6), width: 4),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(8.w),
+            child: Wrap(
+              children: items,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

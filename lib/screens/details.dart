@@ -8,9 +8,8 @@ import 'package:cphflyt/models/completion_model.dart';
 import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/screens/assign_driver.dart';
 import 'package:cphflyt/screens/driver_completion.dart';
-import 'package:cphflyt/widgets/add_chip_field.dart';
-import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/chip_field.dart';
+import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:cphflyt/widgets/toast.dart';
@@ -19,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Details extends StatefulWidget {
@@ -137,27 +135,20 @@ class _DetailsState extends State<Details> {
                 ),
 
                 ///type
-                widget.isAdd?
-                AddChipField(
+                ChipField(
+                  isAdd: widget.isAdd,
                   text: 'Privat eller erhverv?',
                   items: [
                     'Privat',
                     'Erhverv',
                   ],
+                  initialItem: widget.request?.type,
                   onChanged: (value)=>type=value,
-                ):
-                ChipField(
-                  text: 'Privat eller erhverv?',
-                  initialValue: [widget.request?.type],
-                  items: [
-                    MultiSelectItem('Privat', "Privat"),
-                    MultiSelectItem('Erhverv', "Erhverv"),
-                  ],
                 ),
 
                 ///package type
-                widget.isAdd?
-                  AddChipField(
+                  ChipField(
+                    isAdd: widget.isAdd,
                     text: 'Hvilken pakke ønsker du tilbud på?',
                     items: [
                       'Mellem pakke',
@@ -165,17 +156,8 @@ class _DetailsState extends State<Details> {
                       'Lille pakke',
                       'Lej flyttemænd'
                     ],
+                    initialItem: widget.request?.packageType,
                     onChanged: (value)=>packageType=value,
-                  ):
-                  ChipField(
-                      text: 'Hvilken pakke ønsker du tilbud på?',
-                      initialValue: [widget.request?.packageType],
-                      items: [
-                        MultiSelectItem('Mellem pakke', "Mellem pakke"),
-                        MultiSelectItem('Stor pakke', "Stor pakke"),
-                        MultiSelectItem('Lille pakke', "Lille pakke"),
-                        MultiSelectItem('Lej flyttemænd', "Lej flyttemænd"),
-                      ],
                   ),
 
                 ///date
@@ -282,7 +264,8 @@ class _DetailsState extends State<Details> {
 
                 ///flexible
                 widget.isAdd?
-                  AddChipField(
+                  ChipField(
+                    isAdd: widget.isAdd,
                     text: 'Er flyttedagen fleksibel?',
                     items: [
                       '3 dage',
@@ -302,63 +285,41 @@ class _DetailsState extends State<Details> {
 
 
                 ///isPacking
-                widget.isAdd?
-                  AddChipField(
+
+                  ChipField(
+                    isAdd: widget.isAdd,
                     text: 'Skal flyttefirmaet stå for nedpakning af dine ting?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
+                    initialItem: !widget.isAdd ? (widget.request!.isPacking?"Ja":"Nej") : null,
                     onChanged: (value)=>isPacking = value == 'Ja',
-                  ):
-                  ChipField(
-                  text: 'Skal flyttefirmaet stå for nedpakning af dine ting?',
-                  initialValue: [widget.request!.isPacking?"Ja":"Nej"],
-                  fontSize: 12.sp,
-                  items: [
-                    MultiSelectItem('Ja', "Ja"),
-                    MultiSelectItem('Nej', "Nej"),
-                  ],
-                ),
+                  ),
 
                 ///isCleaning
-                widget.isAdd?
-                  AddChipField(
+                  ChipField(
+                    isAdd: widget.isAdd,
                     text: 'Vil du have flytterengøring i din nuværende bolig?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
+                    initialItem: !widget.isAdd ? (widget.request!.isCleaning?"Ja":"Nej") : null,
                     onChanged: (value)=>isCleaning = value == 'Ja',
-                  ):
-                  ChipField(
-                  text: 'Vil du have flytterengøring i din nuværende bolig?',
-                  initialValue:  [widget.request!.isCleaning?"Ja":"Nej"],
-                  fontSize: 12.sp,
-                  items: [
-                    MultiSelectItem('Ja', "Ja"),
-                    MultiSelectItem('Nej', "Nej"),
-                  ],
-                ),
+                  ),
 
                 ///isHeavy
-                widget.isAdd?
-                  AddChipField(
+                  ChipField(
+                    isAdd: widget.isAdd,
                     text: 'Skal der flyttes særligt tungt inventar?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
+                    initialItem: !widget.isAdd ? (widget.request!.isHeavy?"Ja":"Nej") : null,
                     onChanged: (value)=>isHeavy = value == 'Ja',
-                  ):
-                  ChipField(
-                  text: 'Skal der flyttes særligt tungt inventar?',
-                  initialValue: [widget.request!.isHeavy?"Ja":"Nej"],
-                  items: [
-                    MultiSelectItem('Ja', "Ja"),
-                    MultiSelectItem('Nej', "Nej"),
-                  ],
-                ),
+                  ),
 
                 ///heavy count
                 Padding(
@@ -367,24 +328,16 @@ class _DetailsState extends State<Details> {
                 ),
 
                 ///isBreakable
-                widget.isAdd?
-                  AddChipField(
+                  ChipField(
+                    isAdd: widget.isAdd,
                     text: 'Skal der flyttes inventar som nemt kan gå i stykker?',
                     items: [
                       'Ja',
                       'Nej'
                     ],
+                    initialItem: !widget.isAdd ? (widget.request!.isBreakable?"Ja":"Nej") : null,
                     onChanged: (value)=>isBreakable = value == 'Ja',
-                  ):
-                  ChipField(
-                  text: 'Skal der flyttes inventar som nemt kan gå i stykker?',
-                  initialValue: [widget.request!.isBreakable?"Ja":"Nej"],
-                  fontSize: 12.sp,
-                  items: [
-                    MultiSelectItem('Ja', "Ja"),
-                    MultiSelectItem('Nej', "Nej"),
-                  ],
-                ),
+                  ),
 
                 ///break count
                 Padding(
