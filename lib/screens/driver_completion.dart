@@ -42,7 +42,6 @@ class _DriverCompletionState extends State<DriverCompletion> {
   TextEditingController total = TextEditingController();
   TextEditingController driverName = TextEditingController();
   TextEditingController customerName = TextEditingController();
-  Uint8List? driverSignature;
   Uint8List? customerSignature;
   File? image1, image2, image3, image4, image5, image6, image7, image8;
 
@@ -195,15 +194,9 @@ class _DriverCompletionState extends State<DriverCompletion> {
                 UploadWidget(title: "Vedhæft 8",pickImage: (img)=> image8 = img, isAdd: widget.isAdd, image: widget.completeTask?.image8,),
 
                 ///driver name
-                SignaturePad(
-                    isAdd: widget.isAdd,
-                    textEditingController: driverName,
-                    hint: "Medarbejders Navn",
-                    buttonText: "Medarbejders Underskrift",
-                    image: widget.completeTask?.driverSign,
-                    onComplete: (Uint8List? imageBytes){
-                        driverSignature = imageBytes;
-                    },
+                Padding(
+                  padding: EdgeInsets.only(top: 25.h),
+                  child: LabelInputField(text: "Medarbejders Navn",enabled: widget.isAdd,controller: driverName),
                 ),
 
                 ///customer name
@@ -227,10 +220,9 @@ class _DriverCompletionState extends State<DriverCompletion> {
                         color: kApproved,
                         text: "Submit",
                         onPressed: () async {
-                          if (startTime.text.isNotEmpty && endTime.text.isNotEmpty && driverName.text.isNotEmpty && customerName.text.isNotEmpty && driverSignature != null && customerSignature != null){
+                          if (startTime.text.isNotEmpty && endTime.text.isNotEmpty && driverName.text.isNotEmpty && customerName.text.isNotEmpty && customerSignature != null){
                             Provider.of<DriverController>(context, listen: false).completeTask(
                                 customerSign: customerSignature!,
-                                driverSign: driverSignature!,
                                 customerName: customerName.text,
                                 driverName: driverName.text,
                                 images: [image1, image2, image3, image4, image5, image6, image7, image8],

@@ -118,7 +118,6 @@ class DriverController {
 
   completeTask({
     required Uint8List customerSign,
-    required Uint8List driverSign,
     required String customerName,
     required String driverName,
     required List<File?> images,
@@ -149,9 +148,6 @@ class DriverController {
       StorageService storageService = StorageService();
       String customerSignature = await storageService.uploadBytes(customerName.replaceAll(' ', '_'), customerSign);
       pd.updateMessageText("Customer Signature Uploaded...");
-
-      String driverSignature = await storageService.uploadBytes(driverName.replaceAll(' ', '_'), driverSign);
-      pd.updateMessageText("Driver Signature Uploaded...");
 
       List<String> imageUrls = List.filled(images.length, "", growable: false);
 
@@ -184,7 +180,6 @@ class DriverController {
           image7: imageUrls[6],
           image8: imageUrls[7],
           driverName: driverName,
-          driverSign: driverSignature,
           customerName: customerName,
           customerSign: customerSignature
       );

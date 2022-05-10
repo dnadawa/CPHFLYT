@@ -19,7 +19,6 @@ class CompleteTask {
   final String image7;
   final String image8;
   final String driverName;
-  final String driverSign;
   final String customerName;
   final String customerSign;
 
@@ -44,7 +43,6 @@ class CompleteTask {
       required this.image7,
       required this.image8,
       required this.driverName,
-      required this.driverSign,
       required this.customerName,
       required this.customerSign
   });

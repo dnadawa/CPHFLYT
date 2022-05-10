@@ -119,7 +119,6 @@ class DatabaseService extends ChangeNotifier{
         customerName: doc['customerName'],
         customerSign: doc['customerSign'],
         driverName: doc['driverName'],
-        driverSign: doc['driverSign'],
         endTime: doc['endTime'],
         garbage: doc['garbage'],
         given: doc['given'],
@@ -305,7 +304,6 @@ class DatabaseService extends ChangeNotifier{
       'image7': task.image7,
       'image8': task.image8,
       'driverName': task.driverName,
-      'driverSign': task.driverSign,
       'customerName': task.customerName,
       'customerSign': task.customerSign
     });
