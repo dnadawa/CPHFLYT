@@ -25,19 +25,24 @@ class Login extends StatelessWidget {
           child: Column(
             children: [
               ///logo
-              Container(
-                padding: EdgeInsets.all(15.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 80.w),
+                child: Container(
+                  padding: EdgeInsets.all(15.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))
+                  ),
+                  child: Image.asset('assets/logo.png'),
                 ),
-                child: Image.asset('assets/logo.png'),
               ),
 
               ///login image
               Padding(
-                padding: EdgeInsets.only(top: 55.h),
-                child: Image.asset(userController.loginSelector == UserType.SuperAdmin?'assets/login_admin.png':'assets/login_driver.png'),
+                padding: EdgeInsets.only(top: 40.h),
+                child: Image.asset(
+                    userController.loginSelector == UserType.SuperAdmin?'assets/login_admin.png':'assets/login_driver.png',
+                    scale: userController.loginSelector == UserType.SuperAdmin?0.8:1),
               ),
 
               SizedBox(height: 45.h),
