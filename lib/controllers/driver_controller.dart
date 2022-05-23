@@ -20,26 +20,28 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
 
 class DriverController {
-
   Future<Position?> _getPosition() async {
-
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      ToastBar(text: 'Location services are disabled.', color: Colors.red).show();
+      ToastBar(text: 'Location services are disabled.', color: Colors.red)
+          .show();
       return null;
-    }
-    else {
+    } else {
       LocationPermission permission = await Geolocator.checkPermission();
 
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          ToastBar(text: 'Location permissions are denied', color: Colors.red).show();
+          ToastBar(text: 'Location permissions are denied', color: Colors.red)
+              .show();
           return null;
         }
-      }
-      else if (permission == LocationPermission.deniedForever) {
-        ToastBar(text: 'Location permissions are permanently denied. Please go to application setting and give the location permission to the app.', color: Colors.red).show();
+      } else if (permission == LocationPermission.deniedForever) {
+        ToastBar(
+                text:
+                    'Location permissions are permanently denied. Please go to application setting and give the location permission to the app.',
+                color: Colors.red)
+            .show();
         return null;
       }
 
@@ -59,16 +61,21 @@ class DriverController {
       Map doc = element.data();
 
       List<Location> locations = [];
-      try{
-        locations = await locationFromAddress("${doc['fromAddress']} ${doc['fromZip']} ${doc['fromBy']}");
-      } catch(e){
-        print("error "+e.toString());
+      try {
+        locations = await locationFromAddress(
+            "${doc['fromAddress']} ${doc['fromZip']} ${doc['fromBy']}");
+      } catch (e) {
+        print("error " + e.toString());
       }
 
       double distanceInMeters = 999999999999999;
 
-      if (locations.isNotEmpty && currentPosition!=null) {
-        distanceInMeters = Geolocator.distanceBetween(currentPosition.latitude, currentPosition.longitude, locations[0].latitude, locations[0].longitude);
+      if (locations.isNotEmpty && currentPosition != null) {
+        distanceInMeters = Geolocator.distanceBetween(
+            currentPosition.latitude,
+            currentPosition.longitude,
+            locations[0].latitude,
+            locations[0].longitude);
       }
 
       doc['distance'] = distanceInMeters;
@@ -85,8 +92,9 @@ class DriverController {
     return tasksList;
   }
 
-  redirectToGoogleMaps (AddressModel address) async {
-    Uri url = Uri.parse("https://www.google.com/maps/search/?api=1&query=${address.addressJoined}");
+  redirectToGoogleMaps(AddressModel address) async {
+    Uri url = Uri.parse(
+        "https://www.google.com/maps/search/?api=1&query=${address.addressJoined}");
     await launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
   }
 
@@ -99,62 +107,74 @@ class DriverController {
       email: doc.data['email'],
       type: doc.data['type'],
       packageType: doc.data['package'],
-      date: "${doc.data['dateDay']}. ${doc.data['dateMonth']} ${doc.data['dateYear']}",
+      date:
+          "${doc.data['dateDay']}. ${doc.data['dateMonth']} ${doc.data['dateYear']}",
       flexible: doc.data['flexible'],
       isPacking: doc.data['isUnpack'] == 'Ja',
       isCleaning: doc.data['isCleaning'] == 'Ja',
       isHeavy: doc.data['isHeavy'] == 'Ja',
       isBreakable: doc.data['isBreakable'] == 'Ja',
       others: doc.data.containsKey("other") ? doc.data['other'] : "",
-      breakCount: doc.data.containsKey("breakableCount") ? doc.data['breakableCount'] : "0",
-      heavyCount: doc.data.containsKey("heavyCount") ? doc.data['heavyCount'] : "0",
-      fromAddress: AddressModel(doc.data['fromAddress'], doc.data['fromZip'], doc.data['fromBy']),
-      toAddress: AddressModel(doc.data['toAddress'], doc.data['toZip'], doc.data['toBy']),
-      status: doc.data['status']=='pending'?Filter.Pending:doc.data["status"]=='approved'?Filter.Approved:Filter.Trash,
+      breakCount: doc.data.containsKey("breakableCount")
+          ? doc.data['breakableCount']
+          : "0",
+      heavyCount:
+          doc.data.containsKey("heavyCount") ? doc.data['heavyCount'] : "0",
+      fromAddress: AddressModel(
+          doc.data['fromAddress'], doc.data['fromZip'], doc.data['fromBy']),
+      toAddress: AddressModel(
+          doc.data['toAddress'], doc.data['toZip'], doc.data['toBy']),
+      status: doc.data['status'] == 'pending'
+          ? Filter.Pending
+          : doc.data["status"] == 'approved'
+              ? Filter.Approved
+              : Filter.Trash,
     );
 
     return requestModel;
   }
 
-  completeTask({
-    required Uint8List customerSign,
-    required String customerName,
-    required String driverName,
-    required List<File?> images,
-    required String taskID,
-    required String given,
-    required String startTime,
-    required String endTime,
-    required String hourlyRate,
-    required String numOfHours,
-    required String paymentType,
-    required String heavyLifting,
-    required String garbage,
-    required String storage,
-    required String total,
-    required BuildContext context
-  }) async {
-    SimpleFontelicoProgressDialog pd = SimpleFontelicoProgressDialog(context: context, barrierDimisable:  false);
+  completeTask(
+      {required Uint8List customerSign,
+      required String customerName,
+      required String driverName,
+      required List<File?> images,
+      required String taskID,
+      required String given,
+      required String startTime,
+      required String endTime,
+      required String hourlyRate,
+      required String numOfHours,
+      required String paymentType,
+      required String heavyLifting,
+      required String garbage,
+      required String storage,
+      required String total,
+      required BuildContext context}) async {
+    SimpleFontelicoProgressDialog pd = SimpleFontelicoProgressDialog(
+        context: context, barrierDimisable: false);
     pd.show(
-        message: "Data uploading...",
-        indicatorColor: Theme.of(context).primaryColor,
-        width: 0.6.sw,
-        height: 100.h,
-        textAlign: TextAlign.center,
-        separation: 30.h,
+      message: "Data uploading...",
+      indicatorColor: Theme.of(context).primaryColor,
+      width: 0.6.sw,
+      height: 100.h,
+      textAlign: TextAlign.center,
+      separation: 30.h,
     );
 
-    try{
+    try {
       StorageService storageService = StorageService();
-      String customerSignature = await storageService.uploadBytes(customerName.replaceAll(' ', '_'), customerSign);
+      String customerSignature = await storageService.uploadBytes(
+          customerName.replaceAll(' ', '_'), customerSign);
       pd.updateMessageText("Customer Signature Uploaded...");
 
       List<String> imageUrls = List.filled(images.length, "", growable: false);
 
-      for (int i = 0; i < images.length; i++){
-        if (images[i] != null){
-          String url = await storageService.uploadFile(i.toString(), taskID, images[i]!);
-          pd.updateMessageText("Image ${i+1} Uploaded...");
+      for (int i = 0; i < images.length; i++) {
+        if (images[i] != null) {
+          String url =
+              await storageService.uploadFile(i.toString(), taskID, images[i]!);
+          pd.updateMessageText("Image ${i + 1} Uploaded...");
           imageUrls[i] = url;
         }
       }
@@ -181,18 +201,17 @@ class DriverController {
           image8: imageUrls[7],
           driverName: driverName,
           customerName: customerName,
-          customerSign: customerSignature
-      );
+          customerSign: customerSignature);
 
       await DatabaseService().completeTask(completeTask);
 
       pd.hide();
       ToastBar(text: "Task is mark as completed!", color: Colors.green).show();
 
-      Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
-          DriverHome()), (Route<dynamic> route) => false);
-    }
-    catch (e){
+      Navigator.of(context).pushAndRemoveUntil(
+          CupertinoPageRoute(builder: (context) => DriverHome()),
+          (Route<dynamic> route) => false);
+    } catch (e) {
       pd.hide();
       ToastBar(text: e.toString(), color: Colors.red).show();
     }
@@ -203,5 +222,4 @@ class DriverController {
     DocumentSnapshot document = await dbService.getCompletedTask(id);
     return dbService.createCompleteTaskFromJson(document.data(), id);
   }
-
 }

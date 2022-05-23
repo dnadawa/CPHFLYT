@@ -13,50 +13,79 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
-
   final String location;
 
   const AppDrawer(this.location);
 
   @override
   Widget build(BuildContext context) {
-    var loggedInUserType = Provider.of<UserManagementController>(context).loggedInUserType;
+    var loggedInUserType =
+        Provider.of<UserManagementController>(context).loggedInUserType;
     return Drawer(
       child: Column(
         children: [
-          SizedBox(height: 2 * ScreenUtil().statusBarHeight,),
-          Image.asset('assets/logo.png'),
-          SizedBox(height: 30.h,),
+          SizedBox(
+            height: 2 * ScreenUtil().statusBarHeight,
+          ),
+          Padding(
+            padding: EdgeInsets.all(25.w),
+            child: Image.asset('assets/logo.png'),
+          ),
+          SizedBox(
+            height: 30.h,
+          ),
 
           ///home
-          DrawerTile(location: location, iconData: Icons.home, name: "Home", destination: Home()),
+          DrawerTile(
+              location: location,
+              iconData: Icons.home,
+              name: "Home",
+              destination: Home()),
 
           ///user management
           if (loggedInUserType == UserType.SuperAdmin)
-            DrawerTile(location: location, iconData: Icons.group, name: "User Management", destination: UserManagement()),
+            DrawerTile(
+                location: location,
+                iconData: Icons.group,
+                name: "User Management",
+                destination: UserManagement()),
 
           ///list of drivers
           if (loggedInUserType == UserType.SuperAdmin)
-            DrawerTile(location: location, iconData: Icons.local_shipping, name: "List of Drivers", destination: Users(type: UserType.Driver)),
+            DrawerTile(
+                location: location,
+                iconData: Icons.local_shipping,
+                name: "List of Drivers",
+                destination: Users(type: UserType.Driver)),
 
           ///list of drivers
           if (loggedInUserType == UserType.SuperAdmin)
-            DrawerTile(location: location, iconData: Icons.person_pin, name: "List of Employees", destination: Users(type: UserType.Employee)),
-
+            DrawerTile(
+                location: location,
+                iconData: Icons.person_pin,
+                name: "List of Employees",
+                destination: Users(type: UserType.Employee)),
 
           Expanded(child: SizedBox.shrink()),
 
           ///log out
           ListTile(
             leading: Icon(Icons.logout, color: kDeclined),
-            title: CustomText(text: "Log out", isBold: true, color: Colors.black,),
-            onTap: (){
-                Provider.of<AuthService>(context, listen: false).signOut();
-                Navigator.of(context).pushAndRemoveUntil(CupertinoPageRoute(builder: (context) =>
-                    Wrapper()), (Route<dynamic> route) => false);
-              },
+            title: CustomText(
+              text: "Log out",
+              isBold: true,
+              color: Colors.black,
+            ),
+            onTap: () {
+              Provider.of<AuthService>(context, listen: false).signOut();
+              Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(builder: (context) => Wrapper()),
+                  (Route<dynamic> route) => false);
+            },
           ),
-          SizedBox(height: 30.h,),
+          SizedBox(
+            height: 30.h,
+          ),
         ],
       ),
     );
