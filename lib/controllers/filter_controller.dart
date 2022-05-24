@@ -7,11 +7,11 @@ class FilterController extends ChangeNotifier {
 
   Filter _selected = Filter.Pending;
   CompletedFilter _completedFilter = CompletedFilter.All;
-  DateTime? _dateFilter;
+  List<DateTime>? _dateFilter;
 
   Filter get filter => _selected;
   CompletedFilter get completedFilter => _completedFilter;
-  DateTime? get dateFilter => _dateFilter;
+  List<DateTime>? get dateFilter => _dateFilter;
 
   set filter(Filter filter){
     _selected = filter;
@@ -23,7 +23,7 @@ class FilterController extends ChangeNotifier {
     notifyListeners();
   }
 
-  set dateFilter(DateTime? date){
+  set dateFilter(List<DateTime>? date){
     _dateFilter = date;
     notifyListeners();
   }

@@ -22,7 +22,7 @@ class DatabaseService extends ChangeNotifier{
     notifyListeners();
   }
 
-  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website,CompletedFilter completedFilter = CompletedFilter.All, DateTime? dateFilter}) {
+  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website,CompletedFilter completedFilter = CompletedFilter.All, List<DateTime>? dateFilter}) {
     Query query = _firestore.collection('requests');
 
     ///filter
@@ -60,10 +60,9 @@ class DatabaseService extends ChangeNotifier{
 
     ///date filter
     if(dateFilter != null){
+      List<String> dates = dateFilter.map((e) => e.year.toString() + '-' + capitalize(DateFormat.MMMM('da_DK').format(e)) + '-' + e.day.toString()).toList();
       query = query
-          .where('dateYear', isEqualTo: dateFilter.year)
-          .where('dateMonth', isEqualTo: capitalize(DateFormat.MMMM('da_DK').format(dateFilter)))
-          .where('dateDay', isEqualTo: dateFilter.day);
+          .where('dateFull', whereIn: dates);
     }
 
     return query.where('idChanged', isEqualTo: 'true').snapshots();
@@ -254,6 +253,7 @@ class DatabaseService extends ChangeNotifier{
       'dateDay': parsedDate.day,
       'dateMonth': capitalize(DateFormat('MMMM', 'da_DK').format(parsedDate)),
       'dateYear': parsedDate.year,
+      'dateFull': "${parsedDate.year}-${capitalize(DateFormat('MMMM', 'da_DK').format(parsedDate))}-${parsedDate.day}",
       'fromAddress': request.fromAddress.address,
       'fromZip': request.fromAddress.zip,
       'fromBy': request.fromAddress.by,

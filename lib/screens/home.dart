@@ -165,15 +165,25 @@ class Home extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
+                      DateTimeRange? pickedDate = await showDateRangePicker(
                         context: context,
-                        initialDate: DateTime.now(),
                         firstDate: DateTime(2021, 1, 1),
                         lastDate: DateTime(2023, 12, 31),
                         cancelText: 'Clear'
                       );
-                      await initializeDateFormatting('da_DK');
-                      filterController.dateFilter = pickedDate;
+
+                      if (pickedDate != null){
+                        List<DateTime> days = [];
+                        for (int i = 0; i <= pickedDate.end.difference(pickedDate.start).inDays; i++) {
+                          days.add(pickedDate.start.add(Duration(days: i)));
+                        }
+
+                        await initializeDateFormatting('da_DK');
+                        filterController.dateFilter = days;
+                      }
+                      else{
+                        filterController.dateFilter = null;
+                      }
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -188,7 +198,7 @@ class Home extends StatelessWidget {
                       child: Center(
                           child: filterController.dateFilter == null ?
                           Icon(Icons.calendar_today, color: kLightBlue) :
-                          CustomText(text: filterController.dateFilter == null ? "" : DateFormat.yMMMMd('da_DK').format(filterController.dateFilter!))
+                          CustomText(text: filterController.dateFilter == null ? "" : DateFormat.MMMMd('da_DK').format(filterController.dateFilter!.first) + ' - ' + DateFormat.MMMMd('da_DK').format(filterController.dateFilter!.last))
                       ),
                     ),
                   ),
