@@ -45,7 +45,7 @@ class AuthService {
             
             if (userData.exists){
                 userManagement.loggedInUserType = UserType.Driver;
-                Driver driver = Driver(uid: uid, email: userData.get('email'), name: userData.get('name'));
+                Driver driver = Driver(uid: uid, email: userData.get('email'), name: userData.get('name'), phone: userData.get('phone'));
                 userManagement.loggedInDriver = driver;
 
                 SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -73,7 +73,7 @@ class AuthService {
 
             if (userData.exists && userData.get('role') == 'admin') {
                 userManagement.loggedInUserType = UserType.Employee;
-                Employee employee = Employee(uid: uid, email: userData.get('email'), name: userData.get('name'), page: userData.get('page') == 'website' ? Nav.Website : Nav.Manual);
+                Employee employee = Employee(uid: uid, email: userData.get('email'), name: userData.get('name'), page: userData.get('page') == 'website' ? Nav.Website : Nav.Manual, phone: userData.get('phone'));
                 userManagement.loggedInEmployee = employee;
                 bottomNavController.navItem = userData.get('page') == 'website' ? Nav.Website : Nav.Manual;
 

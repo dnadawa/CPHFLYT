@@ -20,7 +20,7 @@ class DriverAssignController extends ChangeNotifier{
   }
 
   Driver createDriverFromDocument(var doc){
-    return Driver(uid: doc.id, email: doc['email'], name: doc['name']);
+    return Driver(uid: doc.id, email: doc['email'], name: doc['name'], phone: doc['phone']);
   }
 
   void assignDriver(String? uid,String requestID, BuildContext context) async {
