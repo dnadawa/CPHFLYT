@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../constants.dart';
+
 class UploadWidget extends StatelessWidget {
   final String title;
   final Function pickImage;
@@ -22,7 +24,7 @@ class UploadWidget extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-              color: Color(0xff0D47A1),
+              color: kPrimaryColor,
             ),
             child: Padding(
               padding: EdgeInsets.all(10.h),
@@ -39,14 +41,14 @@ class UploadWidget extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-            border: Border.all(color: Color(0xff0D47A1), width: 4),
+            border: Border.all(color: kPrimaryColor, width: 4),
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: isAdd?0:12.w),
             child: Center(
               child: isAdd?
               Button(
-                  color: Color(0xffE0E0E0),
+                  color: kInactiveBackgroundColor,
                   text: "Choose File",
                   textColor: Colors.black,
                   onPressed: () async {

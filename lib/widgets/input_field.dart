@@ -1,3 +1,4 @@
+import 'package:cphflyt/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -47,7 +48,7 @@ class _InputFieldState extends State<InputField> {
         fillColor: Colors.white,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
-          borderSide: widget.isBorder?BorderSide(width: 2,color: Color(0xffE4DFDF)):BorderSide.none,
+          borderSide: widget.isBorder?BorderSide(width: 2,color: kInactiveBackgroundColor):BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),

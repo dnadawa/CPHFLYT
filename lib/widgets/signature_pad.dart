@@ -56,7 +56,7 @@ class SignaturePad extends StatelessWidget {
                             final SignatureController _controller = SignatureController(
                               penStrokeWidth: 5,
                               penColor: Colors.black,
-                              exportBackgroundColor: Color(0xfff5f5f5),
+                              exportBackgroundColor: kSignatureBackgroundColor,
                             );
 
                             return AlertDialog(
@@ -90,7 +90,7 @@ class SignaturePad extends StatelessWidget {
                                       controller: _controller,
                                       width: double.infinity,
                                       height: 0.6.sh,
-                                      backgroundColor: Color(0xfff5f5f5),
+                                      backgroundColor: kSignatureBackgroundColor,
                                     ),
 
                                     Padding(

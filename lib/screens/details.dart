@@ -129,7 +129,7 @@ class _DetailsState extends State<Details> {
       body: Card(
         margin: EdgeInsets.all(20.w),
         elevation: 8,
-        color: Color(0xfffafafa),
+        color: kCardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.r)
         ),
@@ -227,7 +227,7 @@ class _DetailsState extends State<Details> {
                 if(userController.loggedInUserType == UserType.Driver)
                   Center(
                   child: Button(
-                      color: Color(0xffE68C36),
+                      color: kOrange,
                       text: "Show location on map",
                       onPressed: () async => driverController.redirectToGoogleMaps(widget.request!.fromAddress)
                   ),
@@ -267,7 +267,7 @@ class _DetailsState extends State<Details> {
                 if(userController.loggedInUserType == UserType.Driver)
                   Center(
                     child: Button(
-                        color: Color(0xffE68C36),
+                        color: kOrange,
                         text: "Show location on map",
                         onPressed: () async => driverController.redirectToGoogleMaps(widget.request!.toAddress)
                     ),

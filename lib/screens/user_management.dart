@@ -39,8 +39,8 @@ class UserManagement extends StatelessWidget {
               ToggleSwitch(
                 initialLabelIndex: isDriver?0:1,
                 activeFgColor: Colors.white,
-                inactiveBgColor: Color(0xffE6E6E6),
-                inactiveFgColor: Color(0xff747474),
+                inactiveBgColor: kInactiveBackgroundColor,
+                inactiveFgColor: kInactiveForegroundColor,
                 totalSwitches: 2,
                 labels: ['Driver', 'Employee'],
                 fontSize: 14.sp,
@@ -68,7 +68,7 @@ class UserManagement extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(width: 2, color: Color(0xffE4DFDF))
+                  border: Border.all(width: 2, color: kInactiveBackgroundColor)
                 ),
                 child: DropdownButton(
                     underline: SizedBox.shrink(),

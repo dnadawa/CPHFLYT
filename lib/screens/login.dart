@@ -20,7 +20,7 @@ class Login extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0xff5897C3),
+        backgroundColor: kScaffoldBackgroundColor,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -50,8 +50,8 @@ class Login extends StatelessWidget {
               ToggleSwitch(
                 initialLabelIndex: userController.loginSelector == UserType.SuperAdmin?0:1,
                 activeFgColor: Colors.white,
-                inactiveBgColor: Color(0xffE6E6E6),
-                inactiveFgColor: Color(0xff747474),
+                inactiveBgColor: kInactiveBackgroundColor,
+                inactiveFgColor: kInactiveForegroundColor,
                 totalSwitches: 2,
                 labels: ['ADMIN LOGIN', 'DRIVER LOGIN'],
                 fontSize: 14.sp,

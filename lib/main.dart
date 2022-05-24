@@ -15,6 +15,8 @@ import 'package:cphflyt/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import 'constants.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -47,13 +49,13 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           theme: ThemeData(
-            primaryColor: Color(0xff0D47A1),
+            primaryColor: kPrimaryColor,
             fontFamily: "SF-Pro",
             scaffoldBackgroundColor: Colors.white,
             appBarTheme: AppBarTheme(
               centerTitle: true,
               elevation: 0,
-              color: Color(0xff0D47A1)
+              color: kPrimaryColor
             )
           ),
           home: Wrapper(),

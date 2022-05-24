@@ -71,7 +71,7 @@ class _DriverCompletionState extends State<DriverCompletion> {
         title: CustomText(text: "Complete Task", fontSize: 22.sp, isBold: true,color: Colors.white,),
       ),
       body: Card(
-          color: Color(0xffFAFAFA),
+          color: kCardColor,
           margin: EdgeInsets.all(20.w),
           elevation: 8,
           shape: RoundedRectangleBorder(

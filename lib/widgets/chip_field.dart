@@ -1,3 +1,4 @@
+import 'package:cphflyt/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -37,8 +38,8 @@ class _ChipFieldState extends State<ChipField> {
         },
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Color(0xff1470AF), width: 2),
-            color: selectedElement == element ? Color(0xff1470AF) : Colors.white,
+            border: Border.all(color: kChipColor, width: 2),
+            color: selectedElement == element ? kChipColor : Colors.white,
           ),
           margin: EdgeInsets.symmetric(vertical: 5.h, horizontal: 3.w),
           child: Padding(
@@ -72,7 +73,7 @@ class _ChipFieldState extends State<ChipField> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(6)),
-              color: Color(0xff1470AF),
+              color: kChipColor,
             ),
             child: Padding(
               padding: EdgeInsets.all(10.h),
@@ -88,7 +89,7 @@ class _ChipFieldState extends State<ChipField> {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-            border: Border.all(color: Color(0xff5B9AC6), width: 4),
+            border: Border.all(color: kChipColor, width: 4),
           ),
           child: Padding(
             padding: EdgeInsets.all(8.w),
