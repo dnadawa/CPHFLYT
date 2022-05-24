@@ -37,9 +37,11 @@ class Users extends StatelessWidget {
                 itemBuilder: (context, i){
                   TextEditingController name = TextEditingController();
                   TextEditingController email = TextEditingController();
+                  TextEditingController phone = TextEditingController();
 
                   name.text = snapshot.data![i]['name'];
                   email.text = snapshot.data![i]['email'];
+                  phone.text = snapshot.data![i]['phone'];
 
                   return Card(
                     margin: EdgeInsets.only(bottom: 20.h),
@@ -63,6 +65,14 @@ class Users extends StatelessWidget {
                             text: "Email",
                             enabled: false,
                             controller: email,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(15.w, 3.h, 15.w, 10.h),
+                          child: LabelInputField(
+                            text: "Phone",
+                            enabled: false,
+                            controller: phone,
                           ),
                         ),
                       ],

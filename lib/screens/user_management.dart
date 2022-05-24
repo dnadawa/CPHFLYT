@@ -15,6 +15,7 @@ class UserManagement extends StatelessWidget {
 
   final TextEditingController email = TextEditingController();
   final TextEditingController name = TextEditingController();
+  final TextEditingController phone = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController confirmPassword = TextEditingController();
 
@@ -85,6 +86,8 @@ class UserManagement extends StatelessWidget {
               SizedBox(height: 15.h,),
               InputField(text: "Email", icon: Icons.email,keyboard: TextInputType.emailAddress,controller: email,),
               SizedBox(height: 15.h,),
+              InputField(text: "Phone", icon: Icons.phone,keyboard: TextInputType.phone,controller: phone,),
+              SizedBox(height: 15.h,),
               InputField(text: "Password", icon: Icons.lock,isPassword: true,controller: password,),
               SizedBox(height: 15.h,),
               InputField(text: "Confirm Password", icon: Icons.lock, isPassword: true,controller: confirmPassword,),
@@ -96,7 +99,7 @@ class UserManagement extends StatelessWidget {
                     color: kLightBlue,
                     text: "Create Account",
                     onPressed: () async {
-                      if (name.text.isEmpty || email.text.isEmpty || password.text.isEmpty || (dropDownValue == null && !isDriver)){
+                      if (name.text.isEmpty || email.text.isEmpty || password.text.isEmpty || phone.text.isEmpty || (dropDownValue == null && !isDriver)){
                         ToastBar(text: "Please fill all the fields!", color: Colors.red).show();
                       }
                       else if (password.text != confirmPassword.text){
@@ -105,9 +108,10 @@ class UserManagement extends StatelessWidget {
                       else{
                         ToastBar(text: "Please wait", color: Colors.orange).show();
 
-                         if(await userController.registerUser(name: name.text, email: email.text, password: password.text, type: userController.userType, accessedPage: dropDownValue)){
+                         if(await userController.registerUser(name: name.text, email: email.text, password: password.text, type: userController.userType, accessedPage: dropDownValue, phone: phone.text)){
                            name.clear();
                            email.clear();
+                           phone.clear();
                            password.clear();
                            confirmPassword.clear();
                          }

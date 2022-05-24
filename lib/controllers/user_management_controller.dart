@@ -64,14 +64,14 @@ class UserManagementController extends ChangeNotifier {
   }
 
 
-  Future<bool> registerUser({required String name, required String email, required String password, required UserType type, Nav? accessedPage}) async {
+  Future<bool> registerUser({required String name, required String email, required String password, required UserType type,required String phone, Nav? accessedPage}) async {
     User? registeredUser = await AuthService().signUp(email, password);
     if (registeredUser!=null && type == UserType.Driver){
-      Driver driver = Driver(uid: registeredUser.uid, email: registeredUser.email, name: name);
+      Driver driver = Driver(uid: registeredUser.uid, email: registeredUser.email, name: name, phone: phone);
       return await DatabaseService().addDriver(driver);
     }
     else if (registeredUser!=null && type == UserType.Employee){
-      Employee employee = Employee(uid: registeredUser.uid, email: registeredUser.email, name: name, page: accessedPage!);
+      Employee employee = Employee(uid: registeredUser.uid, email: registeredUser.email, name: name, page: accessedPage!, phone: phone);
       return await DatabaseService().addEmployee(employee);
     }
 

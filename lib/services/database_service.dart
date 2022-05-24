@@ -148,6 +148,7 @@ class DatabaseService extends ChangeNotifier{
     try{
       await _firestore.collection('drivers').doc(driver.uid).set({
         'email': driver.email,
+        'phone': driver.phone,
         'name': driver.name,
         'id': driver.uid
       });
@@ -166,6 +167,7 @@ class DatabaseService extends ChangeNotifier{
       await _firestore.collection('admins').doc(employee.uid).set({
         'email': employee.email,
         'name': employee.name,
+        'phone': employee.phone,
         'id': employee.uid,
         'role': 'admin',
         'page': employee.page == Nav.Website? 'website' : 'manual'
