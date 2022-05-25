@@ -8,8 +8,9 @@ class LabelInputField extends StatelessWidget {
   final TextEditingController? controller;
   final bool enabled;
   final TextInputType? keyBoardType;
+  final Function(String)? onChanged;
 
-  const LabelInputField({required this.text, this.maxLines=1, this.controller, this.enabled=false, this.keyBoardType});
+  const LabelInputField({required this.text, this.maxLines=1, this.controller, this.enabled=false, this.keyBoardType, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,7 @@ class LabelInputField extends StatelessWidget {
       maxLines: maxLines,
       keyboardType: keyBoardType,
       textAlign: maxLines==1?TextAlign.center:TextAlign.left,
+      onChanged: onChanged,
       decoration: InputDecoration(
         filled: true,
         labelText: text,

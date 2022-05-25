@@ -131,19 +131,43 @@ class _DriverCompletionState extends State<DriverCompletion> {
                 ///end time
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Slut tidspunkt",enabled: widget.isAdd,controller: endTime,),
+                  child: GestureDetector(
+                      onTap: () async {
+                        if (widget.isAdd){
+                          TimeOfDay? selectedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+
+                          endTime.text = selectedTime?.format(context) ?? '';
+                        }
+                      },
+                      child: LabelInputField(text: "Slut tidspunkt",enabled: false,controller: endTime,),
+                  ),
                 ),
 
                 ///hourly rate
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Timepris",enabled: widget.isAdd,controller: hourlyRate,keyBoardType: TextInputType.number),
+                  child: LabelInputField(
+                    text: "Timepris",
+                    enabled: widget.isAdd,
+                    controller: hourlyRate,
+                    keyBoardType: TextInputType.number,
+                    onChanged: (value) => calculateTotal(),
+                  ),
                 ),
 
                 ///num of hours
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Antal timer",enabled: widget.isAdd,controller: numberOfHours,keyBoardType: TextInputType.number),
+                  child: LabelInputField(
+                      text: "Antal timer",
+                      enabled: widget.isAdd,
+                      controller: numberOfHours,
+                      keyBoardType: TextInputType.number,
+                      onChanged: (value) => calculateTotal()
+                  ),
                 ),
 
                 ///payemnt type
@@ -173,7 +197,7 @@ class _DriverCompletionState extends State<DriverCompletion> {
                 ///total amount
                 Padding(
                   padding: EdgeInsets.only(top: 25.h),
-                  child: LabelInputField(text: "Samlet beløb",enabled: widget.isAdd,controller: total,keyBoardType: TextInputType.number),
+                  child: LabelInputField(text: "Samlet beløb",enabled: false,controller: total,keyBoardType: TextInputType.number),
                 ),
 
                 if (widget.isAdd || widget.completeTask!.image1.isNotEmpty)
@@ -253,5 +277,12 @@ class _DriverCompletionState extends State<DriverCompletion> {
         )
       ),
     );
+  }
+
+  calculateTotal(){
+    double rate = hourlyRate.text.isEmpty ? 0 : double.parse(hourlyRate.text);
+    double numOfHours = numberOfHours.text.isEmpty ? 0 : double.parse(numberOfHours.text);
+
+    total.text = (rate * numOfHours).toString();
   }
 }

@@ -281,18 +281,32 @@ class Home extends StatelessWidget {
                                         FutureBuilder<DocumentSnapshot<Map>>(
                                           future: databaseService.getDriverFromFirebase(request.driver!),
                                           builder: (context, snapshot){
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10),),
-                                                color: kLightBlue,
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 20.w),
-                                                child: CustomText(
-                                                  text: "Assigned Driver : ${snapshot.hasData ? snapshot.data!.data()!['name'].toString().split(' ')[0] : 'Loading...'}",
-                                                  color: Colors.white,
+                                            return Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10),),
+                                                    color: kLightBlue,
+                                                  ),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 20.w),
+                                                    child: CustomText(
+                                                      text: "Assigned Driver : ${snapshot.hasData ? snapshot.data!.data()!['name'].toString().split(' ')[0] : 'Loading...'}",
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+
+                                                if(request.isCompleted)
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                                  child: SizedBox(
+                                                      width: 23.w,
+                                                      child: Image.asset('assets/complete.png'),
+                                                  ),
+                                                ),
+                                              ],
                                             );
                                           },
                                         ),
