@@ -29,9 +29,9 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location to sort drivers tasks by distance from current location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to location to sort drivers tasks by distance from current location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location to sort drivers tasks by distance from current location.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs to access photo library to select attachement photos.</string>
