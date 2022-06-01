@@ -7,11 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-class Users extends StatelessWidget {
+class Users extends StatefulWidget {
   final UserType type;
-
   const Users({required this.type});
 
+  @override
+  State<Users> createState() => _UsersState();
+}
+
+class _UsersState extends State<Users> {
   @override
   Widget build(BuildContext context) {
     var userController = Provider.of<UserManagementController>(context);
@@ -20,34 +24,37 @@ class Users extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: CustomText(
-          text: type == UserType.Driver ? "List of Drivers" : "List of Employees",
+          text: widget.type == UserType.Driver ? "List of Drivers" : "List of Employees",
           fontSize: 22.sp,
           isBold: true,
           color: Colors.white,
         ),
       ),
-      drawer: AppDrawer(type == UserType.Driver ? "List of Drivers" : "List of Employees"),
+      drawer: AppDrawer(widget.type == UserType.Driver ? "List of Drivers" : "List of Employees"),
       body: Padding(
         padding: EdgeInsets.all(20.w),
-        child: FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>(
-          future:
-              type == UserType.Driver ? userController.getDrivers() : userController.getEmployees(),
-          builder: (BuildContext context, snapshot) {
-            if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
+        child: RefreshIndicator(
+          onRefresh: () async => setState((){}),
+          child: FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>(
+            future:
+                widget.type == UserType.Driver ? userController.getDrivers() : userController.getEmployees(),
+            builder: (BuildContext context, snapshot) {
+              if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-            return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, i) => UserCard(
-                name: snapshot.data![i]['name'],
-                email: snapshot.data![i]['email'],
-                phone: snapshot.data![i]['phone'],
-                id: snapshot.data![i].id,
-                type: type,
-              ),
-            );
-          },
+              return ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, i) => UserCard(
+                  name: snapshot.data![i]['name'],
+                  email: snapshot.data![i]['email'],
+                  phone: snapshot.data![i]['phone'],
+                  id: snapshot.data![i].id,
+                  type: widget.type,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
