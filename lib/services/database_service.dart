@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cphflyt/controllers/bottom_nav_controller.dart';
 import 'package:cphflyt/controllers/filter_controller.dart';
+import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:cphflyt/models/address_model.dart';
 import 'package:cphflyt/models/completion_model.dart';
 import 'package:cphflyt/models/driver_model.dart';
@@ -159,6 +160,13 @@ class DatabaseService extends ChangeNotifier{
       ToastBar(text: e.toString(), color: Colors.red).show();
       return false;
     }
+  }
+
+  editUser({required String id, required String name, required String phone, required UserType type}) async {
+    await _firestore.collection(type == UserType.Driver ? 'drivers': 'admins').doc(id).update({
+      'name': name,
+      'phone': phone
+    });
   }
 
   Future<bool> addEmployee(Employee employee) async {

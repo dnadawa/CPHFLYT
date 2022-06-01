@@ -97,4 +97,14 @@ class UserManagementController extends ChangeNotifier {
       return null;
     }
   }
+
+  updateUser({required String name, required String phone, required String id, required UserType type}) async {
+    try{
+      await DatabaseService().editUser(id: id, name: name, phone: phone, type: type);
+      ToastBar(text: "Date Edited!", color: Colors.green).show();
+    }
+    catch (e){
+      ToastBar(text: 'Data not updated!\n${e.toString()}', color: Colors.red).show();
+    }
+  }
 }
