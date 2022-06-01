@@ -107,4 +107,14 @@ class UserManagementController extends ChangeNotifier {
       ToastBar(text: 'Data not updated!\n${e.toString()}', color: Colors.red).show();
     }
   }
+
+  deleteUser({required String id, required UserType type}) async {
+    try{
+      await DatabaseService().deleteUser(id: id, type: type);
+      ToastBar(text: "User Deleted!", color: Colors.green).show();
+    }
+    catch (e){
+      ToastBar(text: 'User not deleted!\n${e.toString()}', color: Colors.red).show();
+    }
+  }
 }

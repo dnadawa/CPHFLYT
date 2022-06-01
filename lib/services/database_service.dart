@@ -169,6 +169,10 @@ class DatabaseService extends ChangeNotifier{
     });
   }
 
+  deleteUser({required String id, required UserType type}) async {
+    await _firestore.collection(type == UserType.Driver ? 'drivers': 'admins').doc(id).delete();
+  }
+
   Future<bool> addEmployee(Employee employee) async {
     try{
       await _firestore.collection('admins').doc(employee.uid).set({

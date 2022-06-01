@@ -1,8 +1,11 @@
+import 'package:cphflyt/constants.dart';
 import 'package:cphflyt/controllers/user_management_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:provider/provider.dart';
+
+import 'custom_text.dart';
 
 class UserCard extends StatefulWidget {
   final String name;
@@ -43,20 +46,36 @@ class _UserCardState extends State<UserCard> {
       ),
       child: Column(
         children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: Icon(edit ? Icons.check :Icons.edit, color: Theme.of(context).primaryColor,),
-              onPressed: (){
-                setState(() {
-                  edit = !edit;
-                });
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: Icon(edit ? Icons.check :Icons.edit, color: Theme.of(context).primaryColor,),
+                onPressed: (){
+                  setState(() {
+                    edit = !edit;
+                  });
 
-                if (!edit){
-                  userManagementController.updateUser(name: name.text, phone: phone.text, id: widget.id, type: widget.type);
-                }
-              },
-            ),
+                  if (!edit){
+                    userManagementController.updateUser(name: name.text, phone: phone.text, id: widget.id, type: widget.type);
+                  }
+                },
+              ),
+
+              IconButton(
+                icon: Icon(Icons.delete, color: kDeclined,),
+                onPressed: () => showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+                  content: CustomText(text: 'Are you sure you want to delete the user?'),
+                  actions: [
+                    TextButton(child: CustomText(text: 'Yes',),onPressed: (){
+                      userManagementController.deleteUser(id: widget.id, type: widget.type);
+                      Navigator.pop(context);
+                    },),
+                    TextButton(child: CustomText(text: 'No',),onPressed: ()=>Navigator.pop(context),),
+                  ],
+                )),
+              ),
+            ],
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
