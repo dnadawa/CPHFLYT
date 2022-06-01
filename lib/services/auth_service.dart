@@ -10,6 +10,7 @@ import 'package:cphflyt/screens/home.dart';
 import 'package:cphflyt/services/database_service.dart';
 import 'package:cphflyt/widgets/toast.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -129,11 +130,14 @@ class AuthService {
 
     Future<User?>? signUp(String email, String password) async {
         try {
-            final credential = await _auth.createUserWithEmailAndPassword(
+            FirebaseApp app = await Firebase.initializeApp(name: 'Secondary', options: Firebase.app().options);
+
+            final credential = await auth.FirebaseAuth.instanceFor(app: app).createUserWithEmailAndPassword(
                 email: email,
                 password: password,
             );
 
+            await app.delete();
             return _userFromFirebase(credential.user);
 
         } on auth.FirebaseAuthException catch (e) {
