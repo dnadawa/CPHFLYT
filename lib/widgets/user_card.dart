@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
 import 'package:provider/provider.dart';
-
-import 'custom_text.dart';
+import 'package:cphflyt/widgets/custom_text.dart';
 
 class UserCard extends StatefulWidget {
   final String name;

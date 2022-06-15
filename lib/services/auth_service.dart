@@ -149,6 +149,7 @@ class AuthService {
         } catch (e) {
             ToastBar(text: e.toString(), color: Colors.red).show();
         }
+        return null;
     }
 
     void signOut() async {

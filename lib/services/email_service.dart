@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class EmailService {
@@ -9,15 +10,13 @@ class EmailService {
       final response = await http.post(url,
           headers: {'origin': 'http://localhost', 'Content-Type': 'application/json'},
           body: jsonEncode({
-            'service_id': 'service_0xfntjl',
-            'template_id': 'template_l01irvt',
-            'user_id': 'lvODb-ZGOTfbBa3Yx',
+            'service_id': dotenv.env['SERVICE_ID'],
+            'template_id': dotenv.env['TEMPLATE_ID'],
+            'user_id': dotenv.env['USER_ID'],
             'template_params': {'url': pdfUrl, 'to': to}
           }));
-      print('email sent');
       return response.statusCode == 200;
     } catch (e) {
-      print(e);
       return false;
     }
   }

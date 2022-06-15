@@ -4,8 +4,7 @@ import 'package:cphflyt/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../constants.dart';
+import 'package:cphflyt/constants.dart';
 
 class UploadWidget extends StatelessWidget {
   final String title;
