@@ -15,9 +15,9 @@ class StorageService{
     return url;
   }
 
-  uploadFile(String fileName,String taskID, File image) async {
-    Reference reference = _storage.ref('images/$taskID/$fileName.png');
-    TaskSnapshot task = await reference.putFile(image);
+  uploadFile(String fileName,String taskID, File file, {bool isPdf = false}) async {
+    Reference reference = _storage.ref(!isPdf ? 'images/$taskID/$fileName.png' : 'pdf/$taskID.pdf');
+    TaskSnapshot task = await reference.putFile(file);
     String? url = await task.ref.getDownloadURL();
 
     return url;

@@ -101,7 +101,7 @@ class AssignDriver extends StatelessWidget {
 
                       // select already selected driver
                       if (snapshot.connectionState == ConnectionState.waiting){
-                        WidgetsBinding.instance?.addPostFrameCallback((_){
+                        WidgetsBinding.instance.addPostFrameCallback((_){
                           if (assignedDriverID == null){
                             controller.selectedDriver = null;
                           }

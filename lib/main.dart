@@ -14,8 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cphflyt/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
-import 'constants.dart';
+import 'package:cphflyt/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: Size(397.5, 666),
-      builder: ()=>MultiProvider(
+      builder: (context, widget)=>MultiProvider(
         providers: [
           Provider<AuthService>(create: (_) => AuthService()),
           Provider<DriverController>(create: (_) => DriverController()),

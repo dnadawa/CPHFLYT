@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:cphflyt/controllers/driver_controller.dart';
 import 'package:cphflyt/models/completion_model.dart';
+import 'package:cphflyt/models/request_model.dart';
 import 'package:cphflyt/widgets/button.dart';
 import 'package:cphflyt/widgets/custom_text.dart';
 import 'package:cphflyt/widgets/label_input_field.dart';
@@ -20,8 +21,9 @@ class DriverCompletion extends StatefulWidget {
   final bool isAdd;
   final String taskID;
   final CompleteTask? completeTask;
+  final RequestModel? requestModel;
 
-  const DriverCompletion({this.isAdd=true,required this.taskID, this.completeTask});
+  const DriverCompletion({this.isAdd=true,required this.taskID, this.completeTask, this.requestModel});
 
   @override
   State<DriverCompletion> createState() => _DriverCompletionState();
@@ -261,7 +263,8 @@ class _DriverCompletionState extends State<DriverCompletion> {
                                 garbage: garbage.text,
                                 storage: storage.text,
                                 total: total.text,
-                                context: context
+                                context: context,
+                                request: widget.requestModel!
                             );
                           }
                           else {
