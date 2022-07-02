@@ -179,7 +179,7 @@ class DriverController {
               pw.Text('Hvis ja, hvor meget?: \t${request.breakCount}', textAlign: pw.TextAlign.left),
               pw.SizedBox(height: 5),
               pw.Text('Andre bemærkninger: \t${request.others}', textAlign: pw.TextAlign.left),
-              pw.SizedBox(height: 15),
+              pw.SizedBox(height: 40),
               pw.Text(
                 'Completed Details',
                 textAlign: pw.TextAlign.center,
@@ -218,36 +218,70 @@ class DriverController {
           );
         }));
 
+
     pdf.addPage(pw.Page(
-        pageFormat: PdfPageFormat.a3,
-        build: (pw.Context context) {
-          List<pw.Widget> gridItems = [];
-
-          for (int i = 0; i < attachments.length; i++) {
-            if (attachments[i] != null) {
-              gridItems.add(pw.Column(children: [
-                pw.Text('Vedhæft ${i + 1}', textAlign: pw.TextAlign.center),
-                pw.SizedBox(height: 10),
-                pw.Center(
-                    child: pw.Image(pw.MemoryImage(attachments[i]!.readAsBytesSync()),
-                        height: 150, fit: pw.BoxFit.contain)),
-              ]));
-            }
-          }
-
-          return pw.Column(children: [
-            pw.Text('Kundens Underskrift', textAlign: pw.TextAlign.center),
-            pw.SizedBox(height: 10),
-            pw.Center(
-                child: pw.Image(pw.MemoryImage(signature), height: 150, fit: pw.BoxFit.contain)),
+      pageFormat: PdfPageFormat.a4,
+      build: (pw.Context context){
+        return pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.center,
+          children: [
+            pw.Text('Kundens Underskrift', textAlign: pw.TextAlign.center, style: pw.TextStyle(fontSize: 20)),
             pw.SizedBox(height: 30),
-            pw.GridView(
-              crossAxisCount: 3,
-              childAspectRatio: 1,
-              children: gridItems,
-            )
-          ]);
-        }));
+            pw.Center(
+              child: pw.Image(pw.MemoryImage(signature), height: 450, fit: pw.BoxFit.contain),
+            ),
+          ]
+        );
+      }
+    ));
+
+
+    List<pw.Widget> gridItems = [];
+
+    for (int i = 0; i < attachments.length; i++) {
+      if (attachments[i] != null) {
+        gridItems.add(pw.Column(children: [
+          pw.Text('Vedhæft ${i + 1}', textAlign: pw.TextAlign.center),
+          pw.SizedBox(height: 20),
+          pw.Center(
+              child: pw.Image(pw.MemoryImage(attachments[i]!.readAsBytesSync()),
+                  height: 200, width: 230, fit: pw.BoxFit.contain)),
+        ]));
+      }
+    }
+
+    if (gridItems.isNotEmpty){
+      pdf.addPage(pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (pw.Context context) {
+            return pw.Center(
+              child: pw.GridView(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
+                  mainAxisSpacing: 80,
+                  children: gridItems.take(4).toList()
+              )
+            );
+            // return pw.Column(children: gridItems);
+          }));
+    }
+
+    if (gridItems.length > 4){
+      pdf.addPage(pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (pw.Context context) {
+            return pw.Center(
+              child: pw.GridView(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
+                  mainAxisSpacing: 80,
+                  children: gridItems.skip(4).take(4).toList()
+              )
+            );
+            // return pw.Column(children: gridItems);
+          }));
+    }
+
 
     final output = await getApplicationDocumentsDirectory();
     final file = File("${output.path}/tempDriverReport.pdf");
