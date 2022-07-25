@@ -237,8 +237,8 @@ class Home extends StatelessWidget {
             SizedBox(height: 20.h,),
 
             Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getRequests(
+              child: FutureBuilder<List<QueryDocumentSnapshot>>(
+                future: databaseService.getRequests(
                     filter: filterController.filter,
                     from: navController.navItem,
                     completedFilter: filterController.completedFilter,
@@ -250,10 +250,10 @@ class Home extends StatelessWidget {
                   }
 
                   return ListView.builder(
-                      itemCount: snapshot.data?.docs.length,
+                      itemCount: snapshot.data?.length,
                       itemBuilder: (context, i){
 
-                        RequestModel request = databaseService.createRequestFromJson(snapshot.data?.docs[i]);
+                        RequestModel request = databaseService.createRequestFromJson(snapshot.data?[i]);
                         final TextEditingController controller = TextEditingController();
                         controller.text = request.id;
 

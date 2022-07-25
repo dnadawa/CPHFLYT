@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:cphflyt/constants.dart';
+import 'package:quiver/iterables.dart';
 
 class DatabaseService extends ChangeNotifier{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -23,7 +24,7 @@ class DatabaseService extends ChangeNotifier{
     notifyListeners();
   }
 
-  getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website,CompletedFilter completedFilter = CompletedFilter.All, List<DateTime>? dateFilter}) {
+  Future<List<QueryDocumentSnapshot<Object?>>> getRequests({Filter filter = Filter.Pending, Nav from = Nav.Website,CompletedFilter completedFilter = CompletedFilter.All, List<DateTime>? dateFilter}) async {
     Query query = _firestore.collection('requests');
 
     ///filter
@@ -59,14 +60,22 @@ class DatabaseService extends ChangeNotifier{
       query = query.where('from', isEqualTo: 'manual');
     }
 
+    List<QueryDocumentSnapshot> finalResults = [];
+
     ///date filter
     if(dateFilter != null){
       List<String> dates = dateFilter.map((e) => e.year.toString() + '-' + capitalize(DateFormat.MMMM('da_DK').format(e)) + '-' + e.day.toString()).toList();
-      query = query
-          .where('dateFull', whereIn: dates);
+      var dateChunks = partition(dates, 10);
+      for (var chunk in dateChunks) {
+        var sub = await query.where('dateFull', whereIn: chunk).where('idChanged', isEqualTo: 'true').get();
+        finalResults.addAll(sub.docs);
+      }
+    } else {
+      var sub = await query.where('idChanged', isEqualTo: 'true').get();
+      finalResults = sub.docs;
     }
 
-    return query.where('idChanged', isEqualTo: 'true').snapshots();
+    return finalResults;
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getRequestsAsDriver(String driverID) {
